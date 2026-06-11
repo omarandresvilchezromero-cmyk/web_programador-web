@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atención Servidor O</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+
+    <header class="header-main">
+
+        <div class="logo">
+            <img src="Diseño sin título.png" alt="Logo">
+        </div>
+
+        <div class="header-actions">
+            <nav>
+                <ul class="nav-list">
+                    <li><a href="perfil.html">perfil</a></li>
+                    <li><a href="vacantes de trabajo.html">vacante de trabajo</a></li>
+                    <li><a href="contactosalservidores.html">Contactos al servidor</a></li>
+                </ul>
+            </nav>
+            <a href="#" class="btn btn-outline-light btn-hamburger" id="navCarrito" title="Carrito" onclick="abrirCarrito()" style="position: relative;">
+                🛒
+                <span class="notification-badge" id="badgeCarrito" style="display:none; position:absolute; top:-6px; right:-6px;">0</span>
+            </a>
+            <button class="btn btn-hamburger" type="button" data-bs-toggle="offcanvas" data-bs-target="#headerOffcanvas" aria-controls="headerOffcanvas" aria-label="Abrir menú">
+                ☰
+            </button>
+        </div>
+
+    </header>
+
+    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="headerOffcanvas" aria-labelledby="headerOffcanvasLabel">
+        <div class="offcanvas-header">
+            <div>
+                <h5 id="headerOffcanvasLabel">Menú</h5>
+                <p class="mb-0 text-muted">Accesos rápidos</p>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+        </div>
+        <div class="offcanvas-body p-0">
+            <div class="list-group list-group-flush">
+                <a href="chat.html" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" id="navMensajes">
+                    <span>💬 Mensajes</span>
+                    <span class="badge bg-primary rounded-pill" id="badgeMensajes" style="display:none;">0</span>
+                </a>
+                <a href="notificaciones.html" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" id="navNotificaciones">
+                    <span>🔔 Notificaciones</span>
+                    <span class="badge bg-primary rounded-pill" id="badgeNotificaciones" style="display:none;">0</span>
+                </a>
+                <a href="perfil.html" class="list-group-item list-group-item-action" id="navPerfil">
+                    👤 Mi Perfil
+                </a>
+                <a href="admin-dashboard.html" class="list-group-item list-group-item-action" id="navAdmin" style="display:none;">
+                    ⚙️ Panel de Administración
+                </a>
+                <a href="#" class="list-group-item list-group-item-action" id="navLogout" onclick="logout()">
+                    🚪 Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="barte">
+        <h3> Categorías</h3>
+        <ul class="sidebar-links">
+            <li><a href="#section-wrapper">productos</a></li>
+            <li><a href="#section-servidor">servicios a servidores</a></li>
+            <li><a href="#section-seguridad">Seguridad</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+
+        <aside class="sidebar">
+            <h2>Novedades</h2>
+
+            <div class="sidebar-card">
+                <h4>Mantenimiento</h4>
+                <p>Actualización de servidores este fin de semana.</p>
+            </div>
+
+            <div class="sidebar-card">
+                <h4>Seguridad</h4>
+                <p>Nuevo sistema de protección contra ataques DDoS.</p>
+            </div>
+
+            <div class="sidebar-card">
+                <h4>Mejora</h4>
+                <p>Velocidad de red aumentada en un 30%.</p>
+            </div>
+
+        </aside>
+
+        <!-- MAIN DERECHA -->
+        <main class="main-content">
+
+            <section class="section-topic">
+                <h1>Bienvenido a Mi Sitio Web</h1>
+                <p>Este es un sitio web de muestra creado para fines de demostración.</p>
+            </section>
+
+            <article class="card">
+                <h2>Artículo 1</h2>
+                <p>
+                    serie de artículos relacionados con el tema principal del sitio web. Cada artículo puede contener
+                    información detallada, imágenes y enlaces relevantes para los visitantes.
+                </p>
+            </article>
+
+        </main>
+
+    </div>
+    <section class="section-wrapper" id="section-wrapper">
+        <h2>Productos Destacados</h2>
+
+        <div class="carousel-container">
+            <button class="carousel-btn prev-btn" aria-label="Producto anterior">❮</button>
+
+            <div class="carousel-viewer">
+                <div class="section-productos">
+
+                    <article class="contentcard">
+                        <div class="card-badge">En Stock</div>
+                        <div class="card-icon">🖥️</div>
+                        <h3>Server Pro R740</h3>
+                        <p class="description">Ideal para virtualización de alta densidad y bases de datos críticas.</p>
+                        <div class="specs-grid">
+                            <span><strong>CPU:</strong> 2x Xeon Gold</span>
+                            <span><strong>RAM:</strong> 128GB ECC</span>
+                        </div>
+                        <div class="card-action">
+                            <span class="price">$1,499<small>/mes</small></span>
+                            <button
+                                onclick="addToCart({ name: 'Server Pro R740', price: 1499, category: 'servidor', ref: 'Server Pro R740' })">Agregar
+                                al carrito</button>
+                            <button
+                                onclick="buyNow({ name: 'Server Pro R740', price: 1499, category: 'servidor', ref: 'Server Pro R740' })">Comprar
+                                ahora</button>
+                            <button
+                                onclick="requestQuote({ name: 'Server Pro R740', category: 'servidor', description: 'Server Pro R740' })">Cotizar</button>
+                        </div>
+                    </article>
+
+                    <article class="contentcard">
+                        <div class="card-badge premium">Enterprise</div>
+                        <div class="card-icon">🚀</div>
+                        <h3>Blade Server X900</h3>
+                        <p class="description">Máximo rendimiento para infraestructura en la nube y Big Data.</p>
+                        <div class="specs-grid">
+                            <span><strong>CPU:</strong> AMD EPYC 64C</span>
+                            <span><strong>RAM:</strong> 256GB ECC</span>
+                        </div>
+                        <div class="card-action">
+                            <span class="price">$2,899<small>/mes</small></span>
+                            <button
+                                onclick="addToCart({ name: 'Blade Server X900', price: 2899, category: 'servidor', ref: 'Blade Server X900' })">Agregar
+                                al carrito</button>
+                            <button
+                                onclick="buyNow({ name: 'Blade Server X900', price: 2899, category: 'servidor', ref: 'Blade Server X900' })">Comprar
+                                ahora</button>
+                            <button
+                                onclick="requestQuote({ name: 'Blade Server X900', category: 'servidor', description: 'Blade Server X900' })">Cotizar</button>
+                        </div>
+                    </article>
+
+                    <article class="contentcard">
+                        <div class="card-badge">En Stock</div>
+                        <div class="card-icon">💾</div>
+                        <h3>Storage NAS Center</h3>
+                        <p class="description">Almacenamiento masivo en red con protección RAID avanzada.</p>
+                        <div class="specs-grid">
+                            <span><strong>Bayas:</strong> 12 Bahías</span>
+                            <span><strong>Capacidad:</strong> Hasta 192TB</span>
+                        </div>
+                        <div class="card-action">
+                            <span class="price">$899<small>/mes</small></span>
+                            <button
+                                onclick="addToCart({ name: 'Storage NAS Center', price: 899, category: 'producto', ref: 'Storage NAS Center' })">Agregar
+                                al carrito</button>
+                            <button
+                                onclick="buyNow({ name: 'Storage NAS Center', price: 899, category: 'producto', ref: 'Storage NAS Center' })">Comprar
+                                ahora</button>
+                            <button
+                                onclick="requestQuote({ name: 'Storage NAS Center', category: 'producto', description: 'Storage NAS Center' })">Cotizar</button>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+
+            <button class="carousel-btn next-btn" aria-label="Siguiente producto">❯</button>
+        </div>
+
+        <!-- Botón añadir publicación (oculto por defecto; se mostrará solo a Administrador) -->
+        <button class="btn-add-post" id="btnAddPost" style="display:none;" aria-hidden="true">
+            <span>＋</span>
+        </button>
+
+        <div class="dynamic-products" id="dynamicProducts"></div>
+    </section>
+
+    <div class="admin-modal hidden" id="adminModal" aria-hidden="true">
+        <div class="admin-modal-content">
+            <button class="close-modal" id="closeAdminModal" aria-label="Cerrar modal">×</button>
+
+            <div id="adminLoginPanel">
+                <h3>Acceso de administrador</h3>
+                <p>Solo el admin puede agregar productos.</p>
+                <label for="adminUsername">Usuario</label>
+                <input id="adminUsername" type="text" placeholder="Nombre de usuario" autocomplete="off">
+                <label for="adminPassword">Contraseña</label>
+                <input id="adminPassword" type="password" placeholder="Contraseña" autocomplete="off">
+                <button id="adminLoginBtn" type="button">Ingresar</button>
+                <p class="admin-message" id="adminLoginMessage"></p>
+            </div>
+
+            <div id="adminProductPanel" class="hidden">
+                <h3>Agregar nuevo producto</h3>
+                <label for="productTitle">Título</label>
+                <input id="productTitle" type="text" placeholder="Nombre del producto">
+                <label for="productDescription">Descripción</label>
+                <textarea id="productDescription" rows="3" placeholder="Descripción breve"></textarea>
+                <label for="productCpu">CPU</label>
+                <input id="productCpu" type="text" placeholder="Ejemplo: 2x Xeon Gold">
+                <label for="productRam">RAM</label>
+                <input id="productRam" type="text" placeholder="Ejemplo: 128GB ECC">
+                <label for="productPrice">Precio</label>
+                <input id="productPrice" type="text" placeholder="Ejemplo: $1,499/mes">
+                <label for="productBadge">Etiqueta</label>
+                <input id="productBadge" type="text" placeholder="Ejemplo: En Stock">
+                <label for="productIcon">Icono</label>
+                <input id="productIcon" type="text" placeholder="Ejemplo: 🖥️">
+                <button id="saveProductBtn" type="button">Guardar producto</button>
+                <button id="adminLogoutBtn" type="button" class="secondary-button">Cerrar sesión</button>
+                <p class="admin-message" id="productMessage"></p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- SECCIÓN SERVICIOS -->
+    <section class="section-servidor" id="section-servidor">
+        <div class="section-header">
+            <h2>Servicios para Servidores</h2>
+            <p>Ofrecemos una amplia gama de servicios para garantizar el rendimiento, la seguridad y la confiabilidad de
+                tus servidores.</p>
+            <div class="content-servicios">Servicio 1
+                <article>
+                    <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Icono de mantenimiento"
+                        class="service-icon">
+                    <h3>Servicio de Mantenimiento</h3>
+                    <p>Ofrecemos mantenimiento preventivo y correctivo para asegurar el óptimo funcionamiento de tus
+                        servidores. Nuestro equipo de expertos realiza revisiones periódicas, actualizaciones de
+                        software y
+                        reemplazo de hardware para minimizar el tiempo de inactividad.</p>
+                </article>
+                <div class="servicio-especifico">
+                    <span><strong>Bayas:</strong> 12 Bahías</span>
+                    <span><strong>Capacidad:</strong> Hasta 192TB</span>
+                </div>
+                <div class="card_pidementobuton ">
+                    <span class="price">$899<small>/mes</small></span>
+                    <button class="btn-cotizar">adquirir</button>
+                </div>
+            </div>
+            <div class="content-servicios">Servicio 2
+                <article>
+                    <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Icono de soporte técnico"
+                        class="service-icon">
+                    <h3>Soporte Técnico 24/7</h3>
+                    <p>Nuestro servicio de soporte técnico está disponible las 24 horas del día, los 7 días de la
+                        semana. Nuestro equipo de expertos está listo para ayudarte con cualquier problema técnico,
+                        desde configuraciones hasta resolución de problemas, garantizando que tus servidores funcionen
+                        sin interrupciones.</p>
+                </article>
+                <div class="servicio-especifico">
+                    <span><strong>Bayas:</strong> 12 Bahías</span>
+                    <span><strong>Capacidad:</strong> Hasta 192TB</span>
+                </div>
+                <div class="card_pidementobuton ">
+                    <span class="price">$899<small>/mes</small></span>
+                    <button class="btn-cotizar">adquirir</button>
+                </div>
+            </div>
+            <div class="content-servicios">Servicio 3
+                <article>
+                    <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Icono de mantenimiento"
+                        class="service-icon">
+                    <h3>Servicio de Mantenimiento</h3>
+                    <p>Ofrecemos mantenimiento preventivo y correctivo para asegurar el óptimo funcionamiento de tus
+                        servidores. Nuestro equipo de expertos realiza revisiones periódicas, actualizaciones de
+                        software y
+                        reemplazo de hardware para minimizar el tiempo de inactividad.</p>
+                </article>
+                <div class="servicio-especifico">
+                    <span><strong>Bayas:</strong> 12 Bahías</span>
+                    <span><strong>Capacidad:</strong> Hasta 192TB</span>
+                </div>
+                <div class="card_pidementobuton ">
+                    <span class="price">$899<small>/mes</small></span>
+                    <button class="btn-cotizar">adquirir</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-seguridad" id="section-seguridad">
+        <div class="section-headersecurity">
+            <h2>Soluciones de Seguridad</h2>
+            <p>Protege tu infraestructura con nuestras avanzadas soluciones de seguridad diseñadas para enfrentar las
+                amenazas cibernéticas más sofisticadas.</p>
+
+            <div class="segurtyonlineserver">
+                <div class="content"> tipo de seguridad
+                    <div class="content">Seguridad 1
+                        <article>
+                            <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Icono de seguridad"
+                                class="service-icon">
+                            <h3>Protección DDoS Avanzada</h3>
+                            <p>Nuestro sistema de protección contra ataques DDoS utiliza tecnología de filtrado
+                                inteligente
+                                para
+                                detectar y mitigar amenazas en tiempo real. Protege tu infraestructura de ataques
+                                volumétricos,
+                                de protocolo y de aplicación, asegurando la continuidad de tus servicios incluso durante
+                                los
+                                ataques más sofisticados.</p>
+                            <div class="card_pidementobuton ">
+                                <span class="price">$899<small>/mes</small></span>
+                                <button class="btn-cotizar">adquirir</button>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="content">Seguridad 2
+                        <article>
+                            <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Icono de seguridad"
+                                class="service-icon">
+                            <h3>Monitoreo de Seguridad 24/7</h3>
+                            <p>Nuestro servicio de monitoreo de seguridad 24/7 garantiza que tu infraestructura esté
+                                siempre
+                                protegida. Nuestro equipo de expertos supervisa continuamente tus sistemas para detectar
+                                actividades sospechosas, responder a incidentes y mantener la integridad de tus datos y
+                                servicios.</p>
+                            <div class="card_pidementobuton ">
+                                <span class="price">$899<small>/mes</small></span>
+                                <button class="btn-cotizar">adquirir</button>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="content">Seguridad 3
+                        <article>
+                            <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Icono de seguridad"
+                                class="service-icon">
+                            <h3>Firewall de Próxima Generación</h3>
+                            <p>Nuestro firewall de próxima generación ofrece una defensa integral contra amenazas
+                                cibernéticas.
+                                Con inspección profunda de paquetes, prevención de intrusiones y control de
+                                aplicaciones,
+                                protege tu red contra ataques avanzados y garantiza la seguridad de tus datos y
+                                sistemas.
+                            <div class="card_pidementobuton ">
+                                <span class="price">$899<small>/mes</small></span>
+                                <button class="btn-cotizar">adquirir</button>
+                            </div>
+                            </p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+
+        <div class="footer-top">
+            <p>© 2026 - 28/04/2026 omar vilchez</p>
+        </div>
+
+        <div class="footer-bottom">
+
+            <div class="social-links">
+                <p>Enlaces del pie</p>
+            </div>
+
+            <div class="extra-info">
+                <p>Información adicional</p>
+            </div>
+
+        </div>
+
+    </footer>
+
+    <!-- Carrito Modal -->
+    <div id="cartModal"
+        style="display:none; position:fixed; right:20px; top:80px; width:360px; max-height:80vh; overflow:auto; z-index:2000; background:#0f172a; color:#fff; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:16px;">
+        <h3 style="margin-top:0;">Tu Carrito</h3>
+        <div id="cartItems"></div>
+        <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
+            <strong>Total:</strong>
+            <strong id="cartTotal">$0.00</strong>
+        </div>
+        <div style="margin-top:12px; display:flex; gap:8px;">
+            <button id="vaciarCarritoBtn" style="flex:1;">Vaciar</button>
+            <button id="confirmarCompraBtn" style="flex:1;">Confirmar compra</button>
+        </div>
+    </div>
+
+    <!-- Cotización Modal -->
+    <div id="quoteModal"
+        style="display:none; position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); width:520px; max-width:95%; z-index:3000; background:#0f172a; color:#fff; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:18px;">
+        <h3 style="margin-top:0;">Solicitar Cotización</h3>
+        <form id="quoteForm">
+            <div style="display:flex; gap:8px; margin-bottom:8px;">
+                <input id="quoteName" type="text" placeholder="Tu nombre" style="flex:1; padding:8px;" required />
+                <input id="quoteEmail" type="email" placeholder="Tu correo" style="flex:1; padding:8px;" required />
+            </div>
+            <div style="margin-bottom:8px;"><textarea id="quoteDesc" rows="4" placeholder="Descripción / requerimientos"
+                    style="width:100%; padding:8px;" required></textarea></div>
+            <div style="display:flex; gap:8px; justify-content:flex-end;">
+                <button type="button" id="cancelQuoteBtn">Cancelar</button>
+                <button type="submit" id="sendQuoteBtn">Enviar cotización</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- SCRIPTS DEL SISTEMA -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Sistema Central -->
+    <script src="javascript/auth-client.js"></script>
+    <script src="javascript/sistema-usuarios.js"></script>
+    <script src="javascript/sistema-mensajeria.js"></script>
+    <script src="javascript/sistema-notificaciones.js"></script>
+    <script src="javascript/sistema-empleados.js"></script>
+    <script src="javascript/sistema-solicitudes-empleo.js"></script>
+    <script src="javascript/sistema-historial.js"></script>
+
+    <!-- Inicializador Global -->
+    <script src="javascript/inicializador.js"></script>
+
+    <!-- Scripts Existentes -->
+    <script src="javascript/rotando.js"></script>
+    <script src="javascript/javascript.js"></script>
+    <script src="javascript/publicar.js"></script>
+    <script src="javascript/carrito.js"></script>
+</body>

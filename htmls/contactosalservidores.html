@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+    <link rel="stylesheet" href="css/usuarios en lineas.css">
+
+</head>
+
+<body>
+
+    <header class="header-main">
+        <div class="logo">
+            <img src="Diseño sin título.png" alt="Logo">
+        </div>
+        <nav>
+            <ul class="nav-list">
+                <li><a href="perfil.html">perfil</a></li>
+                <li><a href="vacantes de trabajo.html">vacante de trabajo</a></li>
+                <li><a href="htmlproyecto.html">inicio</a></li>
+                <li><a href="chat.html" class="nav-icon-mensajes" id="navMensajes">💬</a></li>
+                <li><a href="notificaciones.html" class="nav-icon-notificaciones" id="navNotificaciones">🔔</a></li>
+                <li><a href="admin-dashboard.html" class="nav-admin-link" id="navAdmin" style="display:none;">⚙️</a></li>
+                <li><a href="#" onclick="logout(event)" class="nav-logout" id="navLogout" style="display:none;">🚪</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="employee-list-container">
+        <div class="list-header">
+            <h2>Empleados Activos</h2>
+        </div>
+
+        <div class="admin-requests-container">
+            <div class="list-header">
+                <h2>Solicitudes Pendientes</h2>
+            </div>
+            <div class="requests-body" id="adminRequests">
+                <p class="empty-message">Inicia sesión como <strong>omar</strong> para revisar las solicitudes de empleado.</p>
+            </div>
+        </div>
+
+        <div class="list-body" id="employeeList"></div>
+    </div>
+
+    <footer class="main-footer">
+
+        <div class="footer-top">
+            <p>© 2026 - 28/04/2026 omar vilchez</p>
+        </div>
+
+        <div class="footer-bottom">
+
+            <div class="social-links">
+                <p>Enlaces del pie</p>
+            </div>
+
+            <div class="extra-info">
+                <p>Información adicional</p>
+            </div>
+
+        </div>
+
+    </footer>
+
+    <!-- Scripts del sistema -->
+    <script src="javascript/auth-client.js"></script>
+    <script src="javascript/sistema-usuarios.js"></script>
+    <script src="javascript/sistema-empleados.js"></script>
+    <script src="javascript/sistema-notificaciones.js"></script>
+    <script src="javascript/sistema-mensajeria.js"></script>
+    <script src="javascript/sistema-solicitudes-empleo.js"></script>
+    <script src="javascript/inicializador.js"></script>
+    
+    <!-- Script específico de página -->
+    <script src="javascript/contactosalservidores.js"></script>
+</body>
+
+</html>

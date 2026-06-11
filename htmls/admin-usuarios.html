@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios - Panel Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/notificaciones.css">
+    
+</head>
+
+<body>
+    <header class="header-main">
+        <div class="logo">
+            <img src="Diseño sin título.png" alt="Logo">
+        </div>
+        <nav>
+            <ul class="nav-list">
+                <li><a href="admin-dashboard.html">← Atrás</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="admin-usuarios-container">
+        <div class="admin-usuarios-header">
+            <h1>Gestión de Usuarios</h1>
+            <p style="color: var(--color-gris); margin: 10px 0;">Administra todos los usuarios de la plataforma</p>
+        </div>
+
+        <div class="admin-usuarios-header">
+            <div class="usuarios-controls">
+                <div class="usuarios-search">
+                    <input type="text" id="searchUsuarios" placeholder="Buscar por nombre o usuario...">
+                </div>
+                <div class="usuarios-filtros">
+                    <button class="filter-btn activo" onclick="filtrarUsuarios('todos')">Todos</button>
+                    <button class="filter-btn" onclick="filtrarUsuarios('activos')">Activos</button>
+                    <button class="filter-btn" onclick="filtrarUsuarios('suspendidos')">Suspendidos</button>
+                    <button class="filter-btn" onclick="filtrarUsuarios('baneados')">Baneados</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="usuarios-grid" id="usuariosGrid">
+            <!-- Se cargará con JavaScript -->
+        </div>
+    </main>
+
+    <!-- Modal de detalles -->
+    <div id="detallesModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="
+            background: linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(34,211,238,0.1) 100%);
+            border: 2px solid var(--color-azul-neon);
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            color: var(--color-blanco);
+            max-height: 80vh;
+            overflow-y: auto;
+        " id="detallesContent">
+            <!-- Se cargará con JavaScript -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-top">
+            <p>© 2026 - Panel Administrativo</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="javascript/auth-client.js"></script>
+    <script src="javascript/sistema-usuarios.js"></script>
+    <script src="javascript/sistema-empleados.js"></script>
+    <script src="javascript/sistema-historial.js"></script>
+    <script src="javascript/inicializador.js"></script>
+    <script src="javascript/admin-usuarios.js"></script>
+</body>
+
+</html>

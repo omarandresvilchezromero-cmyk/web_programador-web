@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil</title>
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/perfil.css">
+</head>
+<body>
+    <header class="header-main">
+        <div class="logo">
+            <img src="Diseño sin título.png" alt="Logo">
+        </div>
+        <nav>
+            <ul class="nav-list">
+                <li><a href="htmlproyecto.html">inicio</a></li>
+                <li><a href="vacantes de trabajo.html">vacante de trabajo</a></li>
+                <li><a href="contactosalservidores.html">Contactos al servidor</a></li>
+                <li><a href="chat.html" class="nav-icon-mensajes" id="navMensajes">💬</a></li>
+                <li><a href="notificaciones.html" class="nav-icon-notificaciones" id="navNotificaciones">🔔</a></li>
+                <li><a href="admin-dashboard.html" class="nav-admin-link" id="navAdmin" style="display:none;">⚙️</a></li>
+                <li><a href="#" onclick="logout(event)" class="nav-logout" id="navLogout" style="display:none;">🚪</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    
+    <div class="container-baseperfil">
+        <div class="header-baseperfil"></div>
+        
+        <div class="content">
+            <img src="https://via.placeholder.com/120" alt="Perfil" class="profile-img" id="profile-img">
+            <input type="file" id="photo-upload" accept="image/*" style="position:absolute; left:-9999px; opacity:0; width:1px; height:1px;">
+            <button type="button" class="btn btn-secondary" id="change-photo-btn">Cambiar foto</button>
+            
+            <h1 class="name" id="profile-name"></h1>
+            <p class="role" id="profile-role"></p>
+            
+            <!-- INFORMACIÓN DEL USUARIO -->
+            <div style="background: rgba(0, 212, 255, 0.1); padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #00d4ff;">
+                <p class="profile-info" id="profile-id" style="margin: 5px 0; font-size: 14px;"><strong>ID de Usuario:</strong> <span id="id-value">-</span></p>
+                <p class="profile-info" id="profile-email" style="margin: 5px 0; font-size: 14px;"><strong>Correo:</strong> <span id="email-value">-</span></p>
+                <p class="profile-info" id="profile-fecha-creacion" style="margin: 5px 0; font-size: 14px;"><strong>Fecha de Registro:</strong> <span id="fecha-value">-</span></p>
+            </div>
+            
+            <p class="profile-badge" id="profile-badge" style="display:none;"></p>
+            <p class="employee-id" id="profile-employee-id" style="display:none;"></p>
+            
+            <p class="bio" id="profile-bio"></p>
+            
+            <div class="profile-edit">
+                <label for="edit-name">Nombre visible</label>
+                <input type="text" id="edit-name" placeholder="Tu nombre">
+
+                <label for="edit-role">Especialidad / Cargo</label>
+                <input type="text" id="edit-role" placeholder="Por ejemplo: Desarrollo Web">
+
+                <label for="edit-bio">Descripción</label>
+                <textarea id="edit-bio" rows="4" placeholder="Escribe una biografía corta..."></textarea>
+
+                <button type="button" class="btn btn-primary" id="save-profile-btn">Guardar cambios</button>
+                <button type="button" class="btn btn-secondary" id="logout-btn">Cerrar sesión</button>
+            </div>
+        </div>
+    </div>
+
+<!-- FOOTER -->
+    <footer class="main-footer">
+
+
+
+        <div class="footer-bottom">
+
+            <div class="social-links">
+                <p>Enlaces del pie</p>
+            </div>
+
+            <div class="extra-info">
+                <p>Información adicional</p>
+            </div>
+
+        </div>
+        <div class="footer-top">
+            <p>© 2026 - 28/04/2026 omar vilchez</p>
+        </div>
+
+    </footer>
+    
+    <!-- Scripts del sistema -->
+    <script src="javascript/auth-client.js"></script>
+    <script src="javascript/sistema-usuarios.js"></script>
+    <script src="javascript/sistema-empleados.js"></script>
+    <script src="javascript/sistema-notificaciones.js"></script>
+    <script src="javascript/sistema-mensajeria.js"></script>
+    <script src="javascript/inicializador.js"></script>
+    <script src="javascript/perfil.js"></script>
+</body>
+</html>

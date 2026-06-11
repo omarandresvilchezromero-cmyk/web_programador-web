@@ -1,0 +1,1306 @@
+SESSION CONFIG: {
+  "secret": "cambiar_por_un_secreto_seguro",
+  "resave": false,
+  "saveUninitialized": false,
+  "cookie": {
+    "maxAge": 86400000,
+    "sameSite": "lax",
+    "secure": false,
+    "path": "/"
+  }
+}
+Servidor Express corriendo en http://localhost:3000
+BODY RECIBIDO: { correoUsuario: 'diag@example.com', contrasenia: 'Diag1234' }
+BODY FIELDS: {
+  correoUsuario: 'diag@example.com',
+  nombre_usuario: undefined,
+  contrasenia: 'Diag1234'
+}
+REQUEST HEADERS: {
+  host: 'localhost:3000',
+  origin: undefined,
+  referer: undefined,
+  cookie: undefined,
+  'content-type': 'application/json'
+}
+LOGIN RECIBIDO: { correoUsuario: 'diag@example.com', contrasenia: 'Diag1234' }
+=== DEBUG POST /api/login ===
+BODY (masked): {"correoUsuario":"diag@example.com","contrasenia":"***"}
+SESSION ANTES: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:09:59.963Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+USUARIO ENCONTRADO: {
+  id_usuarios: 14,
+  nombre_usuario: 'diagnostico',
+  correoUsuario: 'diag@example.com',
+  contrasenia: '***HASH***',
+  rol: 'Usuario'
+}
+RESULTADO BCRYPT: true
+SESSION DESPUÉS DEL LOGIN: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:09:59.963Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 14,
+    "nombre": "diagnostico",
+    "nombre_usuario": "diagnostico",
+    "correo": "diag@example.com",
+    "correoUsuario": "diag@example.com",
+    "rol": "Usuario"
+  }
+}
+SESSION GUARDADA EXITOSAMENTE
+RESPUESTA LOGIN: {
+  ok: true,
+  user: {
+    id: 14,
+    nombre: 'diagnostico',
+    nombre_usuario: 'diagnostico',
+    correo: 'diag@example.com',
+    correoUsuario: 'diag@example.com',
+    rol: 'Usuario'
+  }
+}
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:09:59.963Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 14,
+    "nombre": "diagnostico",
+    "nombre_usuario": "diagnostico",
+    "correo": "diag@example.com",
+    "correoUsuario": "diag@example.com",
+    "rol": "Usuario"
+  }
+}
+SESSION USER: {
+  "id": 14,
+  "nombre": "diagnostico",
+  "nombre_usuario": "diagnostico",
+  "correo": "diag@example.com",
+  "correoUsuario": "diag@example.com",
+  "rol": "Usuario"
+}
+BODY RECIBIDO: { nombre_usuario: 'omar', contrasenia: '78899889' }
+BODY FIELDS: {
+  correoUsuario: undefined,
+  nombre_usuario: 'omar',
+  contrasenia: '78899889'
+}
+REQUEST HEADERS: {
+  host: 'localhost:3000',
+  origin: undefined,
+  referer: undefined,
+  cookie: undefined,
+  'content-type': 'application/json'
+}
+LOGIN RECIBIDO: { nombre_usuario: 'omar', contrasenia: '78899889' }
+=== DEBUG POST /api/login ===
+BODY (masked): {"nombre_usuario":"omar","contrasenia":"***"}
+SESSION ANTES: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:10:08.631Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+USUARIO ENCONTRADO: {
+  id_usuarios: 1,
+  nombre_usuario: 'omar',
+  correoUsuario: 'omarandresvilchezromero@gmail.com',
+  contrasenia: '***HASH***',
+  rol: 'Administrador'
+}
+RESULTADO BCRYPT: true
+SESSION DESPUÉS DEL LOGIN: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:10:08.631Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION GUARDADA EXITOSAMENTE
+RESPUESTA LOGIN: {
+  ok: true,
+  user: {
+    id: 1,
+    nombre: 'omar',
+    nombre_usuario: 'omar',
+    correo: 'omarandresvilchezromero@gmail.com',
+    correoUsuario: 'omarandresvilchezromero@gmail.com',
+    rol: 'Administrador'
+  }
+}
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:10:09.545Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+SESSION USER: undefined
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:10:12.042Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+SESSION USER: undefined
+BODY RECIBIDO: { nombre_usuario: 'omar', contrasenia: '78899889' }
+BODY FIELDS: {
+  correoUsuario: undefined,
+  nombre_usuario: 'omar',
+  contrasenia: '78899889'
+}
+REQUEST HEADERS: {
+  host: 'localhost:3000',
+  origin: undefined,
+  referer: undefined,
+  cookie: undefined,
+  'content-type': 'application/json'
+}
+LOGIN RECIBIDO: { nombre_usuario: 'omar', contrasenia: '78899889' }
+=== DEBUG POST /api/login ===
+BODY (masked): {"nombre_usuario":"omar","contrasenia":"***"}
+SESSION ANTES: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:11:07.641Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+USUARIO ENCONTRADO: {
+  id_usuarios: 1,
+  nombre_usuario: 'omar',
+  correoUsuario: 'omarandresvilchezromero@gmail.com',
+  contrasenia: '***HASH***',
+  rol: 'Administrador'
+}
+RESULTADO BCRYPT: true
+SESSION DESPUÉS DEL LOGIN: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:11:07.641Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION GUARDADA EXITOSAMENTE
+RESPUESTA LOGIN: {
+  ok: true,
+  user: {
+    id: 1,
+    nombre: 'omar',
+    nombre_usuario: 'omar',
+    correo: 'omarandresvilchezromero@gmail.com',
+    correoUsuario: 'omarandresvilchezromero@gmail.com',
+    rol: 'Administrador'
+  }
+}
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:11:08.587Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+SESSION USER: undefined
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:11:12.093Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+SESSION USER: undefined
+BODY RECIBIDO: { nombre_usuario: 'felix', contrasenia: '78899889' }
+BODY FIELDS: {
+  correoUsuario: undefined,
+  nombre_usuario: 'felix',
+  contrasenia: '78899889'
+}
+REQUEST HEADERS: {
+  host: 'localhost:3000',
+  origin: undefined,
+  referer: undefined,
+  cookie: undefined,
+  'content-type': 'application/json'
+}
+LOGIN RECIBIDO: { nombre_usuario: 'felix', contrasenia: '78899889' }
+=== DEBUG POST /api/login ===
+BODY (masked): {"nombre_usuario":"felix","contrasenia":"***"}
+SESSION ANTES: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:11:33.216Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+USUARIO ENCONTRADO: []
+RESPUESTA LOGIN: { ok: false, error: 'Credenciales inválidas' }
+BODY RECIBIDO: { nombre_usuario: 'felix', contrasenia: '78899889' }
+BODY FIELDS: {
+  correoUsuario: undefined,
+  nombre_usuario: 'felix',
+  contrasenia: '78899889'
+}
+REQUEST HEADERS: {
+  host: 'localhost:3000',
+  origin: undefined,
+  referer: undefined,
+  cookie: undefined,
+  'content-type': 'application/json'
+}
+LOGIN RECIBIDO: { nombre_usuario: 'felix', contrasenia: '78899889' }
+=== DEBUG POST /api/login ===
+BODY (masked): {"nombre_usuario":"felix","contrasenia":"***"}
+SESSION ANTES: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:11:34.175Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+USUARIO ENCONTRADO: []
+RESPUESTA LOGIN: { ok: false, error: 'Credenciales inválidas' }
+RESPUESTA ENVIADA: {
+  ok: true,
+  user: {
+    id: 15,
+    nombre_usuario: 'felix',
+    correoUsuario: 'felixr@gmail.com',
+    rol: 'Usuario'
+  }
+}
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:12:39.730Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+SESSION USER: undefined
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:12:39.757Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+SESSION USER: undefined
+BODY RECIBIDO: { nombre_usuario: 'felix', contrasenia: 'error404' }
+BODY FIELDS: {
+  correoUsuario: undefined,
+  nombre_usuario: 'felix',
+  contrasenia: 'error404'
+}
+REQUEST HEADERS: {
+  host: 'localhost:3000',
+  origin: undefined,
+  referer: undefined,
+  cookie: undefined,
+  'content-type': 'application/json'
+}
+LOGIN RECIBIDO: { nombre_usuario: 'felix', contrasenia: 'error404' }
+=== DEBUG POST /api/login ===
+BODY (masked): {"nombre_usuario":"felix","contrasenia":"***"}
+SESSION ANTES: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:13:01.304Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+USUARIO ENCONTRADO: {
+  id_usuarios: 15,
+  nombre_usuario: 'felix',
+  correoUsuario: 'felixr@gmail.com',
+  contrasenia: '***HASH***',
+  rol: 'Usuario'
+}
+RESULTADO BCRYPT: true
+SESSION DESPUÉS DEL LOGIN: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:13:01.304Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 15,
+    "nombre": "felix",
+    "nombre_usuario": "felix",
+    "correo": "felixr@gmail.com",
+    "correoUsuario": "felixr@gmail.com",
+    "rol": "Usuario"
+  }
+}
+SESSION GUARDADA EXITOSAMENTE
+RESPUESTA LOGIN: {
+  ok: true,
+  user: {
+    id: 15,
+    nombre: 'felix',
+    nombre_usuario: 'felix',
+    correo: 'felixr@gmail.com',
+    correoUsuario: 'felixr@gmail.com',
+    rol: 'Usuario'
+  }
+}
+BODY RECIBIDO: { nombre_usuario: 'felix', contrasenia: 'error404' }
+BODY FIELDS: {
+  correoUsuario: undefined,
+  nombre_usuario: 'felix',
+  contrasenia: 'error404'
+}
+REQUEST HEADERS: {
+  host: 'localhost:3000',
+  origin: undefined,
+  referer: undefined,
+  cookie: undefined,
+  'content-type': 'application/json'
+}
+LOGIN RECIBIDO: { nombre_usuario: 'felix', contrasenia: 'error404' }
+=== DEBUG POST /api/login ===
+BODY (masked): {"nombre_usuario":"felix","contrasenia":"***"}
+SESSION ANTES: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:13:02.008Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+USUARIO ENCONTRADO: {
+  id_usuarios: 15,
+  nombre_usuario: 'felix',
+  correoUsuario: 'felixr@gmail.com',
+  contrasenia: '***HASH***',
+  rol: 'Usuario'
+}
+RESULTADO BCRYPT: true
+SESSION DESPUÉS DEL LOGIN: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:13:02.008Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 15,
+    "nombre": "felix",
+    "nombre_usuario": "felix",
+    "correo": "felixr@gmail.com",
+    "correoUsuario": "felixr@gmail.com",
+    "rol": "Usuario"
+  }
+}
+SESSION GUARDADA EXITOSAMENTE
+RESPUESTA LOGIN: {
+  ok: true,
+  user: {
+    id: 15,
+    nombre: 'felix',
+    nombre_usuario: 'felix',
+    correo: 'felixr@gmail.com',
+    correoUsuario: 'felixr@gmail.com',
+    rol: 'Usuario'
+  }
+}
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:13:02.229Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+SESSION USER: undefined
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:13:02.268Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+SESSION USER: undefined
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:29:53.286Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+SESSION USER: undefined
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:29:53.341Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+SESSION USER: undefined
+BODY RECIBIDO: { nombre_usuario: 'omar', contrasenia: '78899889' }
+BODY FIELDS: {
+  correoUsuario: undefined,
+  nombre_usuario: 'omar',
+  contrasenia: '78899889'
+}
+REQUEST HEADERS: {
+  host: 'localhost:3000',
+  origin: 'http://localhost:3000',
+  referer: 'http://localhost:3000/login.html',
+  cookie: undefined,
+  'content-type': 'application/json'
+}
+LOGIN RECIBIDO: { nombre_usuario: 'omar', contrasenia: '78899889' }
+=== DEBUG POST /api/login ===
+BODY (masked): {"nombre_usuario":"omar","contrasenia":"***"}
+SESSION ANTES: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:30:07.151Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+USUARIO ENCONTRADO: {
+  id_usuarios: 1,
+  nombre_usuario: 'omar',
+  correoUsuario: 'omarandresvilchezromero@gmail.com',
+  contrasenia: '***HASH***',
+  rol: 'Administrador'
+}
+RESULTADO BCRYPT: true
+SESSION DESPUÉS DEL LOGIN: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:30:07.151Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION GUARDADA EXITOSAMENTE
+RESPUESTA LOGIN: {
+  ok: true,
+  user: {
+    id: 1,
+    nombre: 'omar',
+    nombre_usuario: 'omar',
+    correo: 'omarandresvilchezromero@gmail.com',
+    correoUsuario: 'omarandresvilchezromero@gmail.com',
+    rol: 'Administrador'
+  }
+}
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:30:08.052Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:30:15.755Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+=== DEBUG GET /api/profile ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:30:15.770Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION.USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+USER.ID USADO EN QUERY: 1
+QUERY RESULT ROWS: [
+  {
+    "id": 1,
+    "nombre_usuario": "omar",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "fechaRegistro": "2026-06-04T01:18:39.000Z",
+    "rol": "Administrador",
+    "descripcion": "g",
+    "especialidad": "",
+    "foto": null
+  }
+]
+USER OBJECT: {
+  "id": 1,
+  "nombre_usuario": "omar",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "fechaRegistro": "2026-06-04T01:18:39.000Z",
+  "rol": "Administrador",
+  "descripcion": "g",
+  "especialidad": "",
+  "foto": null
+}
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+RESPUESTA ENVIADA: {
+  "ok": true,
+  "user": {
+    "id": 1,
+    "nombre_usuario": "omar",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "fechaRegistro": "2026-06-04T01:18:39.000Z",
+    "rol": "Administrador",
+    "descripcion": "g",
+    "especialidad": "",
+    "foto": "https://via.placeholder.com/120"
+  },
+  "empleado": null
+}
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:30:15.952Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:30:16.983Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+=== DEBUG GET /api/profile ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:30:17.003Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION.USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+USER.ID USADO EN QUERY: 1
+QUERY RESULT ROWS: [
+  {
+    "id": 1,
+    "nombre_usuario": "omar",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "fechaRegistro": "2026-06-04T01:18:39.000Z",
+    "rol": "Administrador",
+    "descripcion": "g",
+    "especialidad": "",
+    "foto": null
+  }
+]
+USER OBJECT: {
+  "id": 1,
+  "nombre_usuario": "omar",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "fechaRegistro": "2026-06-04T01:18:39.000Z",
+  "rol": "Administrador",
+  "descripcion": "g",
+  "especialidad": "",
+  "foto": null
+}
+RESPUESTA ENVIADA: {
+  "ok": true,
+  "user": {
+    "id": 1,
+    "nombre_usuario": "omar",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "fechaRegistro": "2026-06-04T01:18:39.000Z",
+    "rol": "Administrador",
+    "descripcion": "g",
+    "especialidad": "",
+    "foto": "https://via.placeholder.com/120"
+  },
+  "empleado": null
+}
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:30:26.919Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:30:28.722Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:30:31.081Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+=== DEBUG GET /api/profile ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:30:31.099Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION.USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+USER.ID USADO EN QUERY: 1
+QUERY RESULT ROWS: [
+  {
+    "id": 1,
+    "nombre_usuario": "omar",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "fechaRegistro": "2026-06-04T01:18:39.000Z",
+    "rol": "Administrador",
+    "descripcion": "g",
+    "especialidad": "",
+    "foto": null
+  }
+]
+USER OBJECT: {
+  "id": 1,
+  "nombre_usuario": "omar",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "fechaRegistro": "2026-06-04T01:18:39.000Z",
+  "rol": "Administrador",
+  "descripcion": "g",
+  "especialidad": "",
+  "foto": null
+}
+RESPUESTA ENVIADA: {
+  "ok": true,
+  "user": {
+    "id": 1,
+    "nombre_usuario": "omar",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "fechaRegistro": "2026-06-04T01:18:39.000Z",
+    "rol": "Administrador",
+    "descripcion": "g",
+    "especialidad": "",
+    "foto": "https://via.placeholder.com/120"
+  },
+  "empleado": null
+}
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:30:32.778Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:30:33.097Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:30:51.291Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:30:54.346Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:30:59.690Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:31:03.256Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:31:34.086Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+=== DEBUG GET /api/profile ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:31:34.140Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  },
+  "user": {
+    "id": 1,
+    "nombre": "omar",
+    "nombre_usuario": "omar",
+    "correo": "omarandresvilchezromero@gmail.com",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "rol": "Administrador"
+  }
+}
+SESSION.USER: {
+  "id": 1,
+  "nombre": "omar",
+  "nombre_usuario": "omar",
+  "correo": "omarandresvilchezromero@gmail.com",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "rol": "Administrador"
+}
+USER.ID USADO EN QUERY: 1
+QUERY RESULT ROWS: [
+  {
+    "id": 1,
+    "nombre_usuario": "omar",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "fechaRegistro": "2026-06-04T01:18:39.000Z",
+    "rol": "Administrador",
+    "descripcion": "g",
+    "especialidad": "",
+    "foto": null
+  }
+]
+USER OBJECT: {
+  "id": 1,
+  "nombre_usuario": "omar",
+  "correoUsuario": "omarandresvilchezromero@gmail.com",
+  "fechaRegistro": "2026-06-04T01:18:39.000Z",
+  "rol": "Administrador",
+  "descripcion": "g",
+  "especialidad": "",
+  "foto": null
+}
+RESPUESTA ENVIADA: {
+  "ok": true,
+  "user": {
+    "id": 1,
+    "nombre_usuario": "omar",
+    "correoUsuario": "omarandresvilchezromero@gmail.com",
+    "fechaRegistro": "2026-06-04T01:18:39.000Z",
+    "rol": "Administrador",
+    "descripcion": "g",
+    "especialidad": "",
+    "foto": "https://via.placeholder.com/120"
+  },
+  "empleado": null
+}
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+RESPUESTA ENVIADA: { ok: true, notificaciones: 0 }
+RESPUESTA ENVIADA: { ok: true, mensajes: 0 }
+=== DEBUG GET /api/session ===
+SESSION: {
+  "cookie": {
+    "originalMaxAge": 86400000,
+    "expires": "2026-06-08T17:31:52.626Z",
+    "secure": false,
+    "httpOnly": true,
+    "path": "/",
+    "sameSite": "lax"
+  }
+}
+SESSION USER: undefined

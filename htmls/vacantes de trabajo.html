@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud para Equipo Técnico</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/AJUSTES.css">
+    <link rel="stylesheet" href="css/formulario.css">
+    <link rel="stylesheet" href="css/reclutamiento.css">
+</head>
+
+<body>
+    <header class="header-main">
+        <div class="logo">
+            <img src="Diseño sin título.png" alt="Logo">
+        </div>
+        <nav>
+            <ul class="nav-list">
+                <li><a href="perfil.html">Perfil</a></li>
+                <li><a href="htmlproyecto.html">Inicio</a></li>
+                <li><a href="contactosalservidores.html">Contactos al servidor</a></li>
+                <li><a href="chat.html" class="nav-icon-mensajes" id="navMensajes">💬</a></li>
+                <li><a href="notificaciones.html" class="nav-icon-notificaciones" id="navNotificaciones">🔔</a></li>
+                <li><a href="admin-dashboard.html" class="nav-admin-link" id="navAdmin" style="display:none;">⚙️</a></li>
+                <li><a href="#" onclick="logout(event)" class="nav-logout" id="navLogout" style="display:none;">🚪</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="recruitment-container">
+        <!-- Título principal -->
+        <section class="hero-section">
+            <h1 class="main-title">Solicitud para formar parte del Equipo Técnico</h1>
+            <p class="subtitle">Únete a nuestro equipo de soporte técnico y servicios tecnológicos</p>
+        </section>
+
+        <!-- Sección informativa de beneficios -->
+        <section class="benefits-section">
+            <div class="benefits-grid">
+                <div class="benefit-card benefit-card-1">
+                    <div class="benefit-icon">✓</div>
+                    <h3>Perfil Verificado</h3>
+                    <p>Recibe una insignia de empleado verificado que te distingue en la plataforma</p>
+                </div>
+                <div class="benefit-card benefit-card-2">
+                    <div class="benefit-icon">🌐</div>
+                    <h3>Servicios Remotos y Presenciales</h3>
+                    <p>Ofrece tus servicios de forma flexible, eligiendo el modelo que mejor se adapte a ti</p>
+                </div>
+                <div class="benefit-card benefit-card-3">
+                    <div class="benefit-icon">👥</div>
+                    <h3>Lista Oficial de Soporte</h3>
+                    <p>Aparecerás en la lista oficial de soporte técnico, visible para todos los clientes</p>
+                </div>
+                <div class="benefit-card benefit-card-4">
+                    <div class="benefit-icon">⭐</div>
+                    <h3>Insignia de Empleado</h3>
+                    <p>Destaca con una insignia especial que demuestra tu pertenencia al equipo oficial</p>
+                </div>
+                <div class="benefit-card benefit-card-5">
+                    <div class="benefit-icon">💼</div>
+                    <h3>Atender Consultas</h3>
+                    <p>Accede a solicitudes de clientes y proporciona servicios técnicos profesionales</p>
+                </div>
+                <div class="benefit-card benefit-card-6">
+                    <div class="benefit-icon">🚀</div>
+                    <h3>Acceso a Herramientas</h3>
+                    <p>Acceso a futuras herramientas exclusivas del sistema para mejorar tu productividad</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="content-wrapper">
+            <!-- Lado izquierdo: Formulario -->
+            <div class="form-section">
+                <div class="form-header">
+                    <h2>Completa tu Solicitud</h2>
+                    <p>Todos los campos son obligatorios</p>
+                </div>
+
+                <form name="solicitudEquipo" id="solicitudEquipo" class="recruitment-form">
+                    <!-- Nombre Completo -->
+                    <div class="form-group">
+                        <label for="nombreCompleto">Nombre completo *</label>
+                        <input type="text" id="nombreCompleto" name="nombreCompleto" placeholder="Ej. Juan Pérez García" required>
+                        <span class="form-error" id="error-nombreCompleto"></span>
+                    </div>
+
+                    <!-- Fecha de Nacimiento -->
+                    <div class="form-group">
+                        <label for="fechaNacimiento">Fecha de nacimiento *</label>
+                        <input type="date" id="fechaNacimiento" name="fechaNacimiento" required>
+                        <span class="form-error" id="error-fechaNacimiento"></span>
+                    </div>
+
+                    <!-- Especialidad Principal -->
+                    <div class="form-group">
+                        <label for="especialidad">Especialidad principal *</label>
+                        <select id="especialidad" name="especialidad" required>
+                            <option value="" disabled selected>Selecciona tu especialidad</option>
+                            <option value="desarrollo-web">Desarrollo Web</option>
+                            <option value="desarrollo-backend">Desarrollo Backend</option>
+                            <option value="bases-datos">Bases de Datos</option>
+                            <option value="redes">Redes</option>
+                            <option value="ciberseguridad">Ciberseguridad</option>
+                            <option value="soporte-tecnico">Soporte Técnico</option>
+                            <option value="diseño-ui-ux">Diseño UI/UX</option>
+                            <option value="reparacion-mantenimiento">Reparación y Mantenimiento</option>
+                            <option value="servidores">Servidores</option>
+                        </select>
+                        <span class="form-error" id="error-especialidad"></span>
+                    </div>
+
+                    <!-- Años de Experiencia -->
+                    <div class="form-group">
+                        <label for="anosExperiencia">Años de experiencia *</label>
+                        <input type="number" id="anosExperiencia" name="anosExperiencia" placeholder="Ej. 5" min="0" max="60" required>
+                        <span class="form-error" id="error-anosExperiencia"></span>
+                    </div>
+
+                    <!-- Habilidades Técnicas -->
+                    <div class="form-group">
+                        <label for="habilidades">Habilidades técnicas *</label>
+                        <textarea id="habilidades" name="habilidades" rows="3" placeholder="Describe las tecnologías, herramientas o lenguajes que dominas. Ej: JavaScript, Python, React, MySQL, Docker..." required></textarea>
+                        <span class="form-error" id="error-habilidades"></span>
+                    </div>
+
+                    <!-- Disponibilidad -->
+                    <div class="form-group">
+                        <label for="disponibilidad">Disponibilidad *</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="disponibilidad" value="tiempo-completo">
+                                Tiempo completo
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="disponibilidad" value="medio-tiempo">
+                                Medio tiempo
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="disponibilidad" value="freelance">
+                                Freelance
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="disponibilidad" value="remoto">
+                                Remoto
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="disponibilidad" value="presencial">
+                                Presencial
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="disponibilidad" value="hibrido">
+                                Híbrido
+                            </label>
+                        </div>
+                        <span class="form-error" id="error-disponibilidad"></span>
+                    </div>
+
+                    <!-- Motivación -->
+                    <div class="form-group">
+                        <label for="motivacion">¿Por qué deseas formar parte del equipo? *</label>
+                        <textarea id="motivacion" name="motivacion" rows="4" placeholder="Cuéntanos qué te motiva a unirte a nuestro equipo técnico y qué valor puedes aportar..." required></textarea>
+                        <span class="form-error" id="error-motivacion"></span>
+                    </div>
+
+                    <!-- Botón de envío -->
+                    <button type="submit" class="btn-submit">Enviar Solicitud</button>
+                </form>
+
+                <!-- Mensaje de confirmación -->
+                <div id="successMessage" class="success-message" style="display:none;">
+                    <div class="success-content">
+                        <div class="success-icon">✓</div>
+                        <h3>¡Solicitud Enviada Exitosamente!</h3>
+                        <p>Tu solicitud ha sido registrada y será revisada por nuestro equipo administrativo.</p>
+                        <p>Te notificaremos del estado de tu solicitud pronto.</p>
+                        <button class="btn-secondary" onclick="location.reload()">Volver al inicio</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lado derecho: Información visual -->
+            <aside class="sidebar">
+                <!-- Tarjeta de ventajas -->
+                <div class="advantages-card">
+                    <h3 class="card-title">Ventajas de ser Empleado</h3>
+                    <ul class="advantages-list">
+                        <li><span class="icon">✓</span> Perfil verificado</li>
+                        <li><span class="icon">✓</span> Aparición en soporte técnico</li>
+                        <li><span class="icon">✓</span> Posibilidad de recibir clientes</li>
+                        <li><span class="icon">✓</span> Participación en proyectos</li>
+                        <li><span class="icon">✓</span> Acceso a futuras herramientas</li>
+                    </ul>
+                </div>
+
+                <!-- Proceso de Selección -->
+                <div class="selection-process">
+                    <h3 class="card-title">Proceso de Selección</h3>
+                    <div class="process-steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <p>Solicitud enviada</p>
+                        </div>
+                        <div class="step-arrow">↓</div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <p>Revisión del admin</p>
+                        </div>
+                        <div class="step-arrow">↓</div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <p>Aceptación/Rechazo</p>
+                        </div>
+                        <div class="step-arrow">↓</div>
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <p>ID de empleado</p>
+                        </div>
+                        <div class="step-arrow">↓</div>
+                        <div class="step">
+                            <div class="step-number">5</div>
+                            <p>Insignia entregada</p>
+                        </div>
+                        <div class="step-arrow">↓</div>
+                        <div class="step">
+                            <div class="step-number">6</div>
+                            <p>Equipo de soporte</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div class="footer-top">
+            <p>© 2026 - Omar Vílchez</p>
+        </div>
+        <div class="footer-bottom">
+            <div class="social-links">
+                <p>Enlaces del pie</p>
+            </div>
+            <div class="extra-info">
+                <p>Información adicional</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts del sistema -->
+    <script src="javascript/auth-client.js"></script>
+    <script src="javascript/sistema-usuarios.js"></script>
+    <script src="javascript/sistema-empleados.js"></script>
+    <script src="javascript/sistema-notificaciones.js"></script>
+    <script src="javascript/sistema-mensajeria.js"></script>
+    <script src="javascript/sistema-solicitudes-empleo.js"></script>
+    <script src="javascript/sistema-historial.js"></script>
+    <script src="javascript/inicializador.js"></script>
+
+    <!-- Scripts específicos de página -->
+    <script src="javascript/ajustes.js"></script>
+    <script src="javascript/reclutamiento.js"></script>
+</body>
+
+</html>

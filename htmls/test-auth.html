@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Autenticación</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-left: 4px solid #007bff;
+        }
+        
+        .section h2 {
+            color: #007bff;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        .resultado {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            font-size: 14px;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .resultado.exito {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .resultado.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .session-info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 3px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        .session-info strong {
+            color: #0056b3;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .status.activa {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.inactiva {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Test de Autenticación</h1>
+        <p style="color: #666; margin-bottom: 20px;">Sistema de prueba mínimo para validar login, sesión y perfil.</p>
+        
+        <!-- Sección de Registro -->
+        <div class="section">
+            <h2>1️⃣ REGISTRAR USUARIO</h2>
+            <input type="text" id="reg-nombre" placeholder="Nombre de usuario" value="testuser">
+            <input type="email" id="reg-email" placeholder="Email" value="test@test.com">
+            <input type="password" id="reg-password" placeholder="Contraseña" value="test123">
+            <button onclick="registrar()">Registrar</button>
+            <div id="resultado-registro" class="resultado"></div>
+        </div>
+        
+        <!-- Sección de Login -->
+        <div class="section">
+            <h2>2️⃣ INICIAR SESIÓN</h2>
+            <input type="email" id="login-email" placeholder="Email" value="test@test.com">
+            <input type="password" id="login-password" placeholder="Contraseña" value="test123">
+            <button onclick="login()">Iniciar Sesión</button>
+            <div id="resultado-login" class="resultado"></div>
+        </div>
+        
+        <!-- Sección de Sesión -->
+        <div class="section">
+            <h2>3️⃣ VERIFICAR SESIÓN</h2>
+            <button onclick="verificarSesion()">Verificar Sesión Actual</button>
+            <button onclick="obtenerPerfil()">Obtener Perfil</button>
+            <div id="resultado-sesion" class="resultado"></div>
+        </div>
+        
+        <!-- Sección de Estado -->
+        <div class="section">
+            <h2>📊 ESTADO ACTUAL</h2>
+            <button onclick="mostrarEstado()">Mostrar Estado</button>
+            <div id="estado-sesion" class="session-info">
+                <p><strong>Sesión:</strong> <span id="sesion-status">Cargando...</span></p>
+                <p><strong>Usuario:</strong> <span id="usuario-info">-</span></p>
+            </div>
+        </div>
+        
+        <!-- Sección de Logout -->
+        <div class="section">
+            <h2>4️⃣ CERRAR SESIÓN</h2>
+            <button onclick="logout()">Cerrar Sesión</button>
+            <button onclick="limpiarLocal()">Limpiar Cache Local</button>
+            <div id="resultado-logout" class="resultado"></div>
+        </div>
+        
+        <!-- Botones de Control -->
+        <div class="section">
+            <h2>🔧 HERRAMIENTAS</h2>
+            <button onclick="limpiarConsola()">Limpiar Consola</button>
+            <button onclick="mostrarTodo()">Mostrar Todo en Consola</button>
+            <p style="margin-top: 10px; font-size: 12px; color: #666;">Abre F12 para ver logs detallados en la consola</p>
+        </div>
+    </div>
+
+    <script src="javascript/login-nuevo.js"></script>
+    <script>
+        function mostrarResultado(elementId, mensaje, esExito = true) {
+            const elem = document.getElementById(elementId);
+            elem.innerHTML = mensaje;
+            elem.className = 'resultado ' + (esExito ? 'exito' : 'error');
+        }
+
+        async function registrar() {
+            const nombre = document.getElementById('reg-nombre').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+
+            if (!nombre || !email || !password) {
+                mostrarResultado('resultado-registro', '❌ Faltan campos', false);
+                return;
+            }
+
+            console.log('📝 Registrando:', { nombre, email });
+            const resultado = await autenticacion.registrar(nombre, email, password);
+            
+            if (resultado.exito) {
+                mostrarResultado('resultado-registro', 
+                    `✅ Usuario registrado<br>ID: ${resultado.usuario.id}<br>Email: ${resultado.usuario.correoUsuario}`,
+                    true);
+                console.log('✅ Registro exitoso:', resultado.usuario);
+            } else {
+                mostrarResultado('resultado-registro', `❌ ${resultado.error}`, false);
+                console.error('❌ Error:', resultado.error);
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) {
+                mostrarResultado('resultado-login', '❌ Faltan email y contraseña', false);
+                return;
+            }
+
+            console.log('🔐 Iniciando sesión:', { email });
+            const resultado = await autenticacion.login(email, password);
+            
+            if (resultado.exito) {
+                mostrarResultado('resultado-login',
+                    `✅ Sesión iniciada<br>Usuario: ${resultado.usuario.nombre_usuario}<br>Email: ${resultado.usuario.correoUsuario}`,
+                    true);
+                console.log('✅ Login exitoso:', resultado.usuario);
+                document.getElementById('login-password').value = '';
+                await mostrarEstado();
+            } else {
+                mostrarResultado('resultado-login', `❌ ${resultado.error}`, false);
+                console.error('❌ Error:', resultado.error);
+            }
+        }
+
+        async function verificarSesion() {
+            console.log('🔍 Verificando sesión...');
+            const resultado = await autenticacion.obtenerSesion();
+            
+            if (resultado.usuario) {
+                mostrarResultado('resultado-sesion',
+                    `✅ Sesión Activa<br>Usuario: ${resultado.usuario.nombre_usuario}<br>Rol: ${resultado.usuario.rol}`,
+                    true);
+                console.log('✅ Sesión activa:', resultado.usuario);
+            } else {
+                mostrarResultado('resultado-sesion', '⚠️ No hay sesión activa', false);
+                console.log('⚠️ Sin sesión');
+            }
+        }
+
+        async function obtenerPerfil() {
+            console.log('👤 Obteniendo perfil...');
+            const resultado = await autenticacion.obtenerPerfil();
+            
+            if (resultado.exito) {
+                mostrarResultado('resultado-sesion',
+                    `✅ Perfil Cargado<br>Usuario: ${resultado.user.nombre_usuario}<br>Rol: ${resultado.user.rol}<br>Fecha: ${resultado.user.fechaRegistro}`,
+                    true);
+                console.log('✅ Perfil:', resultado);
+            } else {
+                mostrarResultado('resultado-sesion', `❌ ${resultado.error}`, false);
+                console.error('❌ Error:', resultado.error);
+            }
+        }
+
+        async function logout() {
+            console.log('🚪 Cerrando sesión...');
+            const resultado = await autenticacion.logout();
+            
+            if (resultado.exito) {
+                mostrarResultado('resultado-logout', '✅ Sesión cerrada', true);
+                console.log('✅ Logout exitoso');
+                document.getElementById('sesion-status').textContent = 'No activa';
+                document.getElementById('usuario-info').textContent = '-';
+            } else {
+                mostrarResultado('resultado-logout', `❌ ${resultado.error}`, false);
+            }
+        }
+
+        function limpiarLocal() {
+            sessionStorage.clear();
+            console.log('🧹 Cache local limpiado');
+            mostrarResultado('resultado-logout', '🧹 Cache local limpiado', true);
+        }
+
+        async function mostrarEstado() {
+            console.log('📊 Mostrando estado...');
+            const estaActiva = await autenticacion.estaSesionActiva();
+            const usuario = autenticacion.obtenerUsuarioLocal();
+            
+            const statusEl = document.getElementById('sesion-status');
+            const infoEl = document.getElementById('usuario-info');
+            
+            if (estaActiva && usuario) {
+                statusEl.innerHTML = '<span class="status activa">✅ Activa</span>';
+                infoEl.innerHTML = `${usuario.nombre_usuario} (${usuario.correoUsuario})`;
+                console.log('✅ Usuario activo:', usuario);
+            } else {
+                statusEl.innerHTML = '<span class="status inactiva">❌ Inactiva</span>';
+                infoEl.innerHTML = '-';
+                console.log('⚠️ Sin sesión');
+            }
+        }
+
+        function limpiarConsola() {
+            console.clear();
+            console.log('=== CONSOLA LIMPIADA ===');
+        }
+
+        function mostrarTodo() {
+            console.log('=== DATOS ACTUALES ===');
+            console.log('Usuario Local:', autenticacion.obtenerUsuarioLocal());
+            console.log('SessionStorage:', { ...sessionStorage });
+            console.log('API Base:', autenticacion.apiBase);
+        }
+
+        // Mostrar estado al cargar
+        document.addEventListener('DOMContentLoaded', async () => {
+            await mostrarEstado();
+            console.log('✅ Página cargada');
+        });
+    </script>
+</body>
+</html>

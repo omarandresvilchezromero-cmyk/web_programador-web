@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Usuarios</title>
+    <link rel="stylesheet" href="css/css.css">
+    <style>
+        
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h2 id="login-title">Iniciar Sesión</h2>
+            
+            <div id="mensaje-contenedor"></div>
+            
+            <form id="form-autenticacion">
+                <!-- CAMPOS COMUNES A AMBOS MODOS -->
+                <div class="input-group" id="usuario-group">
+                    <input type="text" id="usuario" required>
+                    <label>Nombre de Usuario</label>
+                </div>
+
+                <!-- CAMPOS SOLO PARA REGISTRO -->
+                <div class="input-group" id="nombre-group" style="display:none;">
+                    <input type="text" id="nombre">
+                    <label>Nombre Completo</label>
+                </div>
+
+                <div class="input-group" id="email-group" style="display:none;">
+                    <input type="email" id="email">
+                    <label>Correo Electrónico</label>
+                </div>
+
+                <div class="input-group password-group">
+                    <input type="password" id="password" required>
+                    <label>Contraseña</label>
+                    <button type="button" id="toggle-password" class="toggle-password">Mostrar</button>
+                </div>
+
+                <div class="input-group" id="confirm-password-group" style="display:none;">
+                    <input type="password" id="confirm-password">
+                    <label>Confirmar Contraseña</label>
+                    <button type="button" id="toggle-confirm-password" class="toggle-password">Mostrar</button>
+                </div>
+
+                <button type="submit" class="neon-btn" id="submit-button">ENTRAR</button>
+                <p id="mode-text">¿No tienes cuenta? <a href="#" id="toggle-mode">Crear una</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sistema de autenticación oficial (API REST con express-session) -->
+    <script src="javascript/auth-client.js"></script>
+    <script src="javascript/login-nuevo.js"></script>
+    <script src="javascript/login-ui.js"></script>
+</body>
+</html>

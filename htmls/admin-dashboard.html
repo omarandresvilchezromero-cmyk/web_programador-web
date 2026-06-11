@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrativo - Plataforma Técnica</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/notificaciones.css">
+    <style>
+       
+    </style>
+</head>
+
+<body>
+    <header class="header-main">
+        <div class="logo">
+            <img src="Diseño sin título.png" alt="Logo">
+        </div>
+        <nav>
+            <ul class="nav-list">
+                <li><a href="perfil.html">Perfil</a></li>
+                <li><a href="htmlproyecto.html">Inicio</a></li>
+                <li><a href="vacantes de trabajo.html">Vacante</a></li>
+                <li><a href="contactosalservidores.html">Contactos</a></li>
+                <li><a href="chat.html" class="nav-icon-mensajes" id="navMensajes">💬</a></li>
+                <li><a href="notificaciones.html" class="nav-icon-notificaciones" id="navNotificaciones">🔔</a></li>
+                <li><a href="#" onclick="logout(event)" class="nav-logout" id="navLogout">🚪</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="admin-container">
+        <div class="admin-header">
+            <h1>Panel Administrativo</h1>
+            <p>Gestión completa de la plataforma</p>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="admin-stats" id="adminStats">
+            <!-- Se cargarán con JavaScript -->
+        </div>
+
+        <!-- Paneles principales -->
+        <div class="admin-grid">
+            <!-- Usuarios -->
+            <div class="admin-panel">
+                <h2>👥 Gestión de Usuarios</h2>
+                <p>Ver, editar, suspender o eliminar usuarios del sistema.</p>
+                <p style="font-size: 0.9rem; color: var(--color-gris);">Acciones disponibles:</p>
+                <div class="quick-actions">
+                    <button class="action-btn" onclick="irA('admin-usuarios.html')">Ver todos</button>
+                    <button class="action-btn" onclick="irA('admin-usuarios.html?filtro=activos')">Activos</button>
+                    <button class="action-btn" onclick="irA('admin-usuarios.html?filtro=suspendidos')">Suspendidos</button>
+                </div>
+                <a href="admin-usuarios.html">Ir a Gestión de Usuarios →</a>
+            </div>
+
+            <!-- Empleados -->
+            <div class="admin-panel">
+                <h2>🏢 Gestión de Empleados</h2>
+                <p>Aprobar solicitudes, gestionar empleados y asignar insignias.</p>
+                <p style="font-size: 0.9rem; color: var(--color-gris);">Acciones disponibles:</p>
+                <div class="quick-actions">
+                    <button class="action-btn" onclick="irA('admin-empleados.html')">Ver todos</button>
+                    <button class="action-btn" onclick="irA('admin-empleados.html?tab=solicitudes')">Solicitudes</button>
+                </div>
+                <a href="admin-empleados.html">Ir a Gestión de Empleados →</a>
+            </div>
+
+            <!-- Historial -->
+            <div class="admin-panel">
+                <h2>📋 Historial Administrativo</h2>
+                <p>Registros de todas las acciones administrativas realizadas.</p>
+                <p style="font-size: 0.9rem; color: var(--color-gris);">Acciones disponibles:</p>
+                <div class="quick-actions">
+                    <button class="action-btn" onclick="irA('admin-historial.html')">Ver historial</button>
+                    <button class="action-btn" onclick="exportarHistorial()">Exportar</button>
+                </div>
+                <a href="admin-historial.html">Ir a Historial →</a>
+            </div>
+
+            <!-- Soporte Técnico -->
+            <div class="admin-panel">
+                <h2>📞 Soporte Técnico</h2>
+                <p>Ver el listado de empleados disponibles para atención al cliente.</p>
+                <a href="soporte-tecnico.html">Ver Soporte Técnico →</a>
+            </div>
+
+            <!-- Notificaciones -->
+            <div class="admin-panel">
+                <h2>🔔 Centro de Notificaciones</h2>
+                <p>Gestiona todas tus notificaciones administrativas.</p>
+                <a href="notificaciones.html">Ir a Notificaciones →</a>
+            </div>
+
+            <!-- Configuración -->
+            <div class="admin-panel">
+                <h2>⚙️ Configuración</h2>
+                <p>Ajustes del sistema y configuración administrativa.</p>
+                <div class="quick-actions">
+                    <button class="action-btn" onclick="limpiarDatos()">Limpiar datos</button>
+                    <button class="action-btn" onclick="exportarDatos()">Exportar datos</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div class="footer-top">
+            <p>© 2026 - Omar Vílchez - Panel Administrativo</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="javascript/auth-client.js"></script>
+    <script src="javascript/sistema-usuarios.js"></script>
+    <script src="javascript/sistema-empleados.js"></script>
+    <script src="javascript/sistema-notificaciones.js"></script>
+    <script src="javascript/sistema-solicitudes-empleo.js"></script>
+    <script src="javascript/sistema-historial.js"></script>
+    <script src="javascript/inicializador.js"></script>
+    <script src="javascript/admin-dashboard.js"></script>
+</body>
+
+</html>

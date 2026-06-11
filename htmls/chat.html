@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensajería - Plataforma Técnica</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/notificaciones.css">
+    
+</head>
+
+<body>
+    <header class="header-main">
+        <div class="logo">
+            <img src="Diseño sin título.png" alt="Logo">
+        </div>
+        <nav>
+            <ul class="nav-list">
+                <li><a href="perfil.html">Perfil</a></li>
+                <li><a href="vacantes de trabajo.html">Vacante</a></li>
+                <li><a href="contactosalservidores.html">Contactos</a></li>
+                <li><a href="chat.html" class="nav-icon-mensajes" id="navMensajes">💬</a></li>
+                <li><a href="notificaciones.html" class="nav-icon-notificaciones" id="navNotificaciones">🔔</a></li>
+                <li><a href="admin-dashboard.html" class="nav-admin-link" id="navAdmin" style="display:none;">⚙️</a></li>
+                <li><a href="#" onclick="logout(event)" class="nav-logout" id="navLogout" style="display:none;">🚪</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="chat-container">
+        <!-- Sidebar con conversaciones -->
+        <div class="chat-sidebar">
+            <div class="chat-search">
+                <input type="text" id="searchUsuarios" placeholder="Buscar usuarios...">
+            </div>
+
+            <div class="chat-conversations" id="chatConversations">
+                <!-- Se cargará con JavaScript -->
+            </div>
+
+            <!-- Opción para buscar nuevos usuarios -->
+            <div style="padding: 15px; border-top: 1px solid rgba(124, 58, 237, 0.2);">
+                <button onclick="mostrarBuscadorUsuarios()" style="
+                    width: 100%;
+                    background: rgba(34, 211, 238, 0.2);
+                    border: 1px solid rgba(34, 211, 238, 0.5);
+                    color: var(--color-azul-neon);
+                    padding: 10px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    transition: all 0.3s ease;
+                " onmouseover="this.style.background='rgba(34,211,238,0.3)'" onmouseout="this.style.background='rgba(34,211,238,0.2)'">
+                    + Nuevo mensaje
+                </button>
+            </div>
+        </div>
+
+        <!-- Área principal de chat -->
+        <div class="chat-main vacio" id="chatMain">
+            <div class="chat-empty-icon">💬</div>
+            <h3 style="color: var(--color-blanco);">Selecciona una conversación</h3>
+            <p>O busca un usuario para iniciar una nueva conversación</p>
+        </div>
+    </div>
+
+    <!-- Modal para buscar usuarios -->
+    <div id="buscadorModal" style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.8);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    ">
+        <div style="
+            background: linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(34,211,238,0.1) 100%);
+            border: 2px solid var(--color-azul-neon);
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            color: var(--color-blanco);
+        ">
+            <h2 style="margin-top: 0;">Iniciar conversación</h2>
+
+            <input type="text" id="searchNuevoUsuario" placeholder="Buscar usuario..." style="
+                width: 100%;
+                padding: 10px;
+                margin: 15px 0;
+                background: rgba(124,58,237,0.1);
+                border: 1px solid rgba(124,58,237,0.3);
+                color: var(--color-blanco);
+                border-radius: 8px;
+                box-sizing: border-box;
+            ">
+
+            <div id="usuariosResultados" style="
+                max-height: 300px;
+                overflow-y: auto;
+                margin: 15px 0;
+            ">
+                <!-- Se cargará con JavaScript -->
+            </div>
+
+            <button onclick="cerrarBuscador()" style="
+                width: 100%;
+                padding: 10px;
+                background: rgba(124,58,237,0.2);
+                border: 1px solid rgba(124,58,237,0.5);
+                color: var(--color-azul-neon);
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+            ">
+                Cancelar
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="javascript/auth-client.js"></script>
+    <script src="javascript/sistema-usuarios.js"></script>
+    <script src="javascript/sistema-mensajeria.js"></script>
+    <script src="javascript/sistema-notificaciones.js"></script>
+    <script src="javascript/inicializador.js"></script>
+    <script src="javascript/chat.js"></script>
+</body>
+
+</html>

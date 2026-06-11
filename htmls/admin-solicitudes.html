@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrativo - Solicitudes de Equipo</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/AJUSTES.css">
+    <link rel="stylesheet" href="css/reclutamiento.css">
+    <link rel="stylesheet" href="css/admin-panel.css">
+</head>
+
+<body>
+    <header class="header-main">
+        <div class="logo">
+            <img src="Diseño sin título.png" alt="Logo">
+        </div>
+        <nav>
+            <ul class="nav-list">
+                <li><a href="perfil.html">Perfil</a></li>
+                <li><a href="htmlproyecto.html">Inicio</a></li>
+                <li><a href="vacantes de trabajo.html">Solicitar Equipo</a></li>
+                <li><a href="#" onclick="logoutAdmin()" class="logout-btn">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="admin-container">
+        <!-- Header del Admin -->
+        <div class="admin-header">
+            <h1>Panel Administrativo de Reclutamiento</h1>
+            <p>Gestiona las solicitudes para formar parte del equipo técnico</p>
+        </div>
+
+        <!-- Tabs de navegación -->
+        <div class="admin-tabs">
+            <button class="tab-btn active" data-tab="pendientes">
+                <span class="tab-icon">⏳</span> Pendientes
+                <span class="tab-count" id="count-pendientes">0</span>
+            </button>
+            <button class="tab-btn" data-tab="aceptadas">
+                <span class="tab-icon">✓</span> Aceptadas
+                <span class="tab-count" id="count-aceptadas">0</span>
+            </button>
+            <button class="tab-btn" data-tab="rechazadas">
+                <span class="tab-icon">✗</span> Rechazadas
+                <span class="tab-count" id="count-rechazadas">0</span>
+            </button>
+            <button class="tab-btn" data-tab="empleados">
+                <span class="tab-icon">👥</span> Empleados Activos
+                <span class="tab-count" id="count-empleados">0</span>
+            </button>
+        </div>
+
+        <!-- Contenedor de tabs -->
+        <div class="admin-tabs-content">
+            <!-- TAB: SOLICITUDES PENDIENTES -->
+            <div id="pendientes" class="tab-content active">
+                <div class="content-header">
+                    <h2>Solicitudes Pendientes de Revisión</h2>
+                    <p>Revisa y aprueba o rechaza nuevas solicitudes</p>
+                </div>
+
+                <div id="pendientes-list" class="solicitudes-grid">
+                    <!-- Se cargará con JavaScript -->
+                </div>
+
+                <div id="no-pendientes" class="empty-state" style="display:none;">
+                    <div class="empty-icon">📭</div>
+                    <p>No hay solicitudes pendientes</p>
+                </div>
+            </div>
+
+            <!-- TAB: SOLICITUDES ACEPTADAS -->
+            <div id="aceptadas" class="tab-content">
+                <div class="content-header">
+                    <h2>Solicitudes Aceptadas</h2>
+                    <p>Empleados que han sido incorporados al equipo</p>
+                </div>
+
+                <div id="aceptadas-list" class="solicitudes-grid">
+                    <!-- Se cargará con JavaScript -->
+                </div>
+
+                <div id="no-aceptadas" class="empty-state" style="display:none;">
+                    <div class="empty-icon">📋</div>
+                    <p>Aún no hay solicitudes aceptadas</p>
+                </div>
+            </div>
+
+            <!-- TAB: SOLICITUDES RECHAZADAS -->
+            <div id="rechazadas" class="tab-content">
+                <div class="content-header">
+                    <h2>Solicitudes Rechazadas</h2>
+                    <p>Solicitantes que no cumplieron con los criterios</p>
+                </div>
+
+                <div id="rechazadas-list" class="solicitudes-grid">
+                    <!-- Se cargará con JavaScript -->
+                </div>
+
+                <div id="no-rechazadas" class="empty-state" style="display:none;">
+                    <div class="empty-icon">✓</div>
+                    <p>No hay solicitudes rechazadas</p>
+                </div>
+            </div>
+
+            <!-- TAB: EMPLEADOS ACTIVOS -->
+            <div id="empleados" class="tab-content">
+                <div class="content-header">
+                    <h2>Empleados Activos del Equipo Técnico</h2>
+                    <p>Miembros actuales del equipo de soporte</p>
+                </div>
+
+                <div class="empleados-filters">
+                    <input type="text" id="search-empleados" placeholder="Buscar por nombre o especialidad...">
+                    <select id="filter-especialidad">
+                        <option value="">Todas las especialidades</option>
+                        <option value="desarrollo-web">Desarrollo Web</option>
+                        <option value="desarrollo-backend">Desarrollo Backend</option>
+                        <option value="bases-datos">Bases de Datos</option>
+                        <option value="redes">Redes</option>
+                        <option value="ciberseguridad">Ciberseguridad</option>
+                        <option value="soporte-tecnico">Soporte Técnico</option>
+                        <option value="diseño-ui-ux">Diseño UI/UX</option>
+                        <option value="reparacion-mantenimiento">Reparación y Mantenimiento</option>
+                        <option value="servidores">Servidores</option>
+                    </select>
+                </div>
+
+                <div id="empleados-list" class="empleados-grid">
+                    <!-- Se cargará con JavaScript -->
+                </div>
+
+                <div id="no-empleados" class="empty-state" style="display:none;">
+                    <div class="empty-icon">👥</div>
+                    <p>No hay empleados activos</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para detalles y acciones -->
+    <div id="detallesModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <div id="modal-body">
+                <!-- Se cargará con JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para rechazar solicitud -->
+    <div id="rechazarModal" class="modal" style="display:none;">
+        <div class="modal-content modal-sm">
+            <button class="modal-close" onclick="closeRechazarModal()">✕</button>
+            <h2>Rechazar Solicitud</h2>
+            <form id="form-rechazo" onsubmit="submitRechazo(event)">
+                <div class="form-group">
+                    <label for="razon-rechazo">Razón del rechazo:</label>
+                    <textarea id="razon-rechazo" name="razonRechazo" rows="4" placeholder="Explica por qué se rechaza esta solicitud..." required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeRechazarModal()">Cancelar</button>
+                    <button type="submit" class="btn-danger">Confirmar Rechazo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div class="footer-top">
+            <p>© 2026 - Omar Vílchez - Panel Administrativo</p>
+        </div>
+        <div class="footer-bottom">
+            <div class="social-links">
+                <p>Sistema de Reclutamiento</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="javascript/auth-client.js"></script>
+    <script src="javascript/reclutamiento.js"></script>
+    <script src="javascript/admin-panel.js"></script>
+</body>
+
+</html>

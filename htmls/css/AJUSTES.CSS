@@ -1,0 +1,172 @@
+/* ==========================================================================
+   MENU DE AJUSTES REMODIFICADO (PREMIUM CYBER-DARK)
+   ========================================================================== */
+
+.settings-sidebar-container {
+    width: 100%;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+}
+
+/* Botón disparador (Las 3 líneas) */
+.settings-group-header {
+    width: 100%;
+    background: #111827;
+    border: 1px solid #1f2937;
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    cursor: pointer;
+    color: #ffffff;
+    border-radius: 12px;
+    user-select: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.25s ease;
+}
+
+.settings-group-header:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
+}
+
+/* Icono de hamburguesa */
+.settings-group-header .header-icon {
+    font-size: 22px;
+    margin-right: 15px;
+    color: #3b82f6;
+    transition: transform 0.25s ease;
+}
+
+.settings-group-header:hover .header-icon {
+    transform: scale(1.1);
+}
+
+.settings-group-header .header-text {
+    flex-grow: 1;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.3px;
+}
+
+/* Indicador de flecha */
+.settings-group-header .arrow-indicator {
+    font-size: 12px;
+    color: #6b7280;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: rotate(-90deg);
+}
+
+.settings-group.active .arrow-indicator {
+    transform: rotate(0deg);
+    color: #3b82f6;
+}
+
+/* Mecanismo de despliegue CSS Grid (Suave y sin tirones) */
+.settings-group-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.settings-group.active .settings-group-body {
+    grid-template-rows: 1fr;
+}
+
+/* Contenedor que ocupa media pantalla (50vw) */
+.settings-group-content {
+    overflow: hidden;
+    width: 50vw; 
+    min-width: 290px;
+    background: rgba(31, 41, 55, 0.75); /* Fondo semitransparente */
+    backdrop-filter: blur(12px); /* Efecto cristal esmerilado */
+    -webkit-backdrop-filter: blur(12px);
+    border-left: 2px solid #3b82f6;
+    border-radius: 0 0 12px 12px;
+    margin-left: auto; /* Se alinea a la derecha */
+    box-shadow: -10px 15px 30px rgba(0, 0, 0, 0.4);
+    padding: 10px 0;
+}
+
+/* Estilo para cada opción / botón interno */
+.settings-subitem {
+    width: 100%;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    padding: 14px 24px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+/* Contenedor de textos (Título + Descripción corta) */
+.subitem-text-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.subitem-title {
+    color: #e5e7eb;
+    font-size: 14px;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.subitem-desc {
+    color: #9ca3af;
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.settings-subitem .subitem-icon {
+    margin-right: 18px;
+    font-size: 20px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    transition: transform 0.2s ease;
+}
+
+/* Efectos Hover Neón Individuales */
+.settings-subitem:hover {
+    background: rgba(59, 130, 246, 0.08);
+}
+
+.settings-subitem:hover .subitem-title {
+    color: #3b82f6;
+}
+
+.settings-subitem:hover .subitem-icon {
+    transform: scale(1.15);
+}
+
+/* Línea divisoria elegante */
+.settings-divider {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #374151, transparent);
+    margin: 8px 0;
+}
+
+/* Opción de Cerrar Sesión (Alerta Roja) */
+.logout-subitem:hover {
+    background: rgba(239, 68, 68, 0.08);
+}
+
+.logout-subitem:hover .subitem-title {
+    color: #ef4444;
+}
+
+/* Ajustes responsivos automáticos */
+@media (max-width: 768px) {
+    .settings-group-content {
+        width: 70vw; /* En tablets se abre un poco más para mejor control táctil */
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-group-content {
+        width: 100vw; /* En celulares ocupa pantalla completa para que no se amontone */
+        border-left: none;
+        border-radius: 0;
+    }
+}

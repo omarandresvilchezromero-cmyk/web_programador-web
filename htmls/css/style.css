@@ -1,0 +1,1138 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+DE+SAS&display=swap');
+
+/*Negro:       #0F172A
+Morado:      #7C3AED
+Azul neón:   #22D3EE
+Gris:        #94A3B8
+Blanco:      #F8FAFC
+*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+/* =========================
+   RESET BÁSICO
+========================= */
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    background-color: #0F172A;
+    color: #F8FAFC;
+    margin: 0;
+}
+
+/* FONDO CON GRADIENTE (corregido selector) */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(45deg, rgba(81, 0, 255, 0.3), rgba(0, 0, 255, 0.3));
+    z-index: -1;
+}
+
+
+/* =========================
+   HEADER / NAVBAR
+========================= */
+.header-main {
+background: linear-gradient(90deg, #0F172A, #1E3A8A);
+    padding: 10px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+.logo img:hover {
+    transform: rotate(5deg) scale(1.08);
+}
+
+.nav-list ul {
+    display: flex;
+    list-style: none;
+}
+
+.nav-list {
+    list-style-type: style;height: 45%;;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-list li {
+    display: inline;
+    margin-left: 20px;
+}
+
+.nav-list a {
+    background-color: transparent;
+    color: #F8FAFC;
+    text-decoration: none;
+    font-weight: 400;
+    border-radius: 5px;
+    padding: 5px;
+    transition: color 0.3s;
+}
+
+.sidebar-links a {
+    background-color: transparent;
+    color: #F8FAFC;
+    text-decoration: none;
+    font-weight: 400;
+    border-radius: 5px;
+    padding: 5px;
+    transition: color 0.3s;
+}
+
+
+.nav-a::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, rgba(255, 0, 0, 0.2), rgba(0, 0, 255, 0.2));
+    z-index: -1;
+    border-radius: 5px;
+}
+
+.nav-a:hover {
+    
+color: #22D3EE;
+}
+
+/* =========================
+   BARRA DE CATEGORÍAS
+========================= */
+
+.barte {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+
+    width: 85%;
+    max-width: 1000px;
+
+    margin: 40px auto;
+
+    padding: 18px 30px;
+
+    background: rgba(15, 23, 42, 0.75);
+
+    backdrop-filter: blur(12px);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    border-radius: 60px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.25);
+
+    transition: 0.3s;
+}
+
+/* Hover suave */
+.barte:hover {
+    transform: translateY(-3px);
+}
+
+/* ITEMS */
+.categoria-item {
+    color: #F8FAFC;
+
+    padding: 12px 22px;
+
+    border-radius: 30px;
+
+    cursor: pointer;
+
+    transition: 0.3s ease;
+
+    font-weight: 500;
+}
+
+/* Hover */
+.categoria-item:hover {
+    background: rgba(34,211,238,0.12);
+
+    color: #22D3EE;
+
+    transform: translateY(-2px);
+}
+
+/* LAYOUT PRINCIPAL */
+.container {
+    max-width: 1200px;
+    margin: 20px auto; /* Centra el contenido en la pantalla */
+    gap: 20px;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+/* SIDEBAR */
+.sidebar {
+    
+    
+background: #0F172A;    border-radius: 8px;
+    width: 35%;
+    padding-top: 20px;
+    overflow-y: auto;
+    text-align: center;
+    transition: 0.3s;
+    
+}
+
+.sidebar:hover {
+    background: -moz-element(rgb(11, 11, 65));
+    transform: scale(1.03);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* CONTENIDO PRINCIPAL */
+.main-content {
+    
+    position: relative; /* necesario para ::before */
+    background: #1E293B;
+    color: #F8FAFC;
+    border-radius: 25px;
+    padding : 20px;
+    width: 65%;
+    
+    text-align: center;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.main-content::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, rgba(255, 0, 0, 0.2), rgba(0, 0, 255, 0.2));
+    z-index: -1;
+}
+
+.main-content:hover {
+    transform: scale(1.02);
+}
+
+.section-topic {
+    background: radial-gradient(circle, #0e4a7b, #1050f4);
+    border-radius: 8px;
+    color: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    padding: 40px;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 20px;
+
+}
+.section-topic h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+/*TARJETAS*/
+.card {
+background: #1E293B;
+    color: #F8FAFC;    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+/*SECCIÓN SERVICIOS*/
+.section-servidor {
+    background: #111827;
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+    border-radius: 10px 10px 25px 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: 0.3s;
+}
+
+.section:hover {
+    transform: scale(1.03);
+    color: yellowgreen;
+}
+
+.section-div{
+
+    color: yellowgreen;
+    background-color: rgb(112, 127, 30);
+    padding: 20px;
+
+}
+/* FOOTER*/
+.main-footer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: #111827;
+    padding: 15px 0;
+    margin-top: 15px;
+}
+
+.footer-top {
+    background: #1E293B;
+    padding: 15px;
+    text-align: center;
+}
+
+.footer-bottom {
+    background: #0F172A;
+    padding: 10px;
+    padding: 20px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* WALLPAPER ANIMADO */
+
+.section-wallper {
+    position: relative;
+    height: 300px;
+    border-radius: 15px;
+    overflow: hidden;
+    background: #020617;
+    color: white;
+}
+
+/* EFECTO PARTÍCULAS */
+.section-wallper::after {
+    content: "";
+    position: absolute;
+    /* Centramos el fondo para que al moverse no deje huecos vacíos */
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: radial-gradient(white 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: particlesMove 20s linear infinite;
+    opacity: 0.2;
+}
+
+/* ANIMACIÓN CORREGIDA */
+@keyframes particlesMove {
+    from { 
+        transform: translate(0px, 0px); 
+    }
+    to { 
+        transform: translate(-200px, -200px); 
+    }
+}
+
+/* reveal*/
+
+.contentcard:hover{
+    transform: rotateX(10deg) rotateY(-5deg) translateY(-10px) ;
+    z-index: 2;
+
+}
+
+.contentcard:hover .reveal-content {
+    grid-template-rows: 1fr;
+}
+.contentcard:hover .inner-text {
+    padding: 20px;
+}
+.contentcard:hover .card-inner {
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    border-color: var(--primary-text);
+
+}
+
+
+
+/* ==========================================================================
+   CATÁLOGO DE SERVIDORES PREMIUM + ESTRUCTURA DE CARRUSEL (FUSIÓN 3D)
+   ========================================================================== */
+
+/* Contenedor general */
+.section-wrapper {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #0b0f19; /* Fondo oscuro tipo centro de datos */
+    color: #ffffff;
+}
+
+.section-wrapper h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #f3f4f6;
+    margin-bottom: 30px;
+    letter-spacing: -0.5px;
+    border-left: 4px solid #3b82f6; /* Detalle azul en el título */
+    padding-left: 15px;
+}
+
+/* Contenedor que agrupa los botones y la ventana del carrusel */
+.carousel-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* 🌟 INTEGRACIÓN 3D: Modificado para dar profundidad y evitar que oculte las tarjetas traseras */
+.carousel-viewer {
+    width: 100%;
+    max-width: 420px;       /* Forzamos el ancho ideal para mostrar una tarjeta cómoda */
+    height: 380px;          /* Altura adaptada para contener tus specs y botones */
+    margin: 0 auto;
+    position: relative;
+    perspective: 1200px;    /* Crucial: Activa la profundidad de la cámara tridimensional */
+    overflow: visible;      /* ¡CAMBIO CRÍTICO!: Permitimos que las tarjetas orbiten fuera del plano */
+    padding: 10px 0; 
+}
+
+/* 🌟 INTEGRACIÓN 3D: Se convirtió en el eje central de la calesita que gira */
+.section-productos {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transform-style: preserve-3d; /* Hace que los hijos (tarjetas) vivan en el espacio 3D */
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1); /* Giro suavizado estilo Premium */
+    display: block; /* Anulamos el flex que rompía las posiciones en la captura */
+    margin: 0 auto;
+}
+
+/* TARJETA DE PRODUCTO (Adaptada al entorno tridimensional) */
+.contentcard {
+    position: absolute; /* Superponemos todas las tarjetas en la misma posición inicial */
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    
+    background: linear-gradient(135deg, #111827, #1f2937); /* Degradado oscuro */
+    border: 1px solid #374151;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+
+    /* Propiedades 3D obligatorias */
+    backface-visibility: hidden; /* Oculta el reverso de la tarjeta cuando gira hacia atrás */
+    -webkit-backface-visibility: hidden;
+    transform-origin: center center;
+    transition: transform 0.8s, border-color 0.3s, box-shadow 0.3s; /* Mantiene la animación del giro unificada */
+}
+
+/* 🌟 UBICACIÓN RADIAL EN MATRIZ: Distribución exacta en círculo de tus 3 productos */
+/* El translateZ(180px) es el radio que las separa del centro para que no se choquen */
+.contentcard:nth-child(1) { transform: rotateY(0deg) translateZ(180px); }
+.contentcard:nth-child(2) { transform: rotateY(120deg) translateZ(180px); }
+.contentcard:nth-child(3) { transform: rotateY(240deg) translateZ(180px); }
+
+/* Efecto Hover compatible con el giro */
+.contentcard:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+    cursor: pointer;
+}
+
+/* Icono o representación del servidor */
+.card-icon {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+/* Título del producto */
+.contentcard h3 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Descripción */
+.contentcard .description {
+    font-size: 14px;
+    color: #9ca3af; 
+    line-height: 1.5;
+    margin: 0 0 20px 0;
+}
+
+/* GRID DE ESPECIFICACIONES */
+.specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #d1d5db;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.specs-grid strong {
+    color: #3b82f6; 
+}
+
+/* Zona inferior: Precio y Botón */
+.card-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+}
+
+.card-action .price {
+    font-size: 22px;
+    font-weight: 700;
+    color: #10b981; 
+}
+
+.card-action .price small {
+    font-size: 12px;
+    color: #9ca3af;
+    font-weight: 400;
+}
+
+/* Botón de acción estilo sysadmin */
+.btn-cotizar {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-cotizar:hover {
+    background-color: #2563eb;
+}
+
+/* ETIQUETAS (Badges) flotantes */
+.card-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card-badge.premium {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #f59e0b; 
+}
+
+/* Botones de navegación con estética Cyberpunk/Neón */
+.carousel-btn {
+    background: #1f2937;
+    border: 1px solid #374151;
+    color: white;
+    font-size: 20px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 10;
+    user-select: none;
+}
+
+.carousel-btn:hover {
+    background: #2563eb;
+    border-color: #22d3ee;
+    box-shadow: 0 0 15px rgba(34, 211, 238, 0.4);
+    color: white;
+}
+
+/* SIDEBAR GENERAL */
+.sidebar {
+    background: #0f172a;
+    border-radius: 15px;
+    padding: 20px;
+    color: white;
+}
+
+.content {
+    margin-top: 10px;
+}
+/* TÍTULOS */
+.sidebar h2, .sidebar h3 {
+    margin-bottom: 15px;
+    color: #38bdf8;
+}
+
+/* TARJETAS DE NOVEDADES */
+.sidebar-card {
+    background: #1e293b;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+/* EFECTO HOVER */
+.sidebar-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 0 15px rgba(56,189,248,0.5);
+}
+
+/* LINKS */
+.sidebar-links {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar-links li {
+    margin: 10px 0;
+}
+
+.sidebar-links a {
+    color: #cbd5f5;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.sidebar-links a:hover {
+    color: #38bdf8;
+    padding-left: 5px;
+}
+
+.btn-add-post{
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 65px;
+    height: 65px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7C3AED, #22D3EE);
+    color: white;
+    font-size: 32px;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    transition: 0.3s ease;
+    z-index: 999;
+}
+
+.btn-add-post:hover{
+    transform: scale(1.1) rotate(90deg);
+}
+
+.btn-add-post span{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.dynamic-products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+    padding: 10px 0;
+}
+
+.contentcard.dynamic-card {
+    position: relative;
+    width: auto;
+    height: auto;
+    top: auto;
+    left: auto;
+    transform: none !important;
+    backface-visibility: visible;
+}
+
+.admin-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 10000;
+}
+
+.admin-modal-content {
+    width: min(560px, 100%);
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+    position: relative;
+    color: #e2e8f0;
+}
+
+.admin-modal-content h3 {
+    margin-top: 0;
+    color: #38bdf8;
+    font-size: 24px;
+}
+
+.admin-modal-content p {
+    margin: 0 0 18px;
+    color: #cbd5f1;
+}
+
+.admin-modal-content label {
+    display: block;
+    margin-top: 14px;
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+.admin-modal-content input,
+.admin-modal-content textarea {
+    width: 100%;
+    padding: 12px 14px;
+    margin-top: 8px;
+    border-radius: 14px;
+    border: 1px solid #334155;
+    background: #111827;
+    color: #f8fafc;
+    font-size: 14px;
+}
+
+.admin-modal-content textarea {
+    resize: vertical;
+}
+
+.admin-modal-content button {
+    margin-top: 18px;
+    padding: 12px 18px;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.admin-modal-content button:hover {
+    transform: translateY(-1px);
+}
+
+#adminLoginBtn,
+#saveProductBtn {
+    width: 100%;
+    background: #2563eb;
+    color: white;
+}
+
+.secondary-button {
+    width: 100%;
+    background: #334155;
+    color: #e2e8f0;
+}
+
+#closeAdminModal {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: transparent;
+    border: none;
+    color: #f8fafc;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.admin-message {
+    margin-top: 14px;
+    color: #f8fafc;
+    min-height: 22px;
+}
+
+.admin-message.error {
+    color: #f87171;
+}
+
+.admin-message.success {
+    color: #34d399;
+}
+
+/* parte se secion de servicios */
+/* =========================
+   VARIABLES GLOBALES
+========================= */
+:root{
+    --negro: #0F172A;
+    --morado: #7C3AED;
+    --azul-neon: #22D3EE;
+    --gris: #94A3B8;
+    --blanco: #F8FAFC;
+}
+
+
+
+/* =========================
+   SECCIONES
+========================= */
+.section-servidor,
+.section-seguridad{
+    padding: 80px 5%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* EFECTO FONDO */
+.section-servidor::before,
+.section-seguridad::before{
+    content: "";
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: rgba(124, 58, 237, 0.15);
+    border-radius: 50%;
+    filter: blur(120px);
+    top: -100px;
+    right: -100px;
+}
+
+/* =========================
+   TITULOS
+========================= */
+.section-header h2,
+.section-headersecurity h2{
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 15px;
+
+    background: linear-gradient(
+        90deg,
+        var(--azul-neon),
+        var(--morado)
+    );
+
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* SUBTEXTO */
+.section-header p,
+.section-headersecurity p{
+    text-align: center;
+    max-width: 800px;
+    margin: auto;
+    color: var(--gris);
+    line-height: 1.7;
+    margin-bottom: 60px;
+}
+
+/* =========================
+   CONTENEDOR SERVICIOS
+========================= */
+.content-servicios,
+.content{
+    background: rgba(255,255,255,0.04);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(15px);
+
+    border-radius: 25px;
+
+    padding: 30px;
+
+    transition: 0.5s ease;
+
+    position: relative;
+
+    overflow: hidden;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.3);
+
+    margin-bottom: 40px;
+}
+
+/* EFECTO NEON */
+.content-servicios::before,
+.content::before{
+    content: "";
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: rgba(34, 211, 238, 0.15);
+    border-radius: 50%;
+    top: -50px;
+    right: -50px;
+    filter: blur(40px);
+}
+
+/* HOVER */
+.content-servicios:hover,
+.content:hover{
+    transform:
+    translateY(-10px)
+    scale(1.02);
+
+    border-color: var(--azul-neon);
+
+    box-shadow:
+    0 0 20px rgba(34, 211, 238, 0.4),
+    0 0 40px rgba(124, 58, 237, 0.3);
+}
+
+/* =========================
+   ICONOS
+========================= */
+.service-icon{
+    width: 90px;
+    height: 90px;
+
+    background: rgba(255,255,255,0.05);
+
+    padding: 15px;
+
+    border-radius: 20px;
+
+    margin-bottom: 20px;
+
+    border: 1px solid rgba(255,255,255,0.1);
+
+    transition: 0.4s;
+}
+
+/* EFECTO ICONO */
+.content-servicios:hover .service-icon,
+.content:hover .service-icon{
+    transform: rotate(8deg) scale(1.1);
+
+    box-shadow:
+    0 0 20px rgba(34, 211, 238, 0.6);
+}
+
+/* =========================
+   TITULO CARD
+========================= */
+.content-servicios h3,
+.content h3{
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+    color: var(--blanco);
+}
+
+/* TEXTO */
+.content-servicios p,
+.content p{
+    color: var(--gris);
+    line-height: 1.8;
+}
+
+/* =========================
+   INFO EXTRA
+========================= */
+.servicio-especifico{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+    padding-top: 20px;
+
+    border-top: 1px solid rgba(255,255,255,0.08);
+
+    color: var(--gris);
+}
+
+/* =========================
+   FOOTER CARD
+========================= */
+.card_pidementobuton{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: 30px;
+}
+
+/* PRECIO */
+.price{
+    font-size: 2rem;
+    font-weight: bold;
+
+    color: var(--azul-neon);
+}
+
+/* =========================
+   BOTONES
+========================= */
+.btn-cotizar{
+    background: linear-gradient(
+        135deg,
+        var(--morado),
+        var(--azul-neon)
+    );
+
+    color: white;
+
+    border: none;
+
+    padding: 14px 28px;
+
+    border-radius: 14px;
+
+    font-size: 1rem;
+
+    cursor: pointer;
+
+    transition: 0.4s ease;
+
+    font-weight: bold;
+
+    box-shadow:
+    0 0 15px rgba(124,58,237,0.4);
+}
+
+/* HOVER BOTON */
+.btn-cotizar:hover{
+    transform:
+    scale(1.08)
+    translateY(-3px);
+
+    box-shadow:
+    0 0 20px rgba(34,211,238,0.7),
+    0 0 40px rgba(124,58,237,0.5);
+}
+
+/* =========================
+   GRID RESPONSIVE
+========================= */
+.segurtyonlineserver,
+.section-header{
+    display: grid;
+    grid-template-columns:
+    repeat(auto-fit,minmax(320px,1fr));
+
+    gap: 35px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media(max-width:768px){
+
+    .section-header h2,
+    .section-headersecurity h2{
+        font-size: 2.2rem;
+    }
+
+    .servicio-especifico{
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .card_pidementobuton{
+        flex-direction: column;
+        gap: 20px;
+        align-items: flex-start;
+    }
+}
+
+.btn-hamburger {
+            font-size: 1.5rem;
+            color: #fff;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,.18);
+            border-radius: 10px;
+            width: 52px;
+            height: 52px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform .2s ease, background .2s ease, border-color .2s ease;
+        }
+        .btn-hamburger:hover,
+        .btn-hamburger:focus {
+            transform: scale(1.03);
+            background: rgba(255,255,255,.06);
+            border-color: rgba(255,255,255,.35);
+        }
+        .offcanvas-end {
+            background: #070b16;
+            color: #f4f7ff;
+        }
+        .offcanvas-header {
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+        .offcanvas-body .list-group-item {
+            background: transparent;
+            color: #f4f7ff;
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            padding: 1rem 1.25rem;
+        }
+        .offcanvas-body .list-group-item:last-child {
+            border-bottom: none;
+        }
+        .offcanvas-body .list-group-item:hover {
+            background: rgba(255,255,255,.05);
+            color: #fff;
+        }
+        .offcanvas-body .badge {
+            min-width: 2rem;
+        }
+        .header-main .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .header-main nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .header-main .nav-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .header-main .nav-list li a {
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            font-size: .95rem;
+        }
+        @media (max-width: 767px) {
+            .header-main nav .nav-list {
+                display: none;
+            }
+        }

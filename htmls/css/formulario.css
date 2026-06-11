@@ -1,0 +1,166 @@
+/* ==========================================================================
+   FORMULARIO MODERNIZADO (DISEÑO PREMIUM Y LIMPIO)
+   ========================================================================== */
+
+/* Variables para cambiar la paleta de colores en un solo lugar */
+:root {
+    --primary-color: #2563eb;      /* Azul vibrante moderno */
+    --primary-hover: #1d4ed8;      /* Azul oscuro para interacciones */
+    --text-main: #1f2937;          /* Gris casi negro para lectura */
+    --text-muted: #6b7280;         /* Gris medio para etiquetas secundarios */
+    --border-color: #e5e7eb;       /* Gris claro para bordes limpios */
+    --bg-focus: rgba(37, 99, 235, 0.04); /* Fondo sutil al escribir */
+}
+
+/* Contenedor Principal con efecto de elevación suave */
+.form-container {
+    max-width: 550px;
+    margin: 40px auto;
+    padding: 40px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 
+                0 1px 8px rgba(0, 0, 0, 0.02);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Pequeño efecto interactivo en la tarjeta del formulario */
+.form-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+}
+
+/* Encabezado elegante con barra acentuada */
+.form-container h2 {
+    margin-top: 0;
+    margin-bottom: 30px;
+    color: var(--text-main);
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    position: relative;
+    padding-bottom: 12px;
+}
+
+.form-container h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 4px;
+    background: var(--primary-color);
+    border-radius: 2px;
+}
+
+/* Bloques de entrada espaciados */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
+}
+
+/* Etiquetas (Labels) más profesionales */
+.form-group label {
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+/* Campos de entrada unificados (Inputs, Selects y Textareas) */
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 15px;
+    font-family: inherit;
+    border: 1.5px solid var(--border-color);
+    border-radius: 10px;
+    background-color: #fff;
+    color: var(--text-main);
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Estilo para los placeholders */
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+/* Control del redimensionado de las áreas de texto */
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* ==========================================================================
+   ESTADOS DE ENFOQUE (Efecto de iluminación al hacer clic)
+   ========================================================================== */
+   
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--primary-color);
+    background-color: var(--bg-focus);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+/* Ajuste específico para suavizar el selector de fecha nativo */
+.form-group input[type="date"] {
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   BOTÓN DE ENVÍO ESTILIZADO
+   ========================================================================== */
+
+.btn-submit {
+    width: 100%;
+    padding: 16px;
+    background-color: var(--primary-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    transition: all 0.2s ease;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background-color: var(--primary-hover);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+    transform: translateY(-1px);
+}
+
+.btn-submit:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.2);
+}
+
+/* Animación sutil de entrada para todo el formulario */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-container {
+    animation: fadeInUp 0.4s ease-out;
+}

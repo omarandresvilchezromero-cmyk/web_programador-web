@@ -1,0 +1,661 @@
+/* =============================================
+   SISTEMA DE RECLUTAMIENTO INTERNO - ESTILOS MODERNOS
+   ============================================= */
+
+:root {
+    --color-negro: #0F172A;
+    --color-morado: #7C3AED;
+    --color-azul-neon: #22D3EE;
+    --color-gris: #94A3B8;
+    --color-blanco: #F8FAFC;
+    --transition-suave: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --shadow-card: 0 10px 30px rgba(15, 23, 42, 0.2);
+    --shadow-hover: 0 20px 40px rgba(124, 58, 237, 0.2);
+}
+
+/* ==================== CONTENEDOR PRINCIPAL ==================== */
+.recruitment-container {
+    background: linear-gradient(135deg, var(--color-negro) 0%, #1a2332 100%);
+    min-height: 100vh;
+    padding: 60px 20px;
+    color: var(--color-gris);
+}
+
+/* ==================== SECCIÓN HERO ==================== */
+.hero-section {
+    text-align: center;
+    margin-bottom: 60px;
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.main-title {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--color-azul-neon) 0%, var(--color-morado) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 15px;
+    text-shadow: 0 0 30px rgba(34, 211, 238, 0.1);
+}
+
+.subtitle {
+    font-size: 1.3rem;
+    color: var(--color-gris);
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+}
+
+/* ==================== SECCIÓN DE BENEFICIOS ==================== */
+.benefits-section {
+    margin-bottom: 80px;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.benefit-card {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(34, 211, 238, 0.05) 100%);
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    border-radius: 16px;
+    padding: 40px 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition-suave);
+    position: relative;
+    overflow: hidden;
+}
+
+.benefit-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.benefit-card:hover::before {
+    left: 100%;
+}
+
+.benefit-card:hover {
+    border-color: var(--color-azul-neon);
+    transform: translateY(-10px);
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(34, 211, 238, 0.1) 100%);
+    box-shadow: var(--shadow-hover);
+}
+
+.benefit-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    display: inline-block;
+    background: linear-gradient(135deg, var(--color-azul-neon), var(--color-morado));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: float 3s ease-in-out infinite;
+}
+
+.benefit-card h3 {
+    font-size: 1.4rem;
+    color: var(--color-blanco);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.benefit-card p {
+    color: var(--color-gris);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* ==================== WRAPPER DE CONTENIDO ==================== */
+.content-wrapper {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+@media (max-width: 1024px) {
+    .content-wrapper {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+/* ==================== SECCIÓN DEL FORMULARIO ==================== */
+.form-section {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 20px;
+    padding: 50px;
+    backdrop-filter: blur(10px);
+}
+
+.form-header {
+    margin-bottom: 40px;
+    border-bottom: 2px solid rgba(124, 58, 237, 0.3);
+    padding-bottom: 30px;
+}
+
+.form-header h2 {
+    font-size: 2rem;
+    color: var(--color-blanco);
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.form-header p {
+    color: var(--color-gris);
+    font-size: 1rem;
+}
+
+/* ==================== ESTILOS DEL FORMULARIO ==================== */
+.recruitment-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    animation: fadeInUp 0.5s ease-out backwards;
+}
+
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.2s; }
+.form-group:nth-child(3) { animation-delay: 0.3s; }
+.form-group:nth-child(4) { animation-delay: 0.4s; }
+.form-group:nth-child(5) { animation-delay: 0.5s; }
+.form-group:nth-child(6) { animation-delay: 0.6s; }
+.form-group:nth-child(7) { animation-delay: 0.7s; }
+
+.form-group label {
+    color: var(--color-blanco);
+    font-weight: 600;
+    margin-bottom: 12px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group input[type="number"],
+.form-group select,
+.form-group textarea {
+    background: rgba(124, 58, 237, 0.05);
+    border: 2px solid rgba(124, 58, 237, 0.2);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: var(--color-blanco);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: var(--transition-suave);
+    outline: none;
+}
+
+.form-group input[type="text"]::placeholder,
+.form-group input[type="number"]::placeholder,
+.form-group textarea::placeholder {
+    color: var(--color-gris);
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="date"]:focus,
+.form-group input[type="number"]:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--color-azul-neon);
+    background: rgba(34, 211, 238, 0.05);
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+}
+
+.form-group select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 20px;
+    padding-right: 40px;
+}
+
+/* ==================== CHECKBOXES ==================== */
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    color: var(--color-gris);
+    transition: var(--transition-suave);
+    padding: 12px 16px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    user-select: none;
+}
+
+.checkbox-label:hover {
+    color: var(--color-azul-neon);
+    border-color: rgba(34, 211, 238, 0.3);
+    background: rgba(34, 211, 238, 0.05);
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--color-azul-neon);
+}
+
+.checkbox-label input[type="checkbox"]:checked {
+    accent-color: var(--color-morado);
+}
+
+/* ==================== ERRORES ==================== */
+.form-error {
+    color: #ef4444;
+    font-size: 0.85rem;
+    margin-top: 6px;
+    min-height: 20px;
+    animation: slideDown 0.3s ease-out;
+}
+
+.form-error:empty {
+    display: none;
+}
+
+/* ==================== BOTONES ==================== */
+.btn-submit {
+    background: linear-gradient(135deg, var(--color-morado) 0%, var(--color-azul-neon) 100%);
+    color: var(--color-blanco);
+    border: none;
+    padding: 16px 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: var(--transition-suave);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.btn-submit::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.btn-submit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(124, 58, 237, 0.4);
+}
+
+.btn-submit:hover::before {
+    left: 100%;
+}
+
+.btn-submit:active {
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--color-morado) 0%, var(--color-azul-neon) 100%);
+    color: var(--color-blanco);
+    border: none;
+    padding: 12px 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition-suave);
+    margin-top: 20px;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3);
+}
+
+/* ==================== MENSAJE DE ÉXITO ==================== */
+.success-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+    backdrop-filter: blur(5px);
+}
+
+.success-content {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(34, 211, 238, 0.1) 100%);
+    border: 2px solid var(--color-azul-neon);
+    border-radius: 20px;
+    padding: 60px 40px;
+    text-align: center;
+    max-width: 500px;
+    animation: popIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: var(--color-azul-neon);
+    margin-bottom: 20px;
+    animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.success-content h3 {
+    font-size: 2rem;
+    color: var(--color-blanco);
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.success-content p {
+    color: var(--color-gris);
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+/* ==================== BARRA LATERAL ==================== */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    animation: fadeInRight 0.8s ease-out 0.4s both;
+}
+
+/* ==================== TARJETA DE VENTAJAS ==================== */
+.advantages-card {
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.1) 0%, rgba(124, 58, 237, 0.08) 100%);
+    border: 2px solid rgba(34, 211, 238, 0.3);
+    border-radius: 16px;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+}
+
+.card-title {
+    font-size: 1.4rem;
+    color: var(--color-blanco);
+    margin-bottom: 25px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-title::before {
+    content: '✦';
+    color: var(--color-azul-neon);
+    font-size: 1.2rem;
+}
+
+.advantages-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.advantages-list li {
+    padding: 12px 0;
+    color: var(--color-gris);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(124, 58, 237, 0.2);
+    transition: var(--transition-suave);
+}
+
+.advantages-list li:last-child {
+    border-bottom: none;
+}
+
+.advantages-list li:hover {
+    color: var(--color-azul-neon);
+    padding-left: 8px;
+}
+
+.advantages-list .icon {
+    color: var(--color-azul-neon);
+    font-weight: bold;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+/* ==================== PROCESO DE SELECCIÓN ==================== */
+.selection-process {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(34, 211, 238, 0.05) 100%);
+    border: 2px solid rgba(124, 58, 237, 0.3);
+    border-radius: 16px;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+}
+
+.process-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+}
+
+.step-number {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--color-morado), var(--color-azul-neon));
+    color: var(--color-blanco);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    transition: var(--transition-suave);
+}
+
+.step:hover .step-number {
+    transform: scale(1.15);
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
+}
+
+.step p {
+    color: var(--color-gris);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.step-arrow {
+    color: var(--color-azul-neon);
+    font-size: 1.5rem;
+    margin: -10px 0;
+    opacity: 0.6;
+}
+
+/* ==================== ANIMACIONES ==================== */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .recruitment-container {
+        padding: 40px 15px;
+    }
+
+    .main-title {
+        font-size: 2rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .benefits-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .benefit-card {
+        padding: 30px 20px;
+    }
+
+    .form-section {
+        padding: 30px 20px;
+    }
+
+    .content-wrapper {
+        gap: 20px;
+    }
+
+    .checkbox-group {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-title {
+        font-size: 1.5rem;
+    }
+
+    .form-section {
+        padding: 20px 15px;
+    }
+
+    .success-content {
+        padding: 40px 20px;
+    }
+
+    .checkbox-group {
+        grid-template-columns: 1fr;
+    }
+}

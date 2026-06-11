@@ -1,0 +1,144 @@
+/* Configuración de fondo oscuro */
+body {
+    margin: 0;
+    padding: 0;
+    background: #0d1117; /* Fondo azul oscuro profundo */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* El contenedor con efecto metálico */
+.login-box {
+    width: 350px;
+    padding: 40px;
+    background: linear-gradient(145deg, #1a1f26, #2d353f); /* Gradiente metálico */
+    border: 1px solid #30363d;
+    border-radius: 15px;
+    box-shadow: 
+        0 0 20px rgba(0, 212, 255, 0.2), /* Brillo neón sutil exterior */
+        inset 0 0 10px rgba(0, 0, 0, 0.5); /* Sombra interna para profundidad */
+    text-align: center;
+}
+
+h2 {
+    color: #00d4ff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px #00d4ff; /* Texto neón */
+    margin-bottom: 30px;
+}
+
+/* Estilo de los inputs */
+.input-group {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #00d4ff;
+    outline: none;
+    transition: 0.5s;
+}
+
+.input-group label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    color: #00d4ff;
+    pointer-events: none;
+    transition: 0.5s;
+}
+
+/* Animación al hacer foco en input */
+.input-group input:focus ~ label,
+.input-group input:valid ~ label {
+    top: -20px;
+    left: 0;
+    color: #00d4ff;
+    font-size: 12px;
+}
+
+/* Botón Neón Metálico */
+.neon-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(180deg, #00d4ff, #005f73);
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 0 15px #00d4ff;
+    transition: 0.3s;
+}
+
+.neon-btn:hover {
+    box-shadow: 0 0 30px #00d4ff, 0 0 50px #00d4ff;
+    transform: translateY(-2px);
+}
+
+.forgot-pw {
+    display: block;
+    margin-top: 20px;
+    color: #58a6ff;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.forgot-pw:hover {
+    color: #00d4ff;
+    text-shadow: 0 0 5px #00d4ff;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); border-color: #ff0055; box-shadow: 0 0 20px #ff0055; }
+    50% { transform: translateX(10px); }
+    75% { transform: translateX(-10px); }
+}
+
+/* 1. Ajuste necesario para el contenedor del input */
+.campo-password-container {
+    position: relative;
+    width: 100%; /* O el ancho que tenga tu input */
+}
+
+/* 2. Estilo para tu botón Mostrar */
+#toggle-password {
+    position: absolute;
+    right: 15px;         /* Lo posiciona dentro del input a la derecha */
+    top: 50%;
+    transform: translateY(-50%); /* Lo centra verticalmente */
+    
+    background: transparent; /* Quita el fondo gris */
+    border: none;            /* Quita el borde por defecto */
+    color: #00e5ff;          /* Color celeste neón a juego con tus títulos */
+    font-family: sans-serif; /* O la fuente que uses en tu login */
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px rgba(0, 229, 255, 0.5); /* Un leve destello neón */
+}
+
+/* 3. Efecto cuando el usuario pasa el mouse por encima */
+#toggle-password:hover {
+    color: #ffffff;          /* Cambia a blanco */
+    text-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff; /* Brillo neón más intenso */
+}
+
+/* 4. Quitar el molesto recuadro de selección al hacer clic */
+#toggle-password:focus {
+    outline: none;
+}

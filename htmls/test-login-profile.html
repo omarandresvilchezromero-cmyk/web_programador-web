@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Login + Profile</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        pre { background: #f0f0f0; padding: 10px; border-radius: 5px; overflow-x: auto; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Test de Login + Profile Sin Navegación</h1>
+    <button onclick="testFlow()">Iniciar Test</button>
+    <pre id="output"></pre>
+
+    <script src="javascript/auth-client.js"></script>
+    <script>
+        const output = document.getElementById('output');
+        const log = (text) => {
+            output.textContent += text + '\n';
+            console.log(text);
+        };
+
+        async function testFlow() {
+            output.textContent = '';
+            log('=== INICIANDO TEST ===\n');
+
+            try {
+                // 1. Login
+                log('PASO 1: POST /api/login');
+                const loginResp = await apiFetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        correoUsuario: 'debugging@test.com',
+                        contrasenia: 'test123456'
+                    })
+                });
+
+                log(`Status: ${loginResp.status}`);
+                const loginData = await loginResp.json();
+                log(`Response: ${JSON.stringify(loginData)}`);
+                log(`Set-Cookie header: ${loginResp.headers.get('set-cookie') ? 'SÍ' : 'NO'}`);
+
+                if (loginResp.status !== 200) {
+                    log('<span class="error">ERROR: Login fallido</span>');
+                    return;
+                }
+
+                log('<span class="success">✓ Login exitoso</span>\n');
+
+                // 2. SIN NAVEGAR, intentar GET /api/profile
+                log('PASO 2: GET /api/profile (sin navegar, en la MISMA página)');
+                const profileResp = await apiFetch('/api/profile', {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                log(`Status: ${profileResp.status}`);
+                const profileData = await profileResp.json();
+                log(`Response: ${JSON.stringify(profileData, null, 2)}`);
+
+                if (profileResp.status === 200 && profileData.user) {
+                    log('<span class="success">✓ Profile exitoso - la cookie está siendo enviada correctamente</span>');
+                } else {
+                    log('<span class="error">ERROR: No se pudo obtener el perfil</span>');
+                }
+
+            } catch (err) {
+                log(`<span class="error">Error: ${err.message}</span>`);
+            }
+        }
+    </script>
+</body>
+</html>

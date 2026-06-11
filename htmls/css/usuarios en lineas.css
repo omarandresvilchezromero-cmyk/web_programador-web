@@ -1,0 +1,191 @@
+
+
+/* Contenedor Principal de la Lista */
+.employee-list-container {
+    background: #d4dfe6; /* Fondo gris claro tipo panel de juego */
+    border: 4px solid #8ba3b5;
+    border-radius: 12px;
+    width: 380px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+/* Encabezado */
+.list-header {
+    background: #4a6572;
+    padding: 12px;
+    text-align: center;
+    border-bottom: 3px solid #344955;
+}
+
+.list-header h2 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 1.2rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    letter-spacing: 0.5px;
+}
+
+/* Cuerpo de la Lista */
+.list-body {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+/* Fila de cada Empleado */
+.employee-row {
+    background: linear-gradient(to bottom, #f0f4f8, #dce4ec);
+    border: 2px solid #b0c2ce;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    position: relative;
+    box-shadow: inset 0 1px 0 #fff, 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Avatar y su Contenedor */
+.avatar-container {
+    position: relative;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    border: 2px solid #4a6572;
+    background: #fff;
+    object-fit: cover;
+}
+
+/* Punto de estado conectado */
+.status-dot.online {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    background-color: #2ecc71;
+    border: 2px solid #fff;
+    border-radius: 50%;
+}
+
+/* Datos del empleado (Centro) */
+.employee-info {
+    flex-grow: 1;
+    padding-left: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.employee-name {
+    font-weight: 700;
+    color: #2c3e50;
+    font-size: 0.95rem;
+}
+
+.employee-role {
+    font-size: 0.75rem;
+    color: #7f8c8d;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+/* Botón Hablar (Derecha) */
+.employee-action {
+    flex-shrink: 0;
+}
+
+.chat-btn {
+    background: linear-gradient(to bottom, #3498db, #2980b9);
+    border: none;
+    border-bottom: 3px solid #20638f;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: transform 0.1s, filter 0.1s;
+}
+
+.chat-btn:active {
+    transform: translateY(2px);
+    border-bottom-width: 1px;
+}
+
+.chat-btn:hover {
+    filter: brightness(1.1);
+}
+
+/* --- MENÚ FLOTANTE (TIPO CLASH ROYALE) --- */
+.popover-menu {
+    display: none; /* Oculto por defecto */
+    position: absolute;
+    top: 50%;
+    left: 60px;
+    transform: translateY(-50%);
+    background: #ffffff;
+    border: 2px solid #2c3e50;
+    border-radius: 8px;
+    padding: 10px;
+    z-index: 10;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    width: 130px;
+}
+
+/* Flecha del menú flotante */
+.popover-menu::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 5px 10px 5px 0;
+    border-style: solid;
+    border-color: transparent #2c3e50 transparent transparent;
+}
+
+/* Mostrar menú cuando tiene la clase 'active' */
+.avatar-container.active .popover-menu {
+    display: block;
+}
+
+.popover-username {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #7f8c8d;
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+.popover-btn {
+    width: 100%;
+    background: linear-gradient(to bottom, #2ecc71, #27ae60);
+    border: none;
+    border-bottom: 3px solid #1e7e43;
+    color: white;
+    padding: 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.popover-btn:active {
+    transform: translateY(1px);
+    border-bottom-width: 1px;
+}

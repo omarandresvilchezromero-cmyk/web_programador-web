@@ -37,39 +37,82 @@ body::after {
    HEADER / NAVBAR
 ========================= */
 .header-main {
-background: linear-gradient(90deg, #0F172A, #1E3A8A);
-    padding: 10px 50px;
+    background: linear-gradient(90deg, #0F172A, #1E3A8A);
+    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    min-height: 64px;
 }
-.logo img {
-    width: 50px;
-    height: 50px;
+
+.header-main .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    min-width: 48px;
+}
+
+.header-main .logo img {
+    display: block;
+    width: 48px;
+    height: 48px;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: center;
     border-radius: 50%;
     transition: transform 0.3s;
 }
 
-.logo img:hover {
+.header-main .logo img:hover {
     transform: rotate(5deg) scale(1.08);
 }
 
-.nav-list ul {
+.header-main nav {
     display: flex;
-    list-style: none;
+    align-items: center;
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
-.nav-list {
-    list-style-type: style;height: 45%;;
+.header-main .nav-list,
+.header-main .nav-list ul {
     display: flex;
-    gap: 20px;
+    gap: 18px;
     margin: 0;
     padding: 0;
+    list-style: none;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
-.nav-list li {
-    display: inline;
+.header-main .nav-list li {
+    display: inline-flex;
+    margin-left: 0;
+}
+
+.header-main .nav-list li + li {
     margin-left: 20px;
+}
+
+@media (max-width: 768px) {
+    .header-main {
+        padding: 10px 16px;
+        justify-content: space-between;
+    }
+
+    .header-main nav,
+    .header-main .header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .header-main .logo img {
+        width: 40px;
+        height: 40px;
+    }
 }
 
 .nav-list a {

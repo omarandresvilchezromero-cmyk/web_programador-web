@@ -76,7 +76,14 @@
     return !!window.__currentUser;
   };
 
+  window.__logoutInProgress = false;
+
   window.logout = async function (event) {
+    if (window.__logoutInProgress) {
+      return;
+    }
+    window.__logoutInProgress = true;
+
     if (event && typeof event.preventDefault === 'function') {
       event.preventDefault();
     }
@@ -91,6 +98,9 @@
     }
 
     window.__currentUser = null;
+    if (typeof window.clearLocalSession === 'function') {
+      try { window.clearLocalSession(); } catch (ignore) {}
+    }
     window.location.href = 'login.html';
   };
 

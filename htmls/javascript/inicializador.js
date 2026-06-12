@@ -33,7 +33,7 @@ function inicializarSistema() {
     // Event listeners para logout
     const navLogout = document.getElementById('navLogout');
     if (navLogout) {
-        navLogout.addEventListener('click', window.logout);
+        navLogout.addEventListener('click', handleLogoutClick);
     }
 }
 
@@ -123,11 +123,13 @@ function actualizarBadgesNotificaciones() {
 
 /* ==================== LOGOUT ==================== */
 
-function logout(e) {
+function handleLogoutClick(e) {
     if (e && typeof e.preventDefault === 'function') e.preventDefault();
 
     if (confirm('¿Deseas cerrar sesión?')) {
-        window.logout();
+        if (typeof window.logout === 'function') {
+            window.logout(e);
+        }
     }
 }
 
@@ -342,7 +344,6 @@ console.log('  • debugDatos() - Ver toda la estructura de datos del sistema');
 window.inicializarSistema = inicializarSistema;
 window.actualizarHeaderUI = actualizarHeaderUI;
 window.actualizarBadgesNotificaciones = actualizarBadgesNotificaciones;
-window.logout = logout;
 window.verificarSesion = verificarSesion;
 window.verificarAdmin = verificarAdmin;
 window.formatearFecha = formatearFecha;

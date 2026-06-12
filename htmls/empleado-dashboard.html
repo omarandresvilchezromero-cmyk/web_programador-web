@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Empleado - Panel</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header-main">
+        <div class="logo"><img src="Diseño sin título.png" alt="Logo"></div>
+        <nav>
+            <ul class="nav-list">
+                <li><a href="perfil.html">Perfil</a></li>
+                <li><a href="chat.html" id="navMensajes">💬 <span id="badgeMensajes" style="display:none;background:#ef4444;color:white;padding:2px 6px;border-radius:10px;margin-left:6px;font-size:0.8rem;"></span></a></li>
+                <li><a href="notificaciones.html" id="navNotificaciones">🔔 <span id="badgeNotificaciones" style="display:none;background:#ef4444;color:white;padding:2px 6px;border-radius:10px;margin-left:6px;font-size:0.8rem;"></span></a></li>
+                <li><a href="#" onclick="logout(event)" id="navLogout">🚪</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main style="padding: 24px;">
+        <h1>Panel de Empleado</h1>
+        <div id="empleadoInfo" style="margin-bottom:20px;"></div>
+
+        <section>
+            <h2>Servicios asignados</h2>
+            <div id="serviciosAsignados">Cargando...</div>
+        </section>
+
+        <section style="margin-top:20px;">
+            <h2>Consultas pendientes</h2>
+            <div id="consultasPendientes">Cargando...</div>
+        </section>
+
+        <section style="margin-top:20px;">
+            <h2>Mensajes</h2>
+            <div id="mensajesRecientes">Abre el chat para ver mensajes</div>
+        </section>
+
+    </main>
+
+    <script src="javascript/auth-client.js"></script>
+    <script src="javascript/inicializador.js"></script>
+    <script src="javascript/empleado-dashboard.js"></script>
+</body>
+</html>

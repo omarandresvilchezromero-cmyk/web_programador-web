@@ -1034,3 +1034,75 @@
     }
 }
 
+/* ==================== PANEL SOLICITUDES DE EMPLEO ==================== */
+
+#adminSolicitudesPanel {
+    margin: 30px 0;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#solicitudesList {
+    display: grid;
+    gap: 20px;
+}
+
+#solicitudesList > div {
+    background: #0f172a;
+    border-radius: 15px;
+    padding: 20px;
+    border-left: 4px solid;
+    transition: all 0.3s ease;
+}
+
+#solicitudesList > div:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(34, 211, 238, 0.1);
+}
+
+#badgeSolicitudesPendientes {
+    background: #ef4444;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: inline-block;
+}
+
+.solicitud-estado-pendiente {
+    border-left-color: #f59e0b;
+}
+
+.solicitud-estado-aprobada {
+    border-left-color: #10b981;
+}
+
+.solicitud-estado-rechazada {
+    border-left-color: #ef4444;
+}
+
+.solicitud-estado-info {
+    border-left-color: #3b82f6;
+}
+
+@media (max-width: 768px) {
+    #solicitudesList {
+        gap: 15px;
+    }
+
+    #solicitudesList > div {
+        padding: 15px;
+    }
+}
+
+

@@ -94,6 +94,7 @@ function actualizarBadgesNotificaciones() {
             try {
                 const { resp, data } = await fetchAndParse('/api/notificaciones');
                 const notificaciones = data && Array.isArray(data.notificaciones) ? data.notificaciones : [];
+                console.log('NOTIFICACIONES RECIBIDAS:', notificaciones);
                 const noLeidas = notificaciones.filter(n => !n.leida).length;
                 if (badgeNotificaciones) {
                     if (noLeidas > 0) {
@@ -112,6 +113,7 @@ function actualizarBadgesNotificaciones() {
             try {
                 const { resp, data } = await fetchAndParse('/api/mensajes/conversations');
                 const mensajes = data && Array.isArray(data.mensajes) ? data.mensajes : [];
+                console.log('MENSAJES RECIBIDOS:', mensajes);
                 const noLeidos = mensajes.filter(msg => msg.destinatario_id === sessionUser.id && !msg.leido).length;
                 if (badgeMensajes) {
                     if (noLeidos > 0) {
@@ -121,6 +123,7 @@ function actualizarBadgesNotificaciones() {
                         badgeMensajes.style.display = 'none';
                     }
                 }
+                console.log('BADGES ACTUALIZADOS');
             } catch (e) {
                 if (badgeMensajes) badgeMensajes.style.display = 'none';
             }

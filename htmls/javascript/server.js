@@ -222,6 +222,63 @@ function requireAuth(req, res, next) {
   return res.status(401).json({ error: 'No autorizado' });
 }
 
+// Helper: crear solicitud y notificar a administradores en una transacción
+async function createSolicitudAndNotify(poolOrConnection, id_usuario, especialidad, experiencia, descripcion, useConnectionDirectly = false) {
+  const fecha_solicitud = new Date();
+  let connection;
+  try {
+    connection = useConnectionDirectly ? poolOrConnection : await pool.getConnection();
+    if (!useConnectionDirectly) await connection.beginTransaction();
+
+    const [result] = await connection.query(
+      'INSERT INTO solicitudes_empleo (id_usuario, especialidad, experiencia, descripcion, fecha_solicitud, estado) VALUES (?, ?, ?, ?, ?, ?)',
+      [id_usuario, especialidad, experiencia, descripcion, fecha_solicitud, 'pendiente']
+    );
+
+    // Obtener nombre de usuario para mensaje
+    const [userRows] = await connection.query('SELECT nombre_usuario FROM cuenta_usuario WHERE id_usuarios = ?', [id_usuario]);
+    const usuario = userRows.length ? userRows[0] : { nombre_usuario: 'Usuario' };
+
+    // Buscar administradores
+    const [admins] = await connection.query('SELECT id_usuarios FROM cuenta_usuario WHERE LOWER(rol) IN (?, ?)', ['admin', 'administrador']);
+    // Fallback si no hay administradores encontrados
+    if (!admins.length) {
+      const [[primary]] = await connection.query('SELECT id_usuarios FROM cuenta_usuario WHERE correoUsuario = ?', [PRIMARY_ADMIN_EMAIL]);
+      if (primary && primary.id_usuarios) admins.push({ id_usuarios: primary.id_usuarios });
+    }
+
+    const solicitudId = result.insertId;
+
+    if (admins.length) {
+      const notificacionesValues = [];
+      const mensajesValues = [];
+
+      for (const admin of admins) {
+        const adminId = admin.id_usuarios;
+        const notificacionMsg = `El usuario ${usuario.nombre_usuario} ha enviado una nueva solicitud de empleo.`;
+        notificacionesValues.push([adminId, notificacionMsg, fecha_solicitud, 0]);
+
+        mensajesValues.push([id_usuario, adminId, `Nueva solicitud de empleo:\nEspecialidad: ${especialidad}\nExperiencia: ${experiencia}`, fecha_solicitud, 0]);
+      }
+
+      if (notificacionesValues.length) {
+        await connection.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES ?', [notificacionesValues]);
+      }
+      if (mensajesValues.length) {
+        await connection.query('INSERT INTO mensajes (remitente, destinatario, mensaje, fecha_envio, leido) VALUES ?', [mensajesValues]);
+      }
+    }
+
+    if (!useConnectionDirectly) await connection.commit();
+    return { ok: true, id: solicitudId };
+  } catch (err) {
+    if (connection && !useConnectionDirectly) await connection.rollback().catch(() => {});
+    throw err;
+  } finally {
+    if (connection && !useConnectionDirectly) connection.release();
+  }
+}
+
 // Crear solicitud de empleo
 app.post('/api/solicitudes', requireAuth, async (req, res) => {
   const { especialidad, experiencia, descripcion } = req.body;
@@ -230,14 +287,8 @@ app.post('/api/solicitudes', requireAuth, async (req, res) => {
   const estado = 'pendiente';
 
   try {
-    const [result] = await pool.query(
-      'INSERT INTO solicitudes_empleo (id_usuario, especialidad, experiencia, descripcion, fecha_solicitud, estado) VALUES (?, ?, ?, ?, ?, ?)',
-      [id_usuario, especialidad, experiencia, descripcion, fecha_solicitud, estado]
-    );
-
-    // TODO: crear notificación para admin
-
-    res.json({ ok: true, id: result.insertId });
+    const result = await createSolicitudAndNotify(pool, id_usuario, especialidad, experiencia, descripcion);
+    res.json(result);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Error al guardar solicitud' });
@@ -245,12 +296,34 @@ app.post('/api/solicitudes', requireAuth, async (req, res) => {
 });
 
 // Obtener solicitudes (solo admin)
-app.get('/api/admin/solicitudes', requireAuth, async (req, res) => {
-  const role = (req.session.user.rol || '').toString().toLowerCase();
-  if (!(role === 'admin' || role === 'administrador')) return res.status(403).json({ error: 'Forbidden' });
+app.get('/api/admin/solicitudes', requireAuth, requireAdmin, async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM solicitudes_empleo ORDER BY fecha_solicitud DESC');
-    res.json(rows);
+    const [rows] = await pool.query(
+      `SELECT s.*, u.nombre_usuario, u.correoUsuario 
+       FROM solicitudes_empleo s 
+       LEFT JOIN cuenta_usuario u ON s.id_usuario = u.id_usuarios 
+       ORDER BY s.fecha_solicitud DESC`
+    );
+    res.json({ ok: true, solicitudes: rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error del servidor' });
+  }
+});
+
+// Obtener detalles de una solicitud específica (solo admin)
+app.get('/api/admin/solicitudes/:id', requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const solicitudId = req.params.id;
+    const [rows] = await pool.query(
+      `SELECT s.*, u.nombre_usuario, u.correoUsuario, u.descripcion, u.especialidad 
+       FROM solicitudes_empleo s 
+       LEFT JOIN cuenta_usuario u ON s.id_usuario = u.id_usuarios 
+       WHERE s.id = ?`,
+      [solicitudId]
+    );
+    if (!rows.length) return res.status(404).json({ error: 'Solicitud no encontrada' });
+    res.json({ ok: true, solicitud: rows[0] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Error del servidor' });
@@ -460,7 +533,7 @@ app.get('/api/solicitudes', requireAuth, async (req, res) => {
 
 app.put('/api/admin/solicitudes/:id', requireAuth, requireAdmin, async (req, res) => {
   const solicitudId = req.params.id;
-  const { action, razonRechazo, insignia } = req.body;
+  const { action, razonRechazo, insignia, pregunta } = req.body;
   const fecha = new Date();
 
   try {
@@ -468,28 +541,56 @@ app.put('/api/admin/solicitudes/:id', requireAuth, requireAdmin, async (req, res
     if (!solicitudes.length) return res.status(404).json({ error: 'Solicitud no encontrada' });
 
     const solicitud = solicitudes[0];
+    const adminNombre = req.session.user.nombre_usuario;
+
+    // APROBAR SOLICITUD
     if (action === 'approve') {
-      const estado = 'aprobada';
+      const estado = 'Aceptada';
       await pool.query('UPDATE solicitudes_empleo SET estado = ? WHERE id = ?', [estado, solicitudId]);
       await pool.query('UPDATE cuenta_usuario SET rol = ? WHERE id_usuarios = ?', ['Empleado', solicitud.id_usuario]);
-      await pool.query('INSERT INTO empleados (id_usuario, especialidad, experiencia, insignia, fecha_ingreso, estado, solicitud_id) VALUES (?, ?, ?, ?, ?, ?, ?)', [
+      const [empleadoRes] = await pool.query('INSERT INTO empleados (id_usuario, especialidad, experiencia, insignia, fecha_ingreso, estado, solicitud_id) VALUES (?, ?, ?, ?, ?, ?, ?)', [
         solicitud.id_usuario,
         solicitud.especialidad,
         solicitud.experiencia,
         insignia || 'empleado-verificado',
         fecha,
-        'activo',
+        'Disponible',
         solicitud.id
       ]);
+      const empleadoId = empleadoRes.insertId || null;
+      // Crear perfil_empleado si existe la tabla
+      try {
+        await pool.query('INSERT INTO perfil_empleado (id_empleado, id_usuario, especialidad, experiencia, descripcion, estado, fecha_creacion) VALUES (?, ?, ?, ?, ?, ?, ?)', [
+          empleadoId,
+          solicitud.id_usuario,
+          solicitud.especialidad,
+          solicitud.experiencia,
+          solicitud.descripcion || '',
+          'Disponible',
+          fecha
+        ]);
+      } catch (e) {
+        // Si la tabla no existe, no bloquear el flujo; registrar para revisión
+        console.warn('perfil_empleado no existe o no pudo crearse:', e.message || e);
+      }
       await pool.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES (?, ?, ?, ?)', [
         solicitud.id_usuario,
         'Tu solicitud de empleo fue aprobada y ahora eres empleado.',
         fecha,
         0
       ]);
+      // Mensaje de aprobación
+      await pool.query('INSERT INTO mensajes (remitente, destinatario, mensaje, fecha_envio, leido) VALUES (?, ?, ?, ?, ?)', [
+        req.session.user.id,
+        solicitud.id_usuario,
+        `¡Felicidades! Tu solicitud de empleo ha sido aprobada. Bienvenido al equipo.`,
+        fecha,
+        0
+      ]);
       return res.json({ ok: true, message: 'Solicitud aprobada y empleado creado' });
     }
 
+    // RECHAZAR SOLICITUD
     if (action === 'reject') {
       const estado = 'rechazada';
       await pool.query('UPDATE solicitudes_empleo SET estado = ?, descripcion = ? WHERE id = ?', [estado, razonRechazo || null, solicitudId]);
@@ -499,13 +600,171 @@ app.put('/api/admin/solicitudes/:id', requireAuth, requireAdmin, async (req, res
         fecha,
         0
       ]);
+      // Mensaje de rechazo
+      await pool.query('INSERT INTO mensajes (remitente, destinatario, mensaje, fecha_envio, leido) VALUES (?, ?, ?, ?, ?)', [
+        req.session.user.id,
+        solicitud.id_usuario,
+        `Lamentablemente, tu solicitud de empleo no fue aceptada en esta ocasión. ${razonRechazo || 'Puedes intentarlo nuevamente más adelante.'}`,
+        fecha,
+        0
+      ]);
       return res.json({ ok: true, message: 'Solicitud rechazada' });
+    }
+
+    // SOLICITAR MÁS INFORMACIÓN
+    if (action === 'info-request') {
+      // Mantener estado en pendiente
+      await pool.query('INSERT INTO mensajes (remitente, destinatario, mensaje, fecha_envio, leido) VALUES (?, ?, ?, ?, ?)', [
+        req.session.user.id,
+        solicitud.id_usuario,
+        `El administrador ${adminNombre} necesita más información sobre tu solicitud:\n\n${pregunta || 'Por favor, proporciona más detalles'}`,
+        fecha,
+        0
+      ]);
+      await pool.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES (?, ?, ?, ?)', [
+        solicitud.id_usuario,
+        'El administrador ha solicitado más información sobre tu solicitud de empleo.',
+        fecha,
+        0
+      ]);
+      return res.json({ ok: true, message: 'Se solicitó información adicional' });
     }
 
     res.status(400).json({ error: 'Acción inválida' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Error al procesar solicitud' });
+  }
+});
+
+// Guardar consulta desde formulario de contacto y asignar empleado disponible
+app.post('/api/consultas', requireAuth, async (req, res) => {
+  const { asunto, descripcion, servicio_tipo } = req.body;
+  const usuarioId = req.session.user.id;
+  const fecha_creacion = new Date();
+
+  try {
+    // Insertar consulta
+    const [result] = await pool.query('INSERT INTO consultas (id_usuario, asunto, descripcion, servicio_tipo, fecha_creacion, estado) VALUES (?, ?, ?, ?, ?, ?)', [
+      usuarioId, asunto || '', descripcion || '', servicio_tipo || null, fecha_creacion, 'pendiente'
+    ]);
+    const consultaId = result.insertId;
+
+    // Asignar empleado disponible
+    let empleadoAsignado = null;
+    try {
+      const [empleadosDisponibles] = await pool.query("SELECT id_empleado, id_usuario FROM empleados WHERE estado = 'Disponible' ORDER BY fecha_ingreso ASC LIMIT 1");
+      if (empleadosDisponibles.length) {
+        empleadoAsignado = empleadosDisponibles[0];
+        await pool.query('UPDATE consultas SET id_empleado_responsable = ?, estado = ? WHERE id = ?', [empleadoAsignado.id_empleado, 'asignada', consultaId]);
+        // Notificación y mensaje para el empleado
+        await pool.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES (?, ?, ?, ?)', [
+          empleadoAsignado.id_usuario,
+          `Se te ha asignado una nueva consulta (id: ${consultaId}).` ,
+          fecha_creacion,
+          0
+        ]);
+        await pool.query('INSERT INTO mensajes (remitente, destinatario, mensaje, fecha_envio, leido) VALUES (?, ?, ?, ?, ?)', [
+          usuarioId,
+          empleadoAsignado.id_usuario,
+          `Nueva consulta asignada: ${asunto || 'Sin asunto'}\n\n${descripcion || ''}`,
+          fecha_creacion,
+          0
+        ]);
+      }
+    } catch (e) {
+      console.warn('Error asignando empleado disponible:', e.message || e);
+    }
+
+    return res.json({ ok: true, consultaId, asignado: !!empleadoAsignado });
+  } catch (err) {
+    console.error('Error creando consulta:', err);
+    return res.status(500).json({ error: 'Error al crear consulta' });
+  }
+});
+
+// Calificaciones de empleados
+app.post('/api/empleados/:id/calificaciones', requireAuth, async (req, res) => {
+  const empleadoId = Number(req.params.id);
+  const usuarioId = req.session.user.id;
+  const { puntuacion, comentario } = req.body;
+  const fecha = new Date();
+
+  if (!empleadoId || !puntuacion) return res.status(400).json({ error: 'Datos incompletos' });
+
+  try {
+    await pool.query('INSERT INTO calificaciones_empleado (id_empleado, id_usuario, puntuacion, comentario, fecha) VALUES (?, ?, ?, ?, ?)', [
+      empleadoId, usuarioId, puntuacion, comentario || '', fecha
+    ]);
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error('Error guardando calificación:', err);
+    return res.status(500).json({ error: 'Error al guardar calificación' });
+  }
+});
+
+app.get('/api/empleados/:id/calificaciones', requireAuth, async (req, res) => {
+  const empleadoId = Number(req.params.id);
+  try {
+    const [rows] = await pool.query('SELECT * FROM calificaciones_empleado WHERE id_empleado = ? ORDER BY fecha DESC', [empleadoId]);
+    return res.json({ ok: true, calificaciones: rows });
+  } catch (err) {
+    console.error('Error obteniendo calificaciones:', err);
+    return res.status(500).json({ error: 'Error al obtener calificaciones' });
+  }
+});
+
+// Métricas básicas del empleado
+app.get('/api/empleados/:id/metrics', requireAuth, async (req, res) => {
+  const empleadoId = Number(req.params.id);
+  try {
+    const [[{ consultasAtendidas = 0 }]] = await pool.query("SELECT COUNT(*) AS consultasAtendidas FROM consultas WHERE id_empleado_responsable = ? AND estado = 'atendido'", [empleadoId]);
+    const [[{ serviciosCompletados = 0 }]] = await pool.query("SELECT COUNT(*) AS serviciosCompletados FROM servicios_servidores WHERE id_empleado_responsable = ? AND estado = 'finalizado'", [empleadoId]);
+    const [[{ tiempoPromedio = null }]] = await pool.query("SELECT AVG(TIMESTAMPDIFF(SECOND, fecha_creacion, fecha_atencion)) AS tiempoPromedio FROM consultas WHERE id_empleado_responsable = ? AND fecha_atencion IS NOT NULL", [empleadoId]);
+    const [[{ avgRating = null }]] = await pool.query("SELECT AVG(puntuacion) AS avgRating FROM calificaciones_empleado WHERE id_empleado = ?", [empleadoId]);
+
+    return res.json({ ok: true, metrics: { consultasAtendidas: Number(consultasAtendidas), serviciosCompletados: Number(serviciosCompletados), tiempoPromedio: tiempoPromedio !== null ? Number(tiempoPromedio) : null, avgRating: avgRating !== null ? Number(avgRating) : null } });
+  } catch (err) {
+    console.error('Error obteniendo métricas:', err);
+    return res.status(500).json({ error: 'Error al obtener métricas' });
+  }
+});
+
+// Obtener datos del empleado para el usuario en sesión
+app.get('/api/empleados/me', requireAuth, async (req, res) => {
+  try {
+    const userId = req.session.user.id;
+    const [rows] = await pool.query('SELECT * FROM empleados WHERE id_usuario = ? LIMIT 1', [userId]);
+    if (!rows.length) return res.status(404).json({ ok: false, error: 'No eres empleado' });
+    const empleado = rows[0];
+    return res.json({ ok: true, empleado });
+  } catch (err) {
+    console.error('Error obteniendo empleado:', err);
+    return res.status(500).json({ error: 'Error al obtener datos de empleado' });
+  }
+});
+
+// Consultas asignadas a empleado
+app.get('/api/empleados/:id/consultas', requireAuth, async (req, res) => {
+  const empleadoId = Number(req.params.id);
+  try {
+    const [rows] = await pool.query('SELECT * FROM consultas WHERE id_empleado_responsable = ? ORDER BY fecha_creacion DESC', [empleadoId]);
+    return res.json({ ok: true, consultas: rows });
+  } catch (err) {
+    console.error('Error obteniendo consultas del empleado:', err);
+    return res.status(500).json({ error: 'Error al obtener consultas' });
+  }
+});
+
+// Servicios asignados a empleado
+app.get('/api/empleados/:id/servicios', requireAuth, async (req, res) => {
+  const empleadoId = Number(req.params.id);
+  try {
+    const [rows] = await pool.query('SELECT * FROM servicios_servidores WHERE id_empleado_responsable = ? ORDER BY id_servicio DESC', [empleadoId]);
+    return res.json({ ok: true, servicios: rows });
+  } catch (err) {
+    console.error('Error obteniendo servicios del empleado:', err);
+    return res.status(500).json({ error: 'Error al obtener servicios' });
   }
 });
 
@@ -623,8 +882,17 @@ app.get('/api/mensajes/conversations', requireAuth, async (req, res) => {
       'SELECT * FROM mensajes WHERE remitente = ? OR destinatario = ? ORDER BY fecha_envio DESC',
       [userId, userId]
     );
-      console.log('RESPUESTA ENVIADA:', { ok: true, mensajes: rows.length });
-      return res.json({ ok: true, mensajes: rows });
+      // Mapear filas a la estructura que espera el frontend
+      const mensajes = rows.map(r => ({
+        id: r.id_mensaje || r.id || null,
+        remitente_id: r.remitente,
+        destinatario_id: r.destinatario,
+        contenido: r.mensaje,
+        fecha: r.fecha_envio || r.fecha,
+        leido: r.leido || 0
+      }));
+      console.log('RESPUESTA ENVIADA:', { ok: true, mensajes: mensajes.length });
+      return res.json({ ok: true, mensajes });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Error al obtener mensajes' });
@@ -641,7 +909,15 @@ app.get('/api/mensajes/conversation', requireAuth, async (req, res) => {
       'SELECT * FROM mensajes WHERE (remitente = ? AND destinatario = ?) OR (remitente = ? AND destinatario = ?) ORDER BY fecha_envio ASC',
       [userId, withId, withId, userId]
     );
-    res.json({ ok: true, mensajes: rows });
+    const mensajes = rows.map(r => ({
+      id: r.id_mensaje || r.id || null,
+      remitente_id: r.remitente,
+      destinatario_id: r.destinatario,
+      contenido: r.mensaje,
+      fecha: r.fecha_envio || r.fecha,
+      leido: r.leido || 0
+    }));
+    res.json({ ok: true, mensajes });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Error al obtener conversación' });
@@ -650,7 +926,8 @@ app.get('/api/mensajes/conversation', requireAuth, async (req, res) => {
 
 app.post('/api/mensajes', requireAuth, async (req, res) => {
   const userId = req.session.user.id;
-  const { destinatario, mensaje } = req.body;
+  const destinatario = req.body.destinatario || req.body.destinatario_id;
+  const mensaje = req.body.mensaje || req.body.contenido;
   const fecha_envio = new Date();
 
   if (!destinatario || !mensaje) {
@@ -667,11 +944,11 @@ app.post('/api/mensajes', requireAuth, async (req, res) => {
       destinatario,
       `Tienes un nuevo mensaje de ${req.session.user.nombre_usuario}`,
       fecha_envio,
-      
+      0
     ]);
 
-      console.log('RESPUESTA ENVIADA:', { ok: true, id: result.insertId });
-      return res.json({ ok: true, id: result.insertId });
+    console.log('RESPUESTA ENVIADA:', { ok: true, id: result.insertId });
+    return res.json({ ok: true, id: result.insertId });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Error al enviar mensaje' });

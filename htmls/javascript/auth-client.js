@@ -56,6 +56,7 @@
   window.getSession = async function () {
     const response = await window.apiFetch('/api/session');
     const data = await handleResponse(response);
+    console.log('getSession -> /api/session data:', data);
     window.__currentUser = data && data.user ? data.user : null;
     return data;
   };

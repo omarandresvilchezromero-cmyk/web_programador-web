@@ -51,13 +51,25 @@ function actualizarHeaderUI() {
     if (navAdmin) navAdmin.style.display = 'none';
 
     const showHeaderForUser = (usuarioActual) => {
+        console.log('USUARIO SESION (showHeaderForUser):', usuarioActual);
         if (!usuarioActual) return;
 
         if (navLogout) navLogout.style.display = 'inline-block';
         if (navMensajes) navMensajes.style.display = 'inline-block';
         if (navNotificaciones) navNotificaciones.style.display = 'inline-block';
+
+        try {
+            console.log('ROL DETECTADO:', usuarioActual.rol);
+            console.log('NAV ADMIN elemento:', navAdmin);
+        } catch (e) {
+            console.warn('Error al loggear usuario/rol:', e);
+        }
+
+        // Mostrar el enlace de admin solo si el backend indica rol admin
         if (usuarioActual.rol && (usuarioActual.rol.toLowerCase() === 'administrador' || usuarioActual.rol.toLowerCase() === 'admin')) {
             if (navAdmin) navAdmin.style.display = 'inline-block';
+        } else {
+            if (navAdmin) navAdmin.style.display = 'none';
         }
     };
 
@@ -146,6 +158,7 @@ function clearLocalSession() {
 async function syncSessionState() {
     try {
         const data = await getSession();
+        console.log('syncSessionState - /api/session response:', data);
         if (data && data.user) {
             window.setCurrentUser(data.user);
             return data.user;

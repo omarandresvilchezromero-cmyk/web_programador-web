@@ -218,7 +218,120 @@ color: #22D3EE;
     padding: 0 20px;
     display: flex;
     justify-content: space-around;
+    align-items: flex-start;
+}
+
+#catalogo {
+    width: 68%;
+}
+
+#carrito {
+    width: 30%;
+    background: #111827;
+    border-radius: 20px;
+    padding: 22px;
+    box-shadow: 0 14px 35px rgba(15, 23, 42, 0.4);
+}
+
+#carrito h2 {
+    margin-top: 0;
+}
+
+#carrito-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.cart-item {
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    background: #0f172a;
+    border-radius: 14px;
+}
+
+.cart-item small {
+    color: #94a3b8;
+    display: block;
+    margin-top: 6px;
+    font-size: 0.95rem;
+}
+
+.cart-actions {
+    display: grid;
+    grid-template-columns: auto minmax(80px, 1fr);
+    gap: 10px;
+    align-items: center;
+}
+
+.qty-input {
+    width: 60px;
+    padding: 6px 10px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    color: #f8fafc;
+}
+
+#carrito .carrito-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.checkout-result {
+    margin-top: 12px;
+    color: #e2e8f0;
+    min-height: 24px;
+}
+
+.card-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.card-price {
+    margin-top: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #38bdf8;
+}
+
+.btn-buy {
+    border: none;
+    background: linear-gradient(90deg, #0ea5e9, #22d3ee);
+    color: #0f172a;
+    padding: 10px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-buy:hover {
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    border: 1px solid rgba(203, 213, 225, 0.25);
+    background: transparent;
+    color: #cbd5e1;
+    padding: 10px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.2);
 }
 
 /* SIDEBAR */
@@ -384,10 +497,12 @@ background: #1E293B;
 }
 
 .contentcard:hover .reveal-content {
+    /* keep layout stable: avoid changing grid rows on hover to prevent reflow */
     grid-template-rows: 1fr;
 }
-.contentcard:hover .inner-text {
-    padding: 20px;
+.contentcard .inner-text {
+    /* ensure inner text has stable padding (do not change on hover) */
+    padding: 14px;
 }
 .contentcard:hover .card-inner {
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
@@ -436,13 +551,14 @@ background: #1E293B;
 /* 🌟 INTEGRACIÓN 3D: Modificado para dar profundidad y evitar que oculte las tarjetas traseras */
 .carousel-viewer {
     width: 100%;
-    max-width: 420px;       /* Forzamos el ancho ideal para mostrar una tarjeta cómoda */
-    height: 380px;          /* Altura adaptada para contener tus specs y botones */
+    max-width: 420px;       /* ancho ideal para mostrar una tarjeta cómoda */
+    height: 380px;          /* altura fija del carrusel para evitar reflow */
     margin: 0 auto;
     position: relative;
-    perspective: 1200px;    /* Crucial: Activa la profundidad de la cámara tridimensional */
-    overflow: visible;      /* ¡CAMBIO CRÍTICO!: Permitimos que las tarjetas orbiten fuera del plano */
+    perspective: 1200px;    /* profundidad 3D */
+    overflow: hidden;       /* mantener tamaño estable y ocultar piezas fuera del plano */
     padding: 10px 0; 
+    box-sizing: border-box;
 }
 
 /* 🌟 INTEGRACIÓN 3D: Se convirtió en el eje central de la calesita que gira */
@@ -458,27 +574,26 @@ background: #1E293B;
 
 /* TARJETA DE PRODUCTO (Adaptada al entorno tridimensional) */
 .contentcard {
-    position: absolute; /* Superponemos todas las tarjetas en la misma posición inicial */
+    position: absolute; /* superponemos todas las tarjetas en la misma posición inicial */
     width: 100%;
     height: 100%;
+    min-height: 320px; /* garantiza tamaño consistente entre tarjetas */
     top: 0;
     left: 0;
     box-sizing: border-box;
-    
-    background: linear-gradient(135deg, #111827, #1f2937); /* Degradado oscuro */
+    overflow: hidden; /* evita que contenido extienda el tamaño */
+    background: linear-gradient(135deg, #111827, #1f2937);
     border: 1px solid #374151;
-    border-radius: 16px;
-    padding: 20px;
+    border-radius: 12px;
+    padding: 18px;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* importante: mantener columna estable */
     justify-content: space-between;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-
-    /* Propiedades 3D obligatorias */
-    backface-visibility: hidden; /* Oculta el reverso de la tarjeta cuando gira hacia atrás */
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+    backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     transform-origin: center center;
-    transition: transform 0.8s, border-color 0.3s, box-shadow 0.3s; /* Mantiene la animación del giro unificada */
+    transition: transform 0.6s cubic-bezier(.2,.9,.2,1), box-shadow 0.28s ease, border-color 0.25s ease;
 }
 
 /* 🌟 UBICACIÓN RADIAL EN MATRIZ: Distribución exacta en círculo de tus 3 productos */
@@ -490,8 +605,50 @@ background: #1E293B;
 /* Efecto Hover compatible con el giro */
 .contentcard:hover {
     border-color: #3b82f6;
-    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 22px 40px rgba(59, 130, 246, 0.12);
     cursor: pointer;
+    /* Do not transform the card element itself (keeps layout stable). Visual transform applied to inner wrapper. */
+    transform: none;
+}
+
+/* Inner wrapper to apply 3D hover visuals without affecting layout */
+.contentcard-inner{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    transition: transform 300ms cubic-bezier(.2,.9,.2,1), box-shadow 300ms ease, filter 300ms ease;
+    will-change: transform, box-shadow, filter;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    position: relative;
+    box-shadow: 0 6px 18px rgba(2,6,23,0.35);
+}
+
+.contentcard:hover .contentcard-inner{
+    /* subtle 3D tilt and slight pop (scale <= 1.02) without affecting layout */
+    transform: perspective(1200px) translateZ(0) rotateX(3.2deg) rotateY(-3.2deg) scale(1.018);
+    box-shadow: 0 34px 60px rgba(2,6,23,0.55);
+    filter: saturate(1.03);
+}
+
+/* ambient glow using pseudo-element so it doesn't affect layout */
+.contentcard-inner::after{
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    transition: opacity 300ms ease;
+    opacity: 0;
+    border-radius: 12px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+}
+.contentcard:hover .contentcard-inner::after{
+    opacity: 1;
+    box-shadow: 0 20px 50px rgba(59,130,246,0.06), inset 0 0 0 1px rgba(255,255,255,0.02);
 }
 
 /* Icono o representación del servidor */
@@ -539,13 +696,18 @@ background: #1E293B;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 10px;
     margin-top: auto;
+    flex-wrap: wrap;
+    padding-top: 10px;
 }
 
 .card-action .price {
-    font-size: 22px;
-    font-weight: 700;
-    color: #10b981; 
+    font-size: 26px;
+    font-weight: 800;
+    color: #10b981;
+    display: inline-block;
+    min-width: 120px;
 }
 
 .card-action .price small {
@@ -555,20 +717,55 @@ background: #1E293B;
 }
 
 /* Botón de acción estilo sysadmin */
-.btn-cotizar {
-    background-color: #3b82f6;
-    color: white;
+/* Base for action buttons inside cards */
+.btn-action{
+    -webkit-appearance: none;
+    appearance: none;
     border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-weight: 700;
     font-size: 14px;
-    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 18px rgba(2,6,23,0.35);
 }
 
-.btn-cotizar:hover {
-    background-color: #2563eb;
+/* Agregar al carrito - color relacionado con carrito, icono y hover */
+.btn-cart{
+    background: linear-gradient(90deg,#10b981,#059669);
+    color: #072217;
+}
+.btn-cart::before{ content: '🛒'; }
+.btn-cart:hover{ transform: translateY(-2px); box-shadow: 0 12px 30px rgba(5,150,105,0.25); }
+
+/* Comprar ahora - destacado */
+.btn-buy{
+    background: linear-gradient(90deg,#f97316,#ef4444);
+    color: #fff;
+    padding: 12px 18px;
+}
+.btn-buy::before{ content: '⚡'; }
+.btn-buy:hover{ transform: translateY(-3px); box-shadow: 0 18px 40px rgba(239,68,68,0.28); }
+
+/* Cotizar - secundario elegante */
+.btn-quote{
+    background: transparent;
+    color: #cbd5e1;
+    border: 1px solid rgba(203,213,225,0.12);
+    backdrop-filter: blur(6px);
+}
+.btn-quote::before{ content: '✉️'; }
+.btn-quote:hover{ transform: translateY(-2px); box-shadow: 0 8px 22px rgba(203,213,225,0.06); border-color: rgba(203,213,225,0.28); }
+
+/* Make buttons more compact on small screens */
+@media (max-width: 640px){
+    .card-action{ gap:8px; }
+    .btn-action{ padding:8px 10px; font-size:13px; }
+    .card-action .price{ min-width: 100px; font-size:20px; }
 }
 
 /* ETIQUETAS (Badges) flotantes */
@@ -615,6 +812,25 @@ background: #1E293B;
     box-shadow: 0 0 15px rgba(34, 211, 238, 0.4);
     color: white;
 }
+
+/* Mejor posición vertical para botones prev/next */
+.carousel-container{ position: relative; }
+.carousel-btn.prev-btn{ position: absolute; left: 8px; top: 50%; transform: translateY(-50%); }
+.carousel-btn.next-btn{ position: absolute; right: 8px; top: 50%; transform: translateY(-50%); }
+.carousel-btn{ width:48px; height:48px; font-size:20px; }
+.carousel-btn:hover{ transform: translateY(-50%) scale(1.06); }
+
+/* Modern card enhancements */
+.contentcard{
+    transition: transform 0.28s cubic-bezier(.2,.9,.2,1), box-shadow 0.28s ease, border-color 0.25s ease;
+    border-radius: 12px;
+}
+.contentcard:hover{ transform: translateY(-8px) rotateX(6deg) rotateY(-3deg); box-shadow: 0 22px 40px rgba(2,6,23,0.6); }
+.contentcard .card-action{ gap:12px; }
+
+/* Separación más clara entre precio y botones */
+.card-action .price{ margin-right: 8px; }
+
 
 /* SIDEBAR GENERAL */
 .sidebar {

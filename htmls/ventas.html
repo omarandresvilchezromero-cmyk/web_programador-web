@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ventas</title>
+  <link rel="stylesheet" href="css/principal.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Productos y Servicios</h1>
+    <div id="catalogo">
+      <h2>Productos</h2>
+      <div id="productos" class="grid"></div>
+
+      <h2>Servicios (Servidores)</h2>
+      <div id="servicios-servidor" class="grid"></div>
+
+      <h2>Servicios (Seguridad)</h2>
+      <div id="servicios-seguridad" class="grid"></div>
+    </div>
+
+    <aside id="carrito">
+      <h2>Carrito</h2>
+      <ul id="carrito-list"></ul>
+      <div class="carrito-total">Total: <span id="carrito-total">0.00</span></div>
+      <div class="carrito-actions">
+        <button id="checkout" class="btn btn-buy">Pagar</button>
+        <button id="clear-cart" class="btn btn-secondary">Vaciar carrito</button>
+      </div>
+      <div id="checkout-result" class="checkout-result"></div>
+    </aside>
+  </div>
+
+  <script src="javascript/ventas.js"></script>
+</body>
+</html>

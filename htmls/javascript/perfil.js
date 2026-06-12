@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const photoUpload = document.getElementById('photo-upload');
     const profileBadge = document.getElementById('profile-badge');
     const profileEmployeeId = document.getElementById('profile-employee-id');
+    const comprasListEl = document.getElementById('mis-compras-list');
 
     let usuario = null;
     let empleado = null;
@@ -44,11 +45,48 @@ document.addEventListener('DOMContentLoaded', async () => {
             usuario = data.user;
             empleado = data.empleado;
             actualizarPerfil();
+            fetchCompras();
             window.setCurrentUser(usuario);
         } catch (err) {
             console.error('Error cargando perfil:', err);
             window.location.href = 'login.html';
         }
+    }
+
+    async function fetchCompras(){
+        if (!comprasListEl) return;
+        comprasListEl.textContent = 'Cargando...';
+        try{
+            const resp = await apiFetch('/api/ventas');
+            const data = await parseJsonSafe(resp);
+            if (!resp.ok || !data || !data.ok) {
+                comprasListEl.textContent = 'No se pudieron cargar las compras.';
+                return;
+            }
+            renderCompras(data.ventas || []);
+        }catch(err){
+            console.error('Error fetchCompras', err);
+            comprasListEl.textContent = 'Error cargando compras.';
+        }
+    }
+
+    function renderCompras(ventas){
+        if (!comprasListEl) return;
+        if (!ventas || !ventas.length) {
+            comprasListEl.innerHTML = '<p>No tienes compras registradas.</p>';
+            return;
+        }
+        const ul = document.createElement('ul');
+        ul.className = 'compras-list';
+        ventas.forEach(v => {
+            const li = document.createElement('li');
+            const fecha = v.fecha_compra ? formatearFecha(v.fecha_compra) : 'Fecha desconocida';
+            const itemName = v.producto_nombre || v.servicio_servidor_tipo || v.servicio_seguridad_nombre || 'Item';
+            li.innerHTML = `<strong>${itemName}</strong> — ${v.cantidad || 1} unidad(es) — $${Number(v.total||0).toFixed(2)} <span style="color:#666; font-size:12px;">(${fecha})</span>`;
+            ul.appendChild(li);
+        });
+        comprasListEl.innerHTML = '';
+        comprasListEl.appendChild(ul);
     }
 
     function actualizarPerfil() {

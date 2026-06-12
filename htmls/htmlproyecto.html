@@ -128,68 +128,74 @@
                 <div class="section-productos">
 
                     <article class="contentcard">
-                        <div class="card-badge">En Stock</div>
-                        <div class="card-icon">🖥️</div>
-                        <h3>Server Pro R740</h3>
-                        <p class="description">Ideal para virtualización de alta densidad y bases de datos críticas.</p>
-                        <div class="specs-grid">
-                            <span><strong>CPU:</strong> 2x Xeon Gold</span>
-                            <span><strong>RAM:</strong> 128GB ECC</span>
-                        </div>
-                        <div class="card-action">
-                            <span class="price">$1,499<small>/mes</small></span>
-                            <button
-                                onclick="addToCart({ name: 'Server Pro R740', price: 1499, category: 'servidor', ref: 'Server Pro R740' })">Agregar
-                                al carrito</button>
-                            <button
-                                onclick="buyNow({ name: 'Server Pro R740', price: 1499, category: 'servidor', ref: 'Server Pro R740' })">Comprar
-                                ahora</button>
-                            <button
-                                onclick="requestQuote({ name: 'Server Pro R740', category: 'servidor', description: 'Server Pro R740' })">Cotizar</button>
-                        </div>
-                    </article>
-
-                    <article class="contentcard">
-                        <div class="card-badge premium">Enterprise</div>
-                        <div class="card-icon">🚀</div>
-                        <h3>Blade Server X900</h3>
-                        <p class="description">Máximo rendimiento para infraestructura en la nube y Big Data.</p>
-                        <div class="specs-grid">
-                            <span><strong>CPU:</strong> AMD EPYC 64C</span>
-                            <span><strong>RAM:</strong> 256GB ECC</span>
-                        </div>
-                        <div class="card-action">
-                            <span class="price">$2,899<small>/mes</small></span>
-                            <button
-                                onclick="addToCart({ name: 'Blade Server X900', price: 2899, category: 'servidor', ref: 'Blade Server X900' })">Agregar
-                                al carrito</button>
-                            <button
-                                onclick="buyNow({ name: 'Blade Server X900', price: 2899, category: 'servidor', ref: 'Blade Server X900' })">Comprar
-                                ahora</button>
-                            <button
-                                onclick="requestQuote({ name: 'Blade Server X900', category: 'servidor', description: 'Blade Server X900' })">Cotizar</button>
+                        <div class="contentcard-inner">
+                            <div class="card-badge">En Stock</div>
+                            <div class="card-icon">🖥️</div>
+                            <h3>Server Pro R740</h3>
+                            <p class="description">Ideal para virtualización de alta densidad y bases de datos críticas.</p>
+                            <div class="specs-grid">
+                                <span><strong>CPU:</strong> 2x Xeon Gold</span>
+                                <span><strong>RAM:</strong> 128GB ECC</span>
+                            </div>
+                            <div class="card-action">
+                                <span class="price">$1,499<small>/mes</small></span>
+                                <button class="btn-action btn-cart"
+                                    onclick="addToCart({ name: 'Server Pro R740', price: 1499, category: 'servidor', ref: 'Server Pro R740' })">Agregar
+                                    al carrito</button>
+                                <button class="btn-action btn-buy"
+                                    onclick="buyNow({ name: 'Server Pro R740', price: 1499, category: 'servidor', ref: 'Server Pro R740' })">Comprar
+                                    ahora</button>
+                                <button class="btn-action btn-quote"
+                                    onclick="requestQuote({ name: 'Server Pro R740', category: 'servidor', description: 'Server Pro R740' })">Cotizar</button>
+                            </div>
                         </div>
                     </article>
 
                     <article class="contentcard">
-                        <div class="card-badge">En Stock</div>
-                        <div class="card-icon">💾</div>
-                        <h3>Storage NAS Center</h3>
-                        <p class="description">Almacenamiento masivo en red con protección RAID avanzada.</p>
-                        <div class="specs-grid">
-                            <span><strong>Bayas:</strong> 12 Bahías</span>
-                            <span><strong>Capacidad:</strong> Hasta 192TB</span>
+                        <div class="contentcard-inner">
+                            <div class="card-badge premium">Enterprise</div>
+                            <div class="card-icon">🚀</div>
+                            <h3>Blade Server X900</h3>
+                            <p class="description">Máximo rendimiento para infraestructura en la nube y Big Data.</p>
+                            <div class="specs-grid">
+                                <span><strong>CPU:</strong> AMD EPYC 64C</span>
+                                <span><strong>RAM:</strong> 256GB ECC</span>
+                            </div>
+                            <div class="card-action">
+                                <span class="price">$2,899<small>/mes</small></span>
+                                <button class="btn-action btn-cart"
+                                    onclick="addToCart({ name: 'Blade Server X900', price: 2899, category: 'servidor', ref: 'Blade Server X900' })">Agregar
+                                    al carrito</button>
+                                <button class="btn-action btn-buy"
+                                    onclick="buyNow({ name: 'Blade Server X900', price: 2899, category: 'servidor', ref: 'Blade Server X900' })">Comprar
+                                    ahora</button>
+                                <button class="btn-action btn-quote"
+                                    onclick="requestQuote({ name: 'Blade Server X900', category: 'servidor', description: 'Blade Server X900' })">Cotizar</button>
+                            </div>
                         </div>
-                        <div class="card-action">
-                            <span class="price">$899<small>/mes</small></span>
-                            <button
-                                onclick="addToCart({ name: 'Storage NAS Center', price: 899, category: 'producto', ref: 'Storage NAS Center' })">Agregar
-                                al carrito</button>
-                            <button
-                                onclick="buyNow({ name: 'Storage NAS Center', price: 899, category: 'producto', ref: 'Storage NAS Center' })">Comprar
-                                ahora</button>
-                            <button
-                                onclick="requestQuote({ name: 'Storage NAS Center', category: 'producto', description: 'Storage NAS Center' })">Cotizar</button>
+                    </article>
+
+                    <article class="contentcard">
+                        <div class="contentcard-inner">
+                            <div class="card-badge">En Stock</div>
+                            <div class="card-icon">💾</div>
+                            <h3>Storage NAS Center</h3>
+                            <p class="description">Almacenamiento masivo en red con protección RAID avanzada.</p>
+                            <div class="specs-grid">
+                                <span><strong>Bayas:</strong> 12 Bahías</span>
+                                <span><strong>Capacidad:</strong> Hasta 192TB</span>
+                            </div>
+                            <div class="card-action">
+                                <span class="price">$899<small>/mes</small></span>
+                                <button class="btn-action btn-cart"
+                                    onclick="addToCart({ name: 'Storage NAS Center', price: 899, category: 'producto', ref: 'Storage NAS Center' })">Agregar
+                                    al carrito</button>
+                                <button class="btn-action btn-buy"
+                                    onclick="buyNow({ name: 'Storage NAS Center', price: 899, category: 'producto', ref: 'Storage NAS Center' })">Comprar
+                                    ahora</button>
+                                <button class="btn-action btn-quote"
+                                    onclick="requestQuote({ name: 'Storage NAS Center', category: 'producto', description: 'Storage NAS Center' })">Cotizar</button>
+                            </div>
                         </div>
                     </article>
 

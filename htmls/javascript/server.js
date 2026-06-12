@@ -678,6 +678,337 @@ app.post('/api/mensajes', requireAuth, async (req, res) => {
   }
 });
 
+/* =========================
+   API VENTAS / PRODUCTOS / SERVICIOS
+   ========================= */
+
+// Listar productos disponibles (frontend consume esto)
+app.get('/api/productos', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM products_vendidos');
+    return res.json({ ok: true, productos: rows });
+  } catch (err) {
+    console.error('Error GET /api/productos', err);
+    return res.status(500).json({ ok: false, error: 'Error al obtener productos' });
+  }
+});
+
+// Listar servicios de servidores
+app.get('/api/servicios/servidores', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM servicios_servidores');
+    return res.json({ ok: true, servicios: rows });
+  } catch (err) {
+    console.error('Error GET /api/servicios/servidores', err);
+    return res.status(500).json({ ok: false, error: 'Error al obtener servicios' });
+  }
+});
+
+// Listar servicios de seguridad
+app.get('/api/servicios/seguridad', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM servicios_seguridad');
+    return res.json({ ok: true, servicios: rows });
+  } catch (err) {
+    console.error('Error GET /api/servicios/seguridad', err);
+    return res.status(500).json({ ok: false, error: 'Error al obtener servicios' });
+  }
+});
+
+function ensureCartSession(req) {
+  if (!req.session) return null;
+  req.session.cart = req.session.cart || [];
+  return req.session.cart;
+}
+
+function calculateCart(cart) {
+  const items = (cart || []).map((item) => ({
+    ...item,
+    subtotal: Number(item.precio || 0) * Number(item.cantidad || 1)
+  }));
+  const total = items.reduce((sum, item) => sum + item.subtotal, 0);
+  return { items, total };
+}
+
+async function hydrateCartItems(cart) {
+  const connection = await pool.getConnection();
+  try {
+    const hydrated = [];
+    for (const item of cart || []) {
+      const lookup = await resolveItemData(connection, item);
+      hydrated.push({
+        ...item,
+        label: lookup.label,
+        precio: lookup.precio,
+        subtotal: Number(lookup.precio) * Number(item.cantidad || 1)
+      });
+    }
+    return hydrated;
+  } finally {
+    connection.release();
+  }
+}
+
+app.get('/api/carrito', requireAuth, async (req, res) => {
+  const cart = ensureCartSession(req);
+  const hydrated = await hydrateCartItems(cart);
+  const total = hydrated.reduce((sum, item) => sum + item.subtotal, 0);
+  return res.json({ ok: true, cart: hydrated, total });
+});
+
+app.post('/api/carrito', requireAuth, async (req, res) => {
+  const { type, id, cantidad = 1 } = req.body || {};
+  if (!type || !id) return res.status(400).json({ ok: false, error: 'type e id son obligatorios' });
+  const qty = Math.max(1, Number(cantidad) || 1);
+  const cart = ensureCartSession(req);
+  const itemKey = `${type}-${id}`;
+  const existing = cart.find((item) => item.itemKey === itemKey);
+  if (existing) {
+    existing.cantidad = existing.cantidad + qty;
+  } else {
+    cart.push({ itemKey, type, id: Number(id), cantidad: qty });
+  }
+  const hydrated = await hydrateCartItems(cart);
+  const total = hydrated.reduce((sum, item) => sum + item.subtotal, 0);
+  return res.json({ ok: true, cart: hydrated, total });
+});
+
+app.put('/api/carrito/:itemKey', requireAuth, async (req, res) => {
+  const { itemKey } = req.params;
+  const { cantidad } = req.body || {};
+  const qty = Math.max(0, Number(cantidad) || 0);
+  const cart = ensureCartSession(req);
+  const index = cart.findIndex((item) => item.itemKey === itemKey);
+  if (index < 0) return res.status(404).json({ ok: false, error: 'Item no encontrado en el carrito' });
+  if (qty <= 0) {
+    cart.splice(index, 1);
+  } else {
+    cart[index].cantidad = qty;
+  }
+  const hydrated = await hydrateCartItems(cart);
+  const total = hydrated.reduce((sum, item) => sum + item.subtotal, 0);
+  return res.json({ ok: true, cart: hydrated, total });
+});
+
+app.delete('/api/carrito/:itemKey', requireAuth, async (req, res) => {
+  const { itemKey } = req.params;
+  const cart = ensureCartSession(req);
+  req.session.cart = cart.filter((item) => item.itemKey !== itemKey);
+  const hydrated = await hydrateCartItems(req.session.cart);
+  const total = hydrated.reduce((sum, item) => sum + item.subtotal, 0);
+  return res.json({ ok: true, cart: hydrated, total });
+});
+
+async function resolveItemData(connection, item) {
+  const id = Number(item.id);
+  if (item.type === 'producto') {
+    const [rows] = await connection.query('SELECT precio, nombre FROM products_vendidos WHERE id_producto = ?', [id]);
+    if (!rows.length) throw new Error('Producto no encontrado: ' + id);
+    return { precio: Number(rows[0].precio || 0), label: rows[0].nombre || 'Producto' };
+  }
+  if (item.type === 'servidor') {
+    const [rows] = await connection.query('SELECT precio, tipo FROM servicios_servidores WHERE id_servicio = ?', [id]);
+    if (!rows.length) throw new Error('Servicio servidor no encontrado: ' + id);
+    return { precio: Number(rows[0].precio || 0), label: rows[0].tipo || 'Servicio servidor' };
+  }
+  if (item.type === 'seguridad') {
+    const [rows] = await connection.query('SELECT precio, nombre FROM servicios_seguridad WHERE id_servicio = ?', [id]);
+    if (!rows.length) throw new Error('Servicio seguridad no encontrado: ' + id);
+    return { precio: Number(rows[0].precio || 0), label: rows[0].nombre || 'Servicio seguridad' };
+  }
+  throw new Error('Tipo de item inválido: ' + item.type);
+}
+
+app.post('/api/venta', requireAuth, async (req, res) => {
+  const userId = req.session.user.id;
+  const bodyItems = req.body && Array.isArray(req.body.items) ? req.body.items : null;
+  const cart = ensureCartSession(req) || [];
+  const items = bodyItems && bodyItems.length ? bodyItems : cart;
+  if (!items || !items.length) return res.status(400).json({ ok: false, error: 'No se proporcionaron items para la venta' });
+
+  let connection;
+  try {
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+
+    const ventaGroup = `${userId}-${Date.now()}`;
+    let totalVenta = 0;
+
+    const [ventaResult] = await connection.query(
+      'INSERT INTO ventas (venta_group, id_usuario, total, fecha_compra, estado) VALUES (?, ?, ?, NOW(), ?)',
+      [ventaGroup, userId, 0, 'completada']
+    );
+    const idVenta = ventaResult.insertId;
+
+    for (const item of items) {
+      const cantidad = Math.max(1, Number(item.cantidad) || 1);
+      const { precio, label } = await resolveItemData(connection, item);
+      const subtotal = Number(precio) * cantidad;
+      totalVenta += subtotal;
+
+      await connection.query(
+        'INSERT INTO venta_items (id_venta, tipo, referencia_id, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?, ?)',
+        [idVenta, item.type, Number(item.id), cantidad, precio, subtotal]
+      );
+
+      await connection.query(
+        'INSERT INTO ventashay (venta_group, id_usuario, id_producto, id_servicio_servidor, id_servicio_seguridad, cantidad, total, fecha_compra, estado) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)',
+        [ventaGroup, userId,
+          item.type === 'producto' ? Number(item.id) : null,
+          item.type === 'servidor' ? Number(item.id) : null,
+          item.type === 'seguridad' ? Number(item.id) : null,
+          cantidad, subtotal, 'completada']
+      );
+    }
+
+    await connection.query('UPDATE ventas SET total = ? WHERE id_venta = ?', [totalVenta, idVenta]);
+
+    await connection.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES (?, ?, NOW(), ?)', [userId, 'Compra realizada correctamente', 0]);
+
+    await connection.commit();
+    req.session.cart = [];
+    return res.json({ ok: true, ventaGroup, total: totalVenta });
+  } catch (err) {
+    console.error('Error POST /api/venta', err);
+    if (connection) await connection.rollback();
+    return res.status(500).json({ ok: false, error: err.message || 'Error al procesar compra' });
+  } finally {
+    if (connection) connection.release();
+  }
+});
+
+app.get('/api/mis-compras', requireAuth, async (req, res) => {
+  const userId = req.session.user.id;
+  try {
+    const [rows] = await pool.query(
+      `SELECT v.*, p.nombre AS producto_nombre, s.tipo AS servicio_servidor_tipo, ss.nombre AS servicio_seguridad_nombre, u.nombre_usuario AS comprador
+       FROM ventashay v
+       LEFT JOIN products_vendidos p ON v.id_producto = p.id_producto
+       LEFT JOIN servicios_servidores s ON v.id_servicio_servidor = s.id_servicio
+       LEFT JOIN servicios_seguridad ss ON v.id_servicio_seguridad = ss.id_servicio
+       LEFT JOIN cuenta_usuario u ON v.id_usuario = u.id_usuarios
+       WHERE v.id_usuario = ?
+       ORDER BY v.fecha_compra DESC`,
+      [userId]
+    );
+    return res.json({ ok: true, ventas: rows });
+  } catch (err) {
+    console.error('Error GET /api/mis-compras', err);
+    return res.status(500).json({ ok: false, error: 'Error al obtener compras' });
+  }
+});
+
+app.get('/api/admin/productos', requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM products_vendidos');
+    return res.json({ ok: true, productos: rows });
+  } catch (err) {
+    console.error('Error GET /api/admin/productos', err);
+    return res.status(500).json({ ok: false, error: 'Error al obtener productos admin' });
+  }
+});
+
+// Obtener ventas del usuario actual
+app.get('/api/ventas', requireAuth, async (req, res) => {
+  const userId = req.session.user.id;
+  try {
+    const [rows] = await pool.query(
+      `SELECT v.*, p.nombre AS producto_nombre, s.tipo AS servicio_servidor_tipo, ss.nombre AS servicio_seguridad_nombre, u.nombre_usuario AS comprador
+       FROM ventashay v
+       LEFT JOIN products_vendidos p ON v.id_producto = p.id_producto
+       LEFT JOIN servicios_servidores s ON v.id_servicio_servidor = s.id_servicio
+       LEFT JOIN servicios_seguridad ss ON v.id_servicio_seguridad = ss.id_servicio
+       LEFT JOIN cuenta_usuario u ON v.id_usuario = u.id_usuarios
+       WHERE v.id_usuario = ?
+       ORDER BY v.fecha_compra DESC`,
+      [userId]
+    );
+    return res.json({ ok: true, ventas: rows });
+  } catch (err) {
+    console.error('Error GET /api/ventas', err);
+    return res.status(500).json({ ok: false, error: 'Error al obtener ventas' });
+  }
+});
+
+// Registrar compra (acepta array de items)
+app.post('/api/ventas', requireAuth, async (req, res) => {
+  const userId = req.session.user.id;
+  const { items } = req.body;
+  if (!items || !Array.isArray(items) || items.length === 0) return res.status(400).json({ ok: false, error: 'No se proporcionaron items' });
+
+  let connection;
+  try {
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+
+    const ventaGroup = `${userId}-${Date.now()}`;
+    let totalVenta = 0;
+
+    for (const it of items) {
+      const tipo = it.type;
+      const id = Number(it.id);
+      const cantidad = Number(it.cantidad) || 1;
+
+      if (tipo === 'producto') {
+        const [rows] = await connection.query('SELECT precio, nombre FROM products_vendidos WHERE id_producto = ?', [id]);
+        if (!rows.length) throw new Error('Producto no encontrado: ' + id);
+        const precio = Number(rows[0].precio || 0);
+        const subtotal = precio * cantidad;
+        totalVenta += subtotal;
+        await connection.query('INSERT INTO ventashay (venta_group, id_usuario, id_producto, cantidad, total, fecha_compra, estado) VALUES (?, ?, ?, ?, ?, NOW(), ?)', [ventaGroup, userId, id, cantidad, subtotal, 'completada']);
+      } else if (tipo === 'servidor') {
+        const [rows] = await connection.query('SELECT precio, tipo FROM servicios_servidores WHERE id_servicio = ?', [id]);
+        if (!rows.length) throw new Error('Servicio servidor no encontrado: ' + id);
+        const precio = Number(rows[0].precio || 0);
+        const subtotal = precio * cantidad;
+        totalVenta += subtotal;
+        await connection.query('INSERT INTO ventashay (venta_group, id_usuario, id_servicio_servidor, cantidad, total, fecha_compra, estado) VALUES (?, ?, ?, ?, ?, NOW(), ?)', [ventaGroup, userId, id, cantidad, subtotal, 'completada']);
+      } else if (tipo === 'seguridad') {
+        const [rows] = await connection.query('SELECT precio, nombre FROM servicios_seguridad WHERE id_servicio = ?', [id]);
+        if (!rows.length) throw new Error('Servicio seguridad no encontrado: ' + id);
+        const precio = Number(rows[0].precio || 0);
+        const subtotal = precio * cantidad;
+        totalVenta += subtotal;
+        await connection.query('INSERT INTO ventashay (venta_group, id_usuario, id_servicio_seguridad, cantidad, total, fecha_compra, estado) VALUES (?, ?, ?, ?, ?, NOW(), ?)', [ventaGroup, userId, id, cantidad, subtotal, 'completada']);
+      } else {
+        throw new Error('Tipo de item inválido: ' + tipo);
+      }
+    }
+
+    // Crear notificación
+    await connection.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES (?, ?, NOW(), ?)', [userId, 'Compra realizada correctamente', 0]);
+
+    await connection.commit();
+    return res.json({ ok: true, ventaGroup, total: totalVenta });
+  } catch (err) {
+    console.error('Error POST /api/ventas', err);
+    if (connection) await connection.rollback();
+    return res.status(500).json({ ok: false, error: err.message || 'Error al procesar compra' });
+  } finally {
+    if (connection) connection.release();
+  }
+});
+
+// Admin: ver todas las ventas
+app.get('/api/admin/ventas', requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      `SELECT v.*, p.nombre AS producto_nombre, s.tipo AS servicio_servidor_tipo, ss.nombre AS servicio_seguridad_nombre, u.nombre_usuario AS comprador, u.correoUsuario AS comprador_email
+       FROM ventashay v
+       LEFT JOIN products_vendidos p ON v.id_producto = p.id_producto
+       LEFT JOIN servicios_servidores s ON v.id_servicio_servidor = s.id_servicio
+       LEFT JOIN servicios_seguridad ss ON v.id_servicio_seguridad = ss.id_servicio
+       LEFT JOIN cuenta_usuario u ON v.id_usuario = u.id_usuarios
+       ORDER BY v.fecha_compra DESC`
+    );
+    return res.json({ ok: true, ventas: rows });
+  } catch (err) {
+    console.error('Error GET /api/admin/ventas', err);
+    return res.status(500).json({ ok: false, error: 'Error al obtener ventas' });
+  }
+});
+
+
 // 404 para rutas no encontradas
 app.use((req, res) => {
   res.status(404).json({ error: 'Ruta no encontrada' });

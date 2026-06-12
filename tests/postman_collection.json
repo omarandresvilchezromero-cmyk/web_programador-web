@@ -1,0 +1,45 @@
+{
+  "info": {
+    "name": "Examen Omar - Ventas Flow",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register Test User",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\"nombre_usuario\":\"test_auto\",\"correoUsuario\":\"test_auto@example.com\",\"contrasenia\":\"Test1234\"}" , "options": { "raw": { "language": "json" } } },
+        "url": { "raw": "http://localhost:3000/api/register", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "register"] }
+      }
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\"correoUsuario\":\"test_auto@example.com\",\"contrasenia\":\"Test1234\"}" },
+        "url": { "raw": "http://localhost:3000/api/login", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "login"] }
+      }
+    },
+    {
+      "name": "Get Products",
+      "request": { "method": "GET", "url": { "raw": "http://localhost:3000/api/productos", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "productos"] } }
+    },
+    {
+      "name": "Create Sale (POST /api/ventas)",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\"items\":[{\"type\":\"producto\",\"id\":1,\"cantidad\":1}]}" },
+        "url": { "raw": "http://localhost:3000/api/ventas", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "ventas"] }
+      }
+    },
+    {
+      "name": "Get My Purchases",
+      "request": { "method": "GET", "url": { "raw": "http://localhost:3000/api/ventas", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "ventas"] } }
+    }
+  ]
+}

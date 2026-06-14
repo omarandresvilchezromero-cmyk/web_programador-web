@@ -3,6 +3,8 @@
    ============================================= */
 
 let solicitudActualModal = null;
+let solicitudes = [];
+let empleados = [];
 
 document.addEventListener('DOMContentLoaded', async function() {
     // Verificar si el usuario es administrador
@@ -10,8 +12,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (!hasAccess) return;
 
     // Cargar datos iniciales
-    loadAllSolicitudes();
-    loadAllEmpleados();
+    await loadAllSolicitudes();
+    await loadAllEmpleados();
 
     // Event listeners para tabs
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -85,33 +87,102 @@ function switchTab(tabName) {
 }
 
 /* ==================== CARGAR TODAS LAS SOLICITUDES ==================== */
-function loadAllSolicitudes() {
-    const solicitudes = window.reclutamiento.getAllSolicitudes();
+async function loadAllSolicitudes() {
+    try {
+        solicitudes = await fetchAdminSolicitudes();
+    } catch (error) {
+        console.error('Error cargando solicitudes del servidor:', error);
+        solicitudes = [];
+    }
 
     const pendientes = solicitudes.filter(s => s.estado === 'pendiente');
     const aceptadas = solicitudes.filter(s => s.estado === 'aceptada');
     const rechazadas = solicitudes.filter(s => s.estado === 'rechazada');
 
-    // Actualizar contadores
     document.getElementById('count-pendientes').textContent = pendientes.length;
     document.getElementById('count-aceptadas').textContent = aceptadas.length;
     document.getElementById('count-rechazadas').textContent = rechazadas.length;
 
-    // Mostrar solicitudes
     displaySolicitudes('pendientes', pendientes);
     displaySolicitudes('aceptadas', aceptadas);
     displaySolicitudes('rechazadas', rechazadas);
 }
 
+async function fetchAdminSolicitudes() {
+    const res = await apiFetch('/api/admin/solicitudes');
+    if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    return Array.isArray(data.solicitudes) ? data.solicitudes : [];
+}
+
+async function approveSolicitud(solicitudId) {
+    try {
+        const response = await apiFetch(`/api/admin/solicitudes/${solicitudId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'approve', insignia: 'empleado-verificado' })
+        });
+        const data = await response.json().catch(() => ({}));
+        return response.ok ? { ok: true, data } : { ok: false, error: data.error || 'Error al aprobar' };
+    } catch (err) {
+        console.error('Error aprobando solicitud:', err);
+        return { ok: false, error: 'Error de conexión al aprobar solicitud' };
+    }
+}
+
+async function rejectSolicitud(solicitudId, razonRechazo) {
+    try {
+        const response = await apiFetch(`/api/admin/solicitudes/${solicitudId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'reject', razonRechazo })
+        });
+        const data = await response.json().catch(() => ({}));
+        return response.ok ? { ok: true, data } : { ok: false, error: data.error || 'Error al rechazar' };
+    } catch (err) {
+        console.error('Error rechazando solicitud:', err);
+        return { ok: false, error: 'Error de conexión al rechazar solicitud' };
+    }
+}
+
+async function fetchAdminEmpleados() {
+    try {
+        const res = await apiFetch('/api/admin/empleados');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const rows = Array.isArray(data.empleados) ? data.empleados : [];
+        return rows.map(row => ({
+            ...row,
+            idEmpleado: row.id_empleado || row.idEmpleado || row.id || '',
+            nombreCompleto: row.user_nombre || row.nombre_usuario || row.nombreCompleto || row.correoUsuario || row.user_email || 'Empleado',
+            especialidad: row.especialidad || 'Sin especialidad',
+            anosExperiencia: row.experiencia || row.anosExperiencia || 0,
+            disponibilidad: Array.isArray(row.disponibilidad) ? row.disponibilidad : (row.disponibilidad ? [row.disponibilidad] : []),
+            fechaIngreso: row.fecha_ingreso || row.fechaIngreso || null,
+            rating: row.rating || 5
+        }));
+    } catch (error) {
+        console.error('Error obteniendo empleados:', error);
+        return [];
+    }
+}
+
+async function loadAllEmpleados() {
+    empleados = await fetchAdminEmpleados();
+    document.getElementById('count-empleados').textContent = empleados.length;
+    displayEmpleados(empleados);
+}
+
 /* ==================== MOSTRAR SOLICITUDES ==================== */
-function displaySolicitudes(tipo, solicitudes) {
+function displaySolicitudes(tipo, solicitudesList) {
     const container = document.getElementById(`${tipo}-list`);
     const emptyState = document.getElementById(`no-${tipo}`);
 
-    // Limpiar contenedor
     container.innerHTML = '';
 
-    if (solicitudes.length === 0) {
+    if (!solicitudesList || solicitudesList.length === 0) {
         container.style.display = 'none';
         emptyState.style.display = 'block';
         return;
@@ -120,7 +191,7 @@ function displaySolicitudes(tipo, solicitudes) {
     container.style.display = 'grid';
     emptyState.style.display = 'none';
 
-    solicitudes.forEach((solicitud, index) => {
+    solicitudesList.forEach((solicitud, index) => {
         const card = createSolicitudCard(solicitud, tipo);
         card.style.animationDelay = `${0.05 * index}s`;
         container.appendChild(card);
@@ -133,9 +204,11 @@ function createSolicitudCard(solicitud, tipo) {
     card.className = 'solicitud-card';
     card.style.animation = 'fadeInUp 0.5s ease-out backwards';
 
-    const especialidadLabel = getEspecialidadLabel(solicitud.especialidad);
+    const especialidadLabel = getEspecialidadLabel(solicitud.especialidad || solicitud.usuario_especialidad || 'N/A');
     const estadoBadgeClass = `badge-${solicitud.estado}`;
-    const estadoLabel = solicitud.estado.charAt(0).toUpperCase() + solicitud.estado.slice(1);
+    const estadoLabel = solicitud.estado ? solicitud.estado.charAt(0).toUpperCase() + solicitud.estado.slice(1) : 'Sin estado';
+    const nombreSolicitante = solicitud.nombre_usuario || solicitud.usuario_nombre || 'Usuario';
+    const correoSolicitante = solicitud.correoUsuario || solicitud.usuario_email || '';
 
     let actionsHTML = '';
     
@@ -153,15 +226,7 @@ function createSolicitudCard(solicitud, tipo) {
                 </button>
             </div>
         `;
-    } else if (solicitud.estado === 'aceptada') {
-        actionsHTML = `
-            <div class="solicitud-actions">
-                <button class="btn-action btn-ver-detalles" onclick="showModalDetalles('${solicitud.id}')">
-                    Ver Detalles
-                </button>
-            </div>
-        `;
-    } else if (solicitud.estado === 'rechazada') {
+    } else {
         actionsHTML = `
             <div class="solicitud-actions">
                 <button class="btn-action btn-ver-detalles" onclick="showModalDetalles('${solicitud.id}')">
@@ -173,26 +238,26 @@ function createSolicitudCard(solicitud, tipo) {
 
     card.innerHTML = `
         <div class="solicitud-header">
-            <div class="solicitud-nombre">${solicitud.nombreCompleto}</div>
+            <div class="solicitud-nombre">${nombreSolicitante}</div>
             <span class="solicitud-badge ${estadoBadgeClass}">${estadoLabel}</span>
         </div>
 
         <div class="solicitud-info">
+            <div class="info-item">
+                <span class="info-label">Email</span>
+                <span class="info-value">${correoSolicitante}</span>
+            </div>
             <div class="info-item">
                 <span class="info-label">Especialidad</span>
                 <span class="info-value">${especialidadLabel}</span>
             </div>
             <div class="info-item">
                 <span class="info-label">Experiencia</span>
-                <span class="info-value">${solicitud.anosExperiencia} años</span>
+                <span class="info-value">${solicitud.experiencia || 'N/A'}</span>
             </div>
             <div class="info-item">
-                <span class="info-label">Edad</span>
-                <span class="info-value">${solicitud.edad} años</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Solicitud</span>
-                <span class="info-value">${formatDate(solicitud.fechaSolicitud)}</span>
+                <span class="info-label">Fecha Solicitud</span>
+                <span class="info-value">${formatDate(solicitud.fecha_solicitud)}</span>
             </div>
         </div>
 
@@ -204,41 +269,39 @@ function createSolicitudCard(solicitud, tipo) {
 
 /* ==================== MOSTRAR MODAL DE DETALLES ==================== */
 function showModalDetalles(solicitudId) {
-    const solicitud = window.reclutamiento.getSolicitudById(solicitudId);
+    const solicitud = solicitudes.find(s => s.id === solicitudId);
     if (!solicitud) return;
 
     solicitudActualModal = solicitud;
-
-    const disponibilidadHTML = solicitud.disponibilidad
-        .map(d => getDisponibilidadLabel(d))
-        .join(', ');
-
-    const especialidadLabel = getEspecialidadLabel(solicitud.especialidad);
+    const especialidadLabel = getEspecialidadLabel(solicitud.especialidad || solicitud.usuario_especialidad || 'N/A');
 
     let contenidoAdicional = '';
     if (solicitud.estado === 'aceptada') {
         contenidoAdicional = `
-            <div class="detalle">
-                <div class="detalle-label">ID de Empleado</div>
-                <div class="detalle-valor" style="color: #22D3EE; font-family: monospace;">${solicitud.idEmpleado}</div>
-            </div>
-            <div class="detalle">
-                <div class="detalle-label">Insignia</div>
-                <div class="detalle-valor">✓ Empleado Verificado</div>
+            <div class="detalle" style="grid-column: 1 / -1;">
+                <div class="detalle-label">Solicitud Aprobada</div>
+                <div class="detalle-valor">Se ha creado el registro de empleado y se notificó al candidato.</div>
             </div>
         `;
     } else if (solicitud.estado === 'rechazada') {
         contenidoAdicional = `
             <div class="detalle" style="grid-column: 1 / -1;">
                 <div class="detalle-label">Razón del Rechazo</div>
-                <div class="detalle-valor">${solicitud.razonRechazo || 'No especificado'}</div>
+                <div class="detalle-valor">${solicitud.razon_rechazo || 'No especificada'}</div>
+            </div>
+        `;
+    } else if (solicitud.estado === 'info_requerida') {
+        contenidoAdicional = `
+            <div class="detalle" style="grid-column: 1 / -1;">
+                <div class="detalle-label">Información solicitada</div>
+                <div class="detalle-valor">${solicitud.info_solicitada || 'No disponible'}</div>
             </div>
         `;
     }
 
     const modalBody = document.getElementById('modal-body');
     modalBody.innerHTML = `
-        <h2>${solicitud.nombreCompleto}</h2>
+        <h2>${solicitud.nombre_usuario || 'Solicitante'}</h2>
 
         <div class="modal-detalles">
             <div class="detalle">
@@ -246,34 +309,30 @@ function showModalDetalles(solicitudId) {
                 <div class="detalle-valor" style="text-transform: capitalize;">${solicitud.estado}</div>
             </div>
             <div class="detalle">
+                <div class="detalle-label">Correo</div>
+                <div class="detalle-valor">${solicitud.correoUsuario || solicitud.usuario_email || 'N/A'}</div>
+            </div>
+            <div class="detalle">
                 <div class="detalle-label">Especialidad</div>
                 <div class="detalle-valor">${especialidadLabel}</div>
             </div>
             <div class="detalle">
-                <div class="detalle-label">Edad</div>
-                <div class="detalle-valor">${solicitud.edad} años</div>
-            </div>
-            <div class="detalle">
                 <div class="detalle-label">Experiencia</div>
-                <div class="detalle-valor">${solicitud.anosExperiencia} años</div>
+                <div class="detalle-valor">${solicitud.experiencia || 'N/A'}</div>
             </div>
             <div class="detalle" style="grid-column: 1 / -1;">
-                <div class="detalle-label">Disponibilidad</div>
-                <div class="detalle-valor">${disponibilidadHTML}</div>
-            </div>
-            <div class="detalle" style="grid-column: 1 / -1;">
-                <div class="detalle-label">Habilidades Técnicas</div>
-                <div class="detalle-valor">${solicitud.habilidades}</div>
-            </div>
-            <div class="detalle" style="grid-column: 1 / -1;">
-                <div class="detalle-label">¿Por qué deseas unirte?</div>
-                <div class="detalle-valor">${solicitud.motivacion}</div>
+                <div class="detalle-label">Descripción</div>
+                <div class="detalle-valor">${solicitud.descripcion || 'No disponible'}</div>
             </div>
             <div class="detalle" style="grid-column: 1 / -1;">
                 <div class="detalle-label">Fecha de Solicitud</div>
-                <div class="detalle-valor">${formatDateTime(solicitud.fechaSolicitud)}</div>
+                <div class="detalle-valor">${formatDateTime(solicitud.fecha_solicitud)}</div>
             </div>
-
+            ${solicitud.fecha_aprobacion ? `
+            <div class="detalle" style="grid-column: 1 / -1;">
+                <div class="detalle-label">Fecha de Aprobación</div>
+                <div class="detalle-valor">${formatDateTime(solicitud.fecha_aprobacion)}</div>
+            </div>` : ''}
             ${contenidoAdicional}
         </div>
     `;
@@ -282,32 +341,33 @@ function showModalDetalles(solicitudId) {
 }
 
 /* ==================== MOSTRAR MODAL ACEPTAR ==================== */
-function showModalAceptar(solicitudId) {
-    const solicitud = window.reclutamiento.getSolicitudById(solicitudId);
+async function showModalAceptar(solicitudId) {
+    const solicitud = solicitudes.find(s => s.id === solicitudId);
     if (!solicitud) return;
 
-    if (confirm(`¿Aceptar solicitud de ${solicitud.nombreCompleto}?`)) {
-        const idEmpleado = window.reclutamiento.acceptSolicitud(solicitudId);
-        
-        alert(`✓ Solicitud aceptada\n\nID de Empleado: ${idEmpleado}`);
-        
-        // Recargar datos
-        loadAllSolicitudes();
-        loadAllEmpleados();
-        closeModal();
+    if (confirm(`¿Aceptar solicitud de ${solicitud.nombre_usuario || 'este solicitante'}?`)) {
+        const result = await approveSolicitud(solicitudId);
+        if (result.ok) {
+            alert('Solicitud aprobada correctamente.');
+            await loadAllSolicitudes();
+            await loadAllEmpleados();
+            closeModal();
+        } else {
+            alert(result.error || 'Error al aprobar la solicitud');
+        }
     }
 }
 
 /* ==================== MOSTRAR MODAL RECHAZAR ==================== */
 function showModalRechazar(solicitudId) {
-    solicitudActualModal = window.reclutamiento.getSolicitudById(solicitudId);
+    solicitudActualModal = solicitudes.find(s => s.id === solicitudId);
     if (!solicitudActualModal) return;
 
     document.getElementById('rechazarModal').style.display = 'flex';
 }
 
 /* ==================== ENVIAR RECHAZO ==================== */
-function submitRechazo(event) {
+async function submitRechazo(event) {
     event.preventDefault();
 
     const razon = document.getElementById('razon-rechazo').value.trim();
@@ -317,14 +377,20 @@ function submitRechazo(event) {
         return;
     }
 
-    window.reclutamiento.rejectSolicitud(solicitudActualModal.id, razon);
-    
-    alert(`✓ Solicitud de ${solicitudActualModal.nombreCompleto} ha sido rechazada`);
-    
-    // Limpiar y recargar
-    document.getElementById('form-rechazo').reset();
-    closeRechazarModal();
-    loadAllSolicitudes();
+    if (!solicitudActualModal) {
+        alert('No se encontró la solicitud seleccionada');
+        return;
+    }
+
+    const result = await rejectSolicitud(solicitudActualModal.id, razon);
+    if (result.ok) {
+        alert(`✓ Solicitud de ${solicitudActualModal.nombre_usuario || 'este solicitante'} ha sido rechazada`);
+        document.getElementById('form-rechazo').reset();
+        closeRechazarModal();
+        await loadAllSolicitudes();
+    } else {
+        alert(result.error || 'Error al rechazar la solicitud');
+    }
 }
 
 /* ==================== CERRAR MODALES ==================== */
@@ -350,22 +416,14 @@ document.addEventListener('click', function(event) {
 });
 
 /* ==================== CARGAR EMPLEADOS ==================== */
-function loadAllEmpleados() {
-    const empleados = window.reclutamiento.getAllEmployees();
-    
-    document.getElementById('count-empleados').textContent = empleados.length;
-
-    displayEmpleados(empleados);
-}
-
 /* ==================== MOSTRAR EMPLEADOS ==================== */
-function displayEmpleados(empleados) {
+function displayEmpleados(empleadosList) {
     const container = document.getElementById('empleados-list');
     const emptyState = document.getElementById('no-empleados');
 
     container.innerHTML = '';
 
-    if (empleados.length === 0) {
+    if (!empleadosList || empleadosList.length === 0) {
         container.style.display = 'none';
         emptyState.style.display = 'block';
         return;
@@ -374,7 +432,7 @@ function displayEmpleados(empleados) {
     container.style.display = 'grid';
     emptyState.style.display = 'none';
 
-    empleados.forEach((empleado, index) => {
+    empleadosList.forEach((empleado, index) => {
         const card = createEmpleadoCard(empleado);
         card.style.animationDelay = `${0.05 * index}s`;
         container.appendChild(card);
@@ -387,13 +445,14 @@ function createEmpleadoCard(empleado) {
     card.className = 'empleado-card';
     card.style.animation = 'fadeInUp 0.5s ease-out backwards';
 
-    const iniciales = empleado.nombreCompleto
+    const iniciales = (empleado.nombreCompleto || 'Empleado')
         .split(' ')
+        .filter(Boolean)
         .map(n => n[0])
         .join('')
-        .toUpperCase();
+        .toUpperCase() || 'EM';
 
-    const especialidadLabel = getEspecialidadLabel(empleado.especialidad);
+    const especialidadLabel = getEspecialidadLabel(empleado.especialidad || 'Sin especialidad');
     const stars = '⭐'.repeat(Math.round(empleado.rating || 5));
 
     const disponibilidadHTML = empleado.disponibilidad
@@ -433,23 +492,23 @@ function filterEmpleados() {
     const searchTerm = document.getElementById('search-empleados').value.toLowerCase();
     const especialidadFilter = document.getElementById('filter-especialidad').value;
 
-    let empleados = window.reclutamiento.getAllEmployees();
+    let filteredEmpleados = empleados.slice();
 
     // Filtrar por búsqueda
     if (searchTerm) {
-        empleados = empleados.filter(e => 
-            e.nombreCompleto.toLowerCase().includes(searchTerm) ||
-            e.especialidad.toLowerCase().includes(searchTerm) ||
-            e.idEmpleado.toLowerCase().includes(searchTerm)
+        filteredEmpleados = filteredEmpleados.filter(e => 
+            (e.nombreCompleto || '').toLowerCase().includes(searchTerm) ||
+            (e.especialidad || '').toLowerCase().includes(searchTerm) ||
+            (e.idEmpleado || '').toString().toLowerCase().includes(searchTerm)
         );
     }
 
     // Filtrar por especialidad
     if (especialidadFilter) {
-        empleados = empleados.filter(e => e.especialidad === especialidadFilter);
+        filteredEmpleados = filteredEmpleados.filter(e => e.especialidad === especialidadFilter);
     }
 
-    displayEmpleados(empleados);
+    displayEmpleados(filteredEmpleados);
 }
 
 /* ==================== FUNCIONES AUXILIARES ==================== */

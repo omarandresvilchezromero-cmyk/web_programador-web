@@ -1,0 +1,144 @@
+Error GET /api/ventas Error: Table 'web_programacion.ventashay' doesn't exist
+    at D:\examen omar\htmls\javascript\server.js:1288:31
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\examen omar\node_modules\express\lib\router\route.js:149:13)
+    at requireAuth (D:\examen omar\htmls\javascript\server.js:224:47)
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\examen omar\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\examen omar\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at D:\examen omar\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (D:\examen omar\node_modules\express\lib\router\index.js:346:12) {
+  code: 'ER_NO_SUCH_TABLE',
+  errno: 1146,
+  sqlState: '42S02',
+  sqlMessage: "Table 'web_programacion.ventashay' doesn't exist",
+  sql: 'SELECT v.*, p.nombre AS producto_nombre, s.tipo AS servicio_servidor_tipo, ss.nombre AS servicio_seguridad_nombre, u.nombre_usuario AS comprador\n' +
+    '       FROM ventashay v\n' +
+    '       LEFT JOIN products_vendidos p ON v.id_producto = p.id_producto\n' +
+    '       LEFT JOIN servicios_servidores s ON v.id_servicio_servidor = s.id_servicio\n' +
+    '       LEFT JOIN servicios_seguridad ss ON v.id_servicio_seguridad = ss.id_servicio\n' +
+    '       LEFT JOIN cuenta_usuario u ON v.id_usuario = u.id_usuarios\n' +
+    '       WHERE v.id_usuario = 16\n' +
+    '       ORDER BY v.fecha_compra DESC'
+}
+Error GET /api/ventas Error: Table 'web_programacion.ventashay' doesn't exist
+    at D:\examen omar\htmls\javascript\server.js:1288:31
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\examen omar\node_modules\express\lib\router\route.js:149:13)
+    at requireAuth (D:\examen omar\htmls\javascript\server.js:224:47)
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\examen omar\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\examen omar\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at D:\examen omar\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (D:\examen omar\node_modules\express\lib\router\index.js:346:12) {
+  code: 'ER_NO_SUCH_TABLE',
+  errno: 1146,
+  sqlState: '42S02',
+  sqlMessage: "Table 'web_programacion.ventashay' doesn't exist",
+  sql: 'SELECT v.*, p.nombre AS producto_nombre, s.tipo AS servicio_servidor_tipo, ss.nombre AS servicio_seguridad_nombre, u.nombre_usuario AS comprador\n' +
+    '       FROM ventashay v\n' +
+    '       LEFT JOIN products_vendidos p ON v.id_producto = p.id_producto\n' +
+    '       LEFT JOIN servicios_servidores s ON v.id_servicio_servidor = s.id_servicio\n' +
+    '       LEFT JOIN servicios_seguridad ss ON v.id_servicio_seguridad = ss.id_servicio\n' +
+    '       LEFT JOIN cuenta_usuario u ON v.id_usuario = u.id_usuarios\n' +
+    '       WHERE v.id_usuario = 1\n' +
+    '       ORDER BY v.fecha_compra DESC'
+}
+Error GET /api/ventas Error: Table 'web_programacion.ventashay' doesn't exist
+    at D:\examen omar\htmls\javascript\server.js:1288:31
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\examen omar\node_modules\express\lib\router\route.js:149:13)
+    at requireAuth (D:\examen omar\htmls\javascript\server.js:224:47)
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\examen omar\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\examen omar\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at D:\examen omar\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (D:\examen omar\node_modules\express\lib\router\index.js:346:12) {
+  code: 'ER_NO_SUCH_TABLE',
+  errno: 1146,
+  sqlState: '42S02',
+  sqlMessage: "Table 'web_programacion.ventashay' doesn't exist",
+  sql: 'SELECT v.*, p.nombre AS producto_nombre, s.tipo AS servicio_servidor_tipo, ss.nombre AS servicio_seguridad_nombre, u.nombre_usuario AS comprador\n' +
+    '       FROM ventashay v\n' +
+    '       LEFT JOIN products_vendidos p ON v.id_producto = p.id_producto\n' +
+    '       LEFT JOIN servicios_servidores s ON v.id_servicio_servidor = s.id_servicio\n' +
+    '       LEFT JOIN servicios_seguridad ss ON v.id_servicio_seguridad = ss.id_servicio\n' +
+    '       LEFT JOIN cuenta_usuario u ON v.id_usuario = u.id_usuarios\n' +
+    '       WHERE v.id_usuario = 1\n' +
+    '       ORDER BY v.fecha_compra DESC'
+}
+Error GET /api/ventas Error: Table 'web_programacion.ventashay' doesn't exist
+    at D:\examen omar\htmls\javascript\server.js:1288:31
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\examen omar\node_modules\express\lib\router\route.js:149:13)
+    at requireAuth (D:\examen omar\htmls\javascript\server.js:224:47)
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\examen omar\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\examen omar\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at D:\examen omar\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (D:\examen omar\node_modules\express\lib\router\index.js:346:12) {
+  code: 'ER_NO_SUCH_TABLE',
+  errno: 1146,
+  sqlState: '42S02',
+  sqlMessage: "Table 'web_programacion.ventashay' doesn't exist",
+  sql: 'SELECT v.*, p.nombre AS producto_nombre, s.tipo AS servicio_servidor_tipo, ss.nombre AS servicio_seguridad_nombre, u.nombre_usuario AS comprador\n' +
+    '       FROM ventashay v\n' +
+    '       LEFT JOIN products_vendidos p ON v.id_producto = p.id_producto\n' +
+    '       LEFT JOIN servicios_servidores s ON v.id_servicio_servidor = s.id_servicio\n' +
+    '       LEFT JOIN servicios_seguridad ss ON v.id_servicio_seguridad = ss.id_servicio\n' +
+    '       LEFT JOIN cuenta_usuario u ON v.id_usuario = u.id_usuarios\n' +
+    '       WHERE v.id_usuario = 1\n' +
+    '       ORDER BY v.fecha_compra DESC'
+}
+Error GET /api/ventas Error: Table 'web_programacion.ventashay' doesn't exist
+    at D:\examen omar\htmls\javascript\server.js:1288:31
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\examen omar\node_modules\express\lib\router\route.js:149:13)
+    at requireAuth (D:\examen omar\htmls\javascript\server.js:224:47)
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\examen omar\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\examen omar\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at D:\examen omar\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (D:\examen omar\node_modules\express\lib\router\index.js:346:12) {
+  code: 'ER_NO_SUCH_TABLE',
+  errno: 1146,
+  sqlState: '42S02',
+  sqlMessage: "Table 'web_programacion.ventashay' doesn't exist",
+  sql: 'SELECT v.*, p.nombre AS producto_nombre, s.tipo AS servicio_servidor_tipo, ss.nombre AS servicio_seguridad_nombre, u.nombre_usuario AS comprador\n' +
+    '       FROM ventashay v\n' +
+    '       LEFT JOIN products_vendidos p ON v.id_producto = p.id_producto\n' +
+    '       LEFT JOIN servicios_servidores s ON v.id_servicio_servidor = s.id_servicio\n' +
+    '       LEFT JOIN servicios_seguridad ss ON v.id_servicio_seguridad = ss.id_servicio\n' +
+    '       LEFT JOIN cuenta_usuario u ON v.id_usuario = u.id_usuarios\n' +
+    '       WHERE v.id_usuario = 16\n' +
+    '       ORDER BY v.fecha_compra DESC'
+}
+Error GET /api/ventas Error: Table 'web_programacion.ventashay' doesn't exist
+    at D:\examen omar\htmls\javascript\server.js:1288:31
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\examen omar\node_modules\express\lib\router\route.js:149:13)
+    at requireAuth (D:\examen omar\htmls\javascript\server.js:224:47)
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\examen omar\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\examen omar\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\examen omar\node_modules\express\lib\router\layer.js:95:5)
+    at D:\examen omar\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (D:\examen omar\node_modules\express\lib\router\index.js:346:12) {
+  code: 'ER_NO_SUCH_TABLE',
+  errno: 1146,
+  sqlState: '42S02',
+  sqlMessage: "Table 'web_programacion.ventashay' doesn't exist",
+  sql: 'SELECT v.*, p.nombre AS producto_nombre, s.tipo AS servicio_servidor_tipo, ss.nombre AS servicio_seguridad_nombre, u.nombre_usuario AS comprador\n' +
+    '       FROM ventashay v\n' +
+    '       LEFT JOIN products_vendidos p ON v.id_producto = p.id_producto\n' +
+    '       LEFT JOIN servicios_servidores s ON v.id_servicio_servidor = s.id_servicio\n' +
+    '       LEFT JOIN servicios_seguridad ss ON v.id_servicio_seguridad = ss.id_servicio\n' +
+    '       LEFT JOIN cuenta_usuario u ON v.id_usuario = u.id_usuarios\n' +
+    '       WHERE v.id_usuario = 1\n' +
+    '       ORDER BY v.fecha_compra DESC'
+}

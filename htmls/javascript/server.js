@@ -323,7 +323,7 @@ app.post('/api/solicitudes', requireAuth, async (req, res) => {
 app.get('/api/admin/solicitudes', requireAuth, requireAdmin, async (req, res) => {
   try {
     const [rows] = await pool.query(
-      `SELECT s.*, u.nombre_usuario, u.correoUsuario 
+      `SELECT s.id, s.id_usuario, LOWER(s.estado) AS estado, s.especialidad, s.experiencia, s.descripcion, s.fecha_solicitud, s.fecha_aprobacion, s.razon_rechazo, s.info_solicitada, u.nombre_usuario, u.correoUsuario
        FROM solicitudes_empleo s 
        LEFT JOIN cuenta_usuario u ON s.id_usuario = u.id_usuarios 
        ORDER BY s.fecha_solicitud DESC`
@@ -340,7 +340,7 @@ app.get('/api/admin/solicitudes/:id', requireAuth, requireAdmin, async (req, res
   try {
     const solicitudId = req.params.id;
     const [rows] = await pool.query(
-      `SELECT s.*, u.nombre_usuario, u.correoUsuario, u.descripcion, u.especialidad 
+      `SELECT s.id, s.id_usuario, LOWER(s.estado) AS estado, s.especialidad, s.experiencia, s.descripcion, s.fecha_solicitud, s.fecha_aprobacion, s.razon_rechazo, s.info_solicitada, u.nombre_usuario, u.correoUsuario, u.descripcion, u.especialidad AS usuario_especialidad
        FROM solicitudes_empleo s 
        LEFT JOIN cuenta_usuario u ON s.id_usuario = u.id_usuarios 
        WHERE s.id = ?`,
@@ -470,7 +470,9 @@ app.get('/api/profile', requireAuth, async (req, res) => {
 
     const user = rows[0];
     console.log('USER OBJECT:', JSON.stringify(user, null, 2));
-    const [empleadoRows] = await pool.query('SELECT * FROM empleados WHERE id_usuario = ? LIMIT 1', [user.id]);
+    const sqlEmpleado = 'SELECT * FROM empleados WHERE id_usuario = ? LIMIT 1';
+    console.log('SQL PROFILE EMPLEADO:', sqlEmpleado, [user.id]);
+    const [empleadoRows] = await pool.query(sqlEmpleado, [user.id]);
 
     const responseData = {
       ok: true,
@@ -565,7 +567,7 @@ app.put('/api/profile', requireAuth, async (req, res) => {
 
 app.get('/api/solicitudes', requireAuth, async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM solicitudes_empleo WHERE id_usuario = ? ORDER BY fecha_solicitud DESC', [req.session.user.id]);
+    const [rows] = await pool.query('SELECT id, id_usuario, LOWER(estado) AS estado, especialidad, experiencia, descripcion, fecha_solicitud, fecha_aprobacion, razon_rechazo, info_solicitada FROM solicitudes_empleo WHERE id_usuario = ? ORDER BY fecha_solicitud DESC', [req.session.user.id]);
     res.json({ ok: true, solicitudes: rows });
   } catch (err) {
     console.error(err);
@@ -587,7 +589,7 @@ app.put('/api/admin/solicitudes/:id', requireAuth, requireAdmin, async (req, res
 
     // APROBAR SOLICITUD
     if (action === 'approve') {
-      const estado = 'Aceptada';
+      const estado = 'aceptada';
       await pool.query('UPDATE solicitudes_empleo SET estado = ?, fecha_aprobacion = ? WHERE id = ?', [estado, fecha, solicitudId]);
       await pool.query('UPDATE cuenta_usuario SET rol = ? WHERE id_usuarios = ?', ['Empleado', solicitud.id_usuario]);
       const [empleadoRes] = await pool.query('INSERT INTO empleados (id_usuario, especialidad, experiencia, insignia, fecha_ingreso, estado, solicitud_id) VALUES (?, ?, ?, ?, ?, ?, ?)', [

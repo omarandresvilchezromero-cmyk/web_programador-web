@@ -84,15 +84,42 @@ BEGIN
     ALTER TABLE servicios_seguridad ADD INDEX idx_serviciosseg_empleado (id_empleado_responsable);
   END IF;
 
-  -- 7) Asegurar índice en solicitudes_empleo.estado para búsquedas rápidas
+  -- 7) Agregar campos de flujo de solicitud en solicitudes_empleo si no existen
   IF EXISTS (SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'solicitudes_empleo') THEN
-    SET @exists = (SELECT COUNT(1) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'solicitudes_empleo' AND INDEX_NAME = 'idx_solicitudes_estado');
-    IF @exists = 0 THEN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'solicitudes_empleo' AND COLUMN_NAME = 'fecha_aprobacion') THEN
+      ALTER TABLE solicitudes_empleo ADD COLUMN fecha_aprobacion DATETIME NULL AFTER fecha_solicitud;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'solicitudes_empleo' AND COLUMN_NAME = 'fecha_entrevista') THEN
+      ALTER TABLE solicitudes_empleo ADD COLUMN fecha_entrevista DATETIME NULL AFTER fecha_aprobacion;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'solicitudes_empleo' AND COLUMN_NAME = 'razon_rechazo') THEN
+      ALTER TABLE solicitudes_empleo ADD COLUMN razon_rechazo TEXT NULL AFTER estado;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'solicitudes_empleo' AND COLUMN_NAME = 'info_solicitada') THEN
+      ALTER TABLE solicitudes_empleo ADD COLUMN info_solicitada TEXT NULL AFTER razon_rechazo;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'solicitudes_empleo' AND INDEX_NAME = 'idx_solicitudes_estado') THEN
       ALTER TABLE solicitudes_empleo ADD INDEX idx_solicitudes_estado (estado);
     END IF;
   END IF;
 
-  -- 8) Asegurar FK y relaciones (si las tablas/columnas existen)
+  -- 8) Crear tabla de auditoría de empleados si no existe
+  IF NOT EXISTS (SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'empleados_auditoria') THEN
+    CREATE TABLE empleados_auditoria (
+      id_auditoria INT AUTO_INCREMENT PRIMARY KEY,
+      id_empleado INT NULL,
+      id_usuario INT NOT NULL,
+      id_admin INT NOT NULL,
+      accion VARCHAR(64) NOT NULL,
+      detalle TEXT,
+      fecha DATETIME NOT NULL,
+      INDEX idx_auditoria_empleado (id_empleado),
+      INDEX idx_auditoria_usuario (id_usuario),
+      INDEX idx_auditoria_admin (id_admin)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+  END IF;
+
+  -- 9) Asegurar FK y relaciones (si las tablas/columnas existen)
   -- FK: empleados.id_usuario -> cuenta_usuario.id_usuarios
   IF EXISTS (SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'empleados' AND COLUMN_NAME = 'id_usuario')
      AND EXISTS (SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'cuenta_usuario' AND COLUMN_NAME = 'id_usuarios') THEN

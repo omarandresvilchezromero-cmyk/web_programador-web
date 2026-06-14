@@ -19,6 +19,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let usuario = null;
     let empleado = null;
+    let isFetchingProfile = false;
+
+    function displayProfileError(message) {
+        console.error(message);
+        let errorEl = document.getElementById('profile-error-message');
+        if (!errorEl) {
+            errorEl = document.createElement('div');
+            errorEl.id = 'profile-error-message';
+            errorEl.style.color = '#a00';
+            errorEl.style.backgroundColor = '#fdecea';
+            errorEl.style.border = '1px solid #f5c2c7';
+            errorEl.style.padding = '12px';
+            errorEl.style.margin = '16px 0';
+            errorEl.style.borderRadius = '4px';
+            errorEl.style.fontWeight = '600';
+            document.body.insertBefore(errorEl, document.body.firstChild);
+        }
+        errorEl.textContent = message;
+    }
 
     async function parseJsonSafe(resp) {
         const text = await resp.text();
@@ -32,13 +51,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function fetchProfile() {
-        try {
-            const resp = await apiFetch('/api/profile');
-            const data = await parseJsonSafe(resp);
+        if (isFetchingProfile) {
+            console.log('fetchProfile ya está en curso, evitando llamada duplicada');
+            return;
+        }
+        isFetchingProfile = true;
 
-            if (!resp.ok || !data || !data.ok) {
-                console.error('Error en fetch profile, redirigiendo a login');
+        try {
+            const response = await apiFetch('/api/profile');
+            const data = await parseJsonSafe(response);
+
+            console.log('STATUS PROFILE:', response.status);
+            console.log('RESPUESTA PROFILE:', data);
+
+            if (response.status === 401 || response.status === 403) {
                 window.location.href = 'login.html';
+                return;
+            }
+
+            if (!response.ok || !data || !data.ok) {
+                displayProfileError('No fue posible cargar tu perfil. Por favor, recarga la página o intenta más tarde.');
                 return;
             }
 
@@ -49,7 +81,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.setCurrentUser(usuario);
         } catch (err) {
             console.error('Error cargando perfil:', err);
-            window.location.href = 'login.html';
+            displayProfileError('No fue posible cargar tu perfil. Por favor, recarga la página o intenta más tarde.');
+        } finally {
+            isFetchingProfile = false;
         }
     }
 

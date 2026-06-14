@@ -218,6 +218,9 @@ app.post('/api/logout', (req, res) => {
 
 // Middleware simple de autenticación
 function requireAuth(req, res, next) {
+  console.log('PROFILE REQUEST');
+  console.log('SESSION COMPLETA:', req.session);
+  console.log('SESSION USER:', req.session ? req.session.user : null);
   if (req.session && req.session.user) return next();
   return res.status(401).json({ error: 'No autorizado' });
 }
@@ -283,10 +286,31 @@ async function createSolicitudAndNotify(poolOrConnection, id_usuario, especialid
 app.post('/api/solicitudes', requireAuth, async (req, res) => {
   const { especialidad, experiencia, descripcion } = req.body;
   const id_usuario = req.session.user.id;
-  const fecha_solicitud = new Date();
-  const estado = 'pendiente';
+
+  if (!especialidad || !experiencia || !descripcion) {
+    return res.status(400).json({ error: 'Especialidad, experiencia y descripción son obligatorios' });
+  }
 
   try {
+    const [userRows] = await pool.query('SELECT rol FROM cuenta_usuario WHERE id_usuarios = ?', [id_usuario]);
+    if (!userRows.length) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    const role = (userRows[0].rol || '').toString().toLowerCase();
+    if (['admin', 'administrador'].includes(role)) {
+      return res.status(403).json({ error: 'Los administradores no pueden enviar solicitudes de empleo' });
+    }
+
+    if (role === 'empleado') {
+      return res.status(409).json({ error: 'Ya eres empleado' });
+    }
+
+    const hasPending = await userHasPendingSolicitud(id_usuario);
+    if (hasPending) {
+      return res.status(409).json({ error: 'Ya tienes una solicitud de empleo en proceso' });
+    }
+
     const result = await createSolicitudAndNotify(pool, id_usuario, especialidad, experiencia, descripcion);
     res.json(result);
   } catch (err) {
@@ -411,6 +435,24 @@ function requireAdmin(req, res, next) {
   return res.status(403).json({ error: 'Forbidden' });
 }
 
+async function userIsEmployee(userId) {
+  const [rows] = await pool.query('SELECT rol FROM cuenta_usuario WHERE id_usuarios = ?', [userId]);
+  return rows.length && (rows[0].rol || '').toString().toLowerCase() === 'empleado';
+}
+
+async function userIsAdmin(userId) {
+  const [rows] = await pool.query('SELECT rol FROM cuenta_usuario WHERE id_usuarios = ?', [userId]);
+  return rows.length && ['admin', 'administrador'].includes((rows[0].rol || '').toString().toLowerCase());
+}
+
+async function userHasPendingSolicitud(userId) {
+  const [rows] = await pool.query(
+    "SELECT COUNT(*) AS total FROM solicitudes_empleo WHERE id_usuario = ? AND estado IN (?, ?, ?)",
+    [userId, 'pendiente', 'info_requerida', 'entrevista']
+  );
+  return rows.length && rows[0].total > 0;
+}
+
 app.get('/api/profile', requireAuth, async (req, res) => {
   try {
     console.log('=== DEBUG GET /api/profile ===');
@@ -428,7 +470,7 @@ app.get('/api/profile', requireAuth, async (req, res) => {
 
     const user = rows[0];
     console.log('USER OBJECT:', JSON.stringify(user, null, 2));
-    const [empleadoRows] = await pool.query('SELECT * FROM empleados WHERE id_usuarios = ? LIMIT 1', [user.id]);
+    const [empleadoRows] = await pool.query('SELECT * FROM empleados WHERE id_usuario = ? LIMIT 1', [user.id]);
 
     const responseData = {
       ok: true,
@@ -546,7 +588,7 @@ app.put('/api/admin/solicitudes/:id', requireAuth, requireAdmin, async (req, res
     // APROBAR SOLICITUD
     if (action === 'approve') {
       const estado = 'Aceptada';
-      await pool.query('UPDATE solicitudes_empleo SET estado = ? WHERE id = ?', [estado, solicitudId]);
+      await pool.query('UPDATE solicitudes_empleo SET estado = ?, fecha_aprobacion = ? WHERE id = ?', [estado, fecha, solicitudId]);
       await pool.query('UPDATE cuenta_usuario SET rol = ? WHERE id_usuarios = ?', ['Empleado', solicitud.id_usuario]);
       const [empleadoRes] = await pool.query('INSERT INTO empleados (id_usuario, especialidad, experiencia, insignia, fecha_ingreso, estado, solicitud_id) VALUES (?, ?, ?, ?, ?, ?, ?)', [
         solicitud.id_usuario,
@@ -570,7 +612,6 @@ app.put('/api/admin/solicitudes/:id', requireAuth, requireAdmin, async (req, res
           fecha
         ]);
       } catch (e) {
-        // Si la tabla no existe, no bloquear el flujo; registrar para revisión
         console.warn('perfil_empleado no existe o no pudo crearse:', e.message || e);
       }
       await pool.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES (?, ?, ?, ?)', [
@@ -579,7 +620,6 @@ app.put('/api/admin/solicitudes/:id', requireAuth, requireAdmin, async (req, res
         fecha,
         0
       ]);
-      // Mensaje de aprobación
       await pool.query('INSERT INTO mensajes (remitente, destinatario, mensaje, fecha_envio, leido) VALUES (?, ?, ?, ?, ?)', [
         req.session.user.id,
         solicitud.id_usuario,
@@ -587,20 +627,27 @@ app.put('/api/admin/solicitudes/:id', requireAuth, requireAdmin, async (req, res
         fecha,
         0
       ]);
+      await pool.query('INSERT INTO empleados_auditoria (id_empleado, id_usuario, id_admin, accion, detalle, fecha) VALUES (?, ?, ?, ?, ?, ?)', [
+        empleadoId,
+        solicitud.id_usuario,
+        req.session.user.id,
+        'aprobacion',
+        `Solicitud aprobada e empleado creado con insignia ${insignia || 'empleado-verificado'}`,
+        fecha
+      ]).catch(() => {});
       return res.json({ ok: true, message: 'Solicitud aprobada y empleado creado' });
     }
 
     // RECHAZAR SOLICITUD
     if (action === 'reject') {
       const estado = 'rechazada';
-      await pool.query('UPDATE solicitudes_empleo SET estado = ?, descripcion = ? WHERE id = ?', [estado, razonRechazo || null, solicitudId]);
+      await pool.query('UPDATE solicitudes_empleo SET estado = ?, razon_rechazo = ? WHERE id = ?', [estado, razonRechazo || null, solicitudId]);
       await pool.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES (?, ?, ?, ?)', [
         solicitud.id_usuario,
         `Tu solicitud de empleo fue rechazada. ${razonRechazo || ''}`,
         fecha,
         0
       ]);
-      // Mensaje de rechazo
       await pool.query('INSERT INTO mensajes (remitente, destinatario, mensaje, fecha_envio, leido) VALUES (?, ?, ?, ?, ?)', [
         req.session.user.id,
         solicitud.id_usuario,
@@ -608,12 +655,20 @@ app.put('/api/admin/solicitudes/:id', requireAuth, requireAdmin, async (req, res
         fecha,
         0
       ]);
+      await pool.query('INSERT INTO empleados_auditoria (id_empleado, id_usuario, id_admin, accion, detalle, fecha) VALUES (?, ?, ?, ?, ?, ?)', [
+        null,
+        solicitud.id_usuario,
+        req.session.user.id,
+        'rechazo',
+        `Solicitud rechazada. Razón: ${razonRechazo || 'Sin razón especificada'}`,
+        fecha
+      ]).catch(() => {});
       return res.json({ ok: true, message: 'Solicitud rechazada' });
     }
 
     // SOLICITAR MÁS INFORMACIÓN
     if (action === 'info-request') {
-      // Mantener estado en pendiente
+      await pool.query('UPDATE solicitudes_empleo SET estado = ?, info_solicitada = ? WHERE id = ?', ['info_requerida', pregunta || null, solicitudId]);
       await pool.query('INSERT INTO mensajes (remitente, destinatario, mensaje, fecha_envio, leido) VALUES (?, ?, ?, ?, ?)', [
         req.session.user.id,
         solicitud.id_usuario,
@@ -627,7 +682,46 @@ app.put('/api/admin/solicitudes/:id', requireAuth, requireAdmin, async (req, res
         fecha,
         0
       ]);
+      await pool.query('INSERT INTO empleados_auditoria (id_empleado, id_usuario, id_admin, accion, detalle, fecha) VALUES (?, ?, ?, ?, ?, ?)', [
+        null,
+        solicitud.id_usuario,
+        req.session.user.id,
+        'info_request',
+        `Solicitud solicitó más información: ${pregunta || 'No se especificó pregunta'}`,
+        fecha
+      ]).catch(() => {});
       return res.json({ ok: true, message: 'Se solicitó información adicional' });
+    }
+
+    // AGENDAR ENTREVISTA
+    if (action === 'schedule-interview') {
+      const { entrevistaFecha } = req.body;
+      if (!entrevistaFecha) {
+        return res.status(400).json({ error: 'Fecha de entrevista requerida' });
+      }
+      await pool.query('UPDATE solicitudes_empleo SET estado = ?, fecha_entrevista = ?, info_solicitada = ? WHERE id = ?', ['entrevista', entrevistaFecha, pregunta || null, solicitudId]);
+      await pool.query('INSERT INTO mensajes (remitente, destinatario, mensaje, fecha_envio, leido) VALUES (?, ?, ?, ?, ?)', [
+        req.session.user.id,
+        solicitud.id_usuario,
+        `Tu entrevista ha sido programada para ${entrevistaFecha}. ${pregunta ? '\n\nInstrucciones: ' + pregunta : ''}`,
+        fecha,
+        0
+      ]);
+      await pool.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES (?, ?, ?, ?)', [
+        solicitud.id_usuario,
+        `Se ha programado una entrevista para tu solicitud de empleo: ${entrevistaFecha}.`,
+        fecha,
+        0
+      ]);
+      await pool.query('INSERT INTO empleados_auditoria (id_empleado, id_usuario, id_admin, accion, detalle, fecha) VALUES (?, ?, ?, ?, ?, ?)', [
+        null,
+        solicitud.id_usuario,
+        req.session.user.id,
+        'schedule_interview',
+        `Entrevista programada para ${entrevistaFecha} con nota: ${pregunta || 'Sin nota'}`,
+        fecha
+      ]).catch(() => {});
+      return res.json({ ok: true, message: 'Entrevista programada' });
     }
 
     res.status(400).json({ error: 'Acción inválida' });

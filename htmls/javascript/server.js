@@ -323,7 +323,7 @@ app.post('/api/solicitudes', requireAuth, async (req, res) => {
 app.get('/api/admin/solicitudes', requireAuth, requireAdmin, async (req, res) => {
   try {
     const [rows] = await pool.query(
-      `SELECT s.id, s.id_usuario, LOWER(s.estado) AS estado, s.especialidad, s.experiencia, s.descripcion, s.fecha_solicitud, s.fecha_aprobacion, s.razon_rechazo, s.info_solicitada, u.nombre_usuario, u.correoUsuario
+      `SELECT s.id_solicitud AS id, s.id_usuario, LOWER(s.estado) AS estado, s.especialidad, s.experiencia, s.descripcion, s.fecha_solicitud, u.nombre_usuario, u.correoUsuario
        FROM solicitudes_empleo s 
        LEFT JOIN cuenta_usuario u ON s.id_usuario = u.id_usuarios 
        ORDER BY s.fecha_solicitud DESC`
@@ -340,10 +340,10 @@ app.get('/api/admin/solicitudes/:id', requireAuth, requireAdmin, async (req, res
   try {
     const solicitudId = req.params.id;
     const [rows] = await pool.query(
-      `SELECT s.id, s.id_usuario, LOWER(s.estado) AS estado, s.especialidad, s.experiencia, s.descripcion, s.fecha_solicitud, s.fecha_aprobacion, s.razon_rechazo, s.info_solicitada, u.nombre_usuario, u.correoUsuario, u.descripcion, u.especialidad AS usuario_especialidad
+      `SELECT s.id_solicitud AS id, s.id_usuario, LOWER(s.estado) AS estado, s.especialidad, s.experiencia, s.descripcion, s.fecha_solicitud, u.nombre_usuario, u.correoUsuario, u.descripcion, u.especialidad AS usuario_especialidad
        FROM solicitudes_empleo s 
        LEFT JOIN cuenta_usuario u ON s.id_usuario = u.id_usuarios 
-       WHERE s.id = ?`,
+       WHERE s.id_solicitud = ?`,
       [solicitudId]
     );
     if (!rows.length) return res.status(404).json({ error: 'Solicitud no encontrada' });
@@ -470,7 +470,7 @@ app.get('/api/profile', requireAuth, async (req, res) => {
 
     const user = rows[0];
     console.log('USER OBJECT:', JSON.stringify(user, null, 2));
-    const sqlEmpleado = 'SELECT * FROM empleados WHERE id_usuario = ? LIMIT 1';
+    const sqlEmpleado = 'SELECT * FROM empleados WHERE id_usuarios = ? LIMIT 1';
     console.log('SQL PROFILE EMPLEADO:', sqlEmpleado, [user.id]);
     const [empleadoRows] = await pool.query(sqlEmpleado, [user.id]);
 
@@ -581,7 +581,7 @@ app.put('/api/admin/solicitudes/:id', requireAuth, requireAdmin, async (req, res
   const fecha = new Date();
 
   try {
-    const [solicitudes] = await pool.query('SELECT * FROM solicitudes_empleo WHERE id = ?', [solicitudId]);
+    const [solicitudes] = await pool.query('SELECT * FROM solicitudes_empleo WHERE id_solicitud = ?', [solicitudId]);
     if (!solicitudes.length) return res.status(404).json({ error: 'Solicitud no encontrada' });
 
     const solicitud = solicitudes[0];
@@ -590,16 +590,11 @@ app.put('/api/admin/solicitudes/:id', requireAuth, requireAdmin, async (req, res
     // APROBAR SOLICITUD
     if (action === 'approve') {
       const estado = 'aceptada';
-      await pool.query('UPDATE solicitudes_empleo SET estado = ?, fecha_aprobacion = ? WHERE id = ?', [estado, fecha, solicitudId]);
+      await pool.query('UPDATE solicitudes_empleo SET estado = ? WHERE id_solicitud = ?', [estado, solicitudId]);
       await pool.query('UPDATE cuenta_usuario SET rol = ? WHERE id_usuarios = ?', ['Empleado', solicitud.id_usuario]);
-      const [empleadoRes] = await pool.query('INSERT INTO empleados (id_usuario, especialidad, experiencia, insignia, fecha_ingreso, estado, solicitud_id) VALUES (?, ?, ?, ?, ?, ?, ?)', [
+      const [empleadoRes] = await pool.query('INSERT INTO empleados (id_usuarios, rol) VALUES (?, ?)', [
         solicitud.id_usuario,
-        solicitud.especialidad,
-        solicitud.experiencia,
-        insignia || 'empleado-verificado',
-        fecha,
-        'Disponible',
-        solicitud.id
+        'Empleado'
       ]);
       const empleadoId = empleadoRes.insertId || null;
       // Crear perfil_empleado si existe la tabla
@@ -643,7 +638,7 @@ app.put('/api/admin/solicitudes/:id', requireAuth, requireAdmin, async (req, res
     // RECHAZAR SOLICITUD
     if (action === 'reject') {
       const estado = 'rechazada';
-      await pool.query('UPDATE solicitudes_empleo SET estado = ?, razon_rechazo = ? WHERE id = ?', [estado, razonRechazo || null, solicitudId]);
+      await pool.query('UPDATE solicitudes_empleo SET estado = ?, razon_rechazo = ? WHERE id_solicitud = ?', [estado, razonRechazo || null, solicitudId]);
       await pool.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES (?, ?, ?, ?)', [
         solicitud.id_usuario,
         `Tu solicitud de empleo fue rechazada. ${razonRechazo || ''}`,
@@ -670,7 +665,7 @@ app.put('/api/admin/solicitudes/:id', requireAuth, requireAdmin, async (req, res
 
     // SOLICITAR MÁS INFORMACIÓN
     if (action === 'info-request') {
-      await pool.query('UPDATE solicitudes_empleo SET estado = ?, info_solicitada = ? WHERE id = ?', ['info_requerida', pregunta || null, solicitudId]);
+      await pool.query('UPDATE solicitudes_empleo SET estado = ?, info_solicitada = ? WHERE id_solicitud = ?', ['info_requerida', pregunta || null, solicitudId]);
       await pool.query('INSERT INTO mensajes (remitente, destinatario, mensaje, fecha_envio, leido) VALUES (?, ?, ?, ?, ?)', [
         req.session.user.id,
         solicitud.id_usuario,
@@ -867,7 +862,7 @@ app.get('/api/empleados/:id/servicios', requireAuth, async (req, res) => {
 app.get('/api/admin/empleados', requireAuth, requireAdmin, async (req, res) => {
   try {
     const [rows] = await pool.query(
-      'SELECT e.*, u.nombre_usuario AS user_nombre, u.correoUsuario AS user_email FROM empleados e LEFT JOIN cuenta_usuario u ON e.id_usuario = u.id_usuarios ORDER BY e.fecha_ingreso DESC'
+      'SELECT e.*, u.nombre_usuario AS user_nombre, u.correoUsuario AS user_email FROM empleados e LEFT JOIN cuenta_usuario u ON e.id_usuarios = u.id_usuarios ORDER BY e.id_empleado DESC'
     );
     res.json({ ok: true, empleados: rows });
   } catch (err) {

@@ -453,6 +453,166 @@ async function userHasPendingSolicitud(userId) {
   return rows.length && rows[0].total > 0;
 }
 
+const SERVICE_STATUS_WORKFLOW = ['Pendiente', 'En revisión', 'En proceso', 'Esperando respuesta', 'Finalizado'];
+
+function isValidServiceStatus(status) {
+  return SERVICE_STATUS_WORKFLOW.includes(status);
+}
+
+async function getRandomAvailableEmployee(connection) {
+  const [rowsPerfil] = await connection.query(
+    "SELECT p.id_empleado, p.id_usuario FROM perfil_empleado p JOIN empleados e ON p.id_empleado = e.id_empleado WHERE p.estado = 'Disponible'"
+  );
+  if (rowsPerfil.length) {
+    return rowsPerfil[Math.floor(Math.random() * rowsPerfil.length)];
+  }
+
+  const [rows] = await connection.query("SELECT id_empleado, id_usuario FROM empleados WHERE estado = 'Disponible'");
+  if (!rows.length) return null;
+  return rows[Math.floor(Math.random() * rows.length)];
+}
+
+async function logAdminEvent(connection, evento, id_usuario, id_empleado, id_venta, detalle) {
+  try {
+    await connection.query(
+      'INSERT INTO historial_admin (evento, id_usuario, id_empleado, id_venta, detalle, fecha) VALUES (?, ?, ?, ?, ?, ?)',
+      [evento, id_usuario || null, id_empleado || null, id_venta || null, detalle || null, new Date()]
+    );
+  } catch (err) {
+    console.warn('No se pudo registrar historial_admin:', err.message || err);
+  }
+}
+
+async function createServiceConversation(connection, userId, employeeUserId, orderId, label) {
+  const fecha = new Date();
+  const welcomeMessage = `Hola, soy el especialista asignado para tu servicio ${label} (orden ${orderId}). Estoy aquí para ayudarte a avanzar.`;
+  const followupMessage = `Gracias por asignarme. Iniciaré el proceso en breve y te iré informando.`;
+
+  await connection.query(
+    'INSERT INTO mensajes (remitente, destinatario, mensaje, fecha_envio, leido) VALUES (?, ?, ?, ?, ?)',
+    [employeeUserId, userId, welcomeMessage, fecha, 0]
+  );
+  await connection.query(
+    'INSERT INTO mensajes (remitente, destinatario, mensaje, fecha_envio, leido) VALUES (?, ?, ?, ?, ?)',
+    [userId, employeeUserId, followupMessage, fecha, 0]
+  );
+}
+
+async function saveHistorialCompra(connection, userId, orderId, item, subtotal, label) {
+  try {
+    await connection.query(
+      'INSERT INTO historial_compras (id_usuario, id_venta, tipo_compra, referencia_id, cantidad, total, fecha, descripcion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [userId, orderId, item.type, Number(item.id) || null, Number(item.cantidad) || 1, subtotal, new Date(), label]
+    );
+  } catch (err) {
+    console.warn('No se pudo registrar historial_compras:', err.message || err);
+  }
+}
+
+async function insertVentashayItem(connection, ventaGroup, userId, buyerName, item) {
+  const tipo = item.type;
+  const id = Number(item.id);
+  const cantidad = Math.max(1, Number(item.cantidad) || 1);
+  let precio;
+  let label;
+
+  if (tipo === 'producto') {
+    const [rows] = await connection.query('SELECT precio, nombre FROM products_vendidos WHERE id_producto = ?', [id]);
+    if (!rows.length) throw new Error('Producto no encontrado: ' + id);
+    precio = Number(rows[0].precio || 0);
+    label = rows[0].nombre || 'Producto';
+  } else if (tipo === 'servidor') {
+    const [rows] = await connection.query('SELECT precio, tipo FROM servicios_servidores WHERE id_servicio = ?', [id]);
+    if (!rows.length) throw new Error('Servicio servidor no encontrado: ' + id);
+    precio = Number(rows[0].precio || 0);
+    label = rows[0].tipo || 'Servicio servidor';
+  } else if (tipo === 'seguridad') {
+    const [rows] = await connection.query('SELECT precio, nombre FROM servicios_seguridad WHERE id_servicio = ?', [id]);
+    if (!rows.length) throw new Error('Servicio seguridad no encontrado: ' + id);
+    precio = Number(rows[0].precio || 0);
+    label = rows[0].nombre || 'Servicio seguridad';
+  } else {
+    throw new Error('Tipo de item inválido: ' + tipo);
+  }
+
+  const subtotal = precio * cantidad;
+  let empleadoAsignado = null;
+  let servicioEstado = null;
+  let fechaAsignacion = null;
+
+  if (tipo === 'servidor' || tipo === 'seguridad') {
+    servicioEstado = 'Pendiente';
+    fechaAsignacion = new Date();
+    empleadoAsignado = await getRandomAvailableEmployee(connection);
+  }
+
+  const [insertResult] = await connection.query(
+    'INSERT INTO ventashay (venta_group, id_usuario, id_producto, id_servicio_servidor, id_servicio_seguridad, id_empleado_responsable, servicio_estado, fecha_asignacion, fecha_actualizacion, cantidad, total, fecha_compra, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?)',
+    [
+      ventaGroup,
+      userId,
+      tipo === 'producto' ? id : null,
+      tipo === 'servidor' ? id : null,
+      tipo === 'seguridad' ? id : null,
+      empleadoAsignado ? empleadoAsignado.id_empleado : null,
+      servicioEstado,
+      fechaAsignacion,
+      fechaAsignacion,
+      cantidad,
+      subtotal,
+      'completada'
+    ]
+  );
+
+  const orderId = insertResult.insertId;
+  await saveHistorialCompra(connection, userId, orderId, item, subtotal, label);
+  await logAdminEvent(connection, 'Compra realizada', userId, empleadoAsignado ? empleadoAsignado.id_empleado : null, orderId, `Compra registrada: ${label} (${tipo}) por ${cantidad} unidad(es)`);
+
+  if (tipo === 'servidor' || tipo === 'seguridad') {
+    await logAdminEvent(connection, 'Estado inicial de servicio', userId, empleadoAsignado ? empleadoAsignado.id_empleado : null, orderId, `Estado inicial ${servicioEstado}`);
+    if (empleadoAsignado) {
+      await connection.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES (?, ?, ?, ?)', [
+        empleadoAsignado.id_usuario,
+        `Tienes un nuevo servicio asignado: ${label} (orden ${orderId}).`,
+        fechaAsignacion,
+        0
+      ]);
+      await connection.query('INSERT INTO mensajes (remitente, destinatario, mensaje, fecha_envio, leido) VALUES (?, ?, ?, ?, ?)', [
+        empleadoAsignado.id_usuario,
+        userId,
+        `Hola, te he asignado al servicio ${label} (orden ${orderId}). Por favor, revisa el estado y actualiza el seguimiento.`,
+        fechaAsignacion,
+        0
+      ]);
+      await connection.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES (?, ?, ?, ?)', [
+        userId,
+        `Tu servicio ${label} fue asignado a un especialista y está en estado ${servicioEstado}.`,
+        fechaAsignacion,
+        0
+      ]);
+      await createServiceConversation(connection, userId, empleadoAsignado.id_usuario, orderId, label);
+      await logAdminEvent(connection, 'Empleado asignado', userId, empleadoAsignado.id_empleado, orderId, `Empleado ${empleadoAsignado.id_usuario} asignado a servicio ${label}`);
+    } else {
+      await connection.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES (?, ?, ?, ?)', [
+        userId,
+        `Tu servicio ${label} ha quedado en cola. Se asignará un empleado disponible en breve.`,
+        fechaAsignacion,
+        0
+      ]);
+      await logAdminEvent(connection, 'Empleado no asignado', userId, null, orderId, `No había empleados disponibles para servicio ${label}`);
+    }
+  } else {
+    await connection.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES (?, ?, ?, ?)', [
+      userId,
+      `Tu compra de ${label} fue procesada correctamente.`,
+      new Date(),
+      0
+    ]);
+  }
+
+  return { subtotal, cantidad, label, tipo, id, orderId, servicioEstado, empleadoAsignado: empleadoAsignado ? { id_empleado: empleadoAsignado.id_empleado, id_usuario: empleadoAsignado.id_usuario } : null };
+}
+
 app.get('/api/profile', requireAuth, async (req, res) => {
   try {
     console.log('=== DEBUG GET /api/profile ===');
@@ -835,6 +995,106 @@ app.get('/api/empleados/me', requireAuth, async (req, res) => {
   }
 });
 
+app.get('/api/empleados/me/ordenes-servicio', requireAuth, async (req, res) => {
+  try {
+    const userId = req.session.user.id;
+    const [employeeRows] = await pool.query('SELECT id_empleado FROM empleados WHERE id_usuario = ? LIMIT 1', [userId]);
+    if (!employeeRows.length) return res.status(404).json({ ok: false, error: 'No eres empleado' });
+
+    const empleadoId = employeeRows[0].id_empleado;
+    const [rows] = await pool.query(
+      `SELECT v.*, p.nombre AS producto_nombre, s.tipo AS servicio_servidor_tipo, ss.nombre AS servicio_seguridad_nombre, u.nombre_usuario AS cliente,
+              v.servicio_estado, v.fecha_asignacion, v.fecha_actualizacion
+       FROM ventashay v
+       LEFT JOIN products_vendidos p ON v.id_producto = p.id_producto
+       LEFT JOIN servicios_servidores s ON v.id_servicio_servidor = s.id_servicio
+       LEFT JOIN servicios_seguridad ss ON v.id_servicio_seguridad = ss.id_servicio
+       LEFT JOIN cuenta_usuario u ON v.id_usuario = u.id_usuarios
+       WHERE v.id_empleado_responsable = ?
+       ORDER BY v.fecha_compra DESC`,
+      [empleadoId]
+    );
+    return res.json({ ok: true, ordenes: rows });
+  } catch (err) {
+    console.error('Error obteniendo ordenes de servicio:', err);
+    return res.status(500).json({ error: 'Error al obtener ordenes de servicio' });
+  }
+});
+
+app.put('/api/ordenes-servicio/:id/estado', requireAuth, async (req, res) => {
+  const orderId = Number(req.params.id);
+  const { status } = req.body;
+  if (!orderId) return res.status(400).json({ ok: false, error: 'ID de orden inválido' });
+  if (!status || !isValidServiceStatus(status)) return res.status(400).json({ ok: false, error: 'Estado de servicio inválido' });
+
+  try {
+    const [orderRows] = await pool.query(
+      `SELECT v.*, e.id_empleado AS empleado_id, eu.id_usuarios AS empleado_usuario_id, eu.nombre_usuario AS empleado_nombre
+       FROM ventashay v
+       LEFT JOIN empleados e ON v.id_empleado_responsable = e.id_empleado
+       LEFT JOIN cuenta_usuario eu ON e.id_usuario = eu.id_usuarios
+       WHERE v.id_venta = ?`,
+      [orderId]
+    );
+
+    if (!orderRows.length) return res.status(404).json({ ok: false, error: 'Orden no encontrada' });
+    const order = orderRows[0];
+    if (!order.id_servicio_servidor && !order.id_servicio_seguridad) {
+      return res.status(400).json({ ok: false, error: 'Esta orden no es un servicio' });
+    }
+
+    const currentUserId = req.session.user.id;
+    const currentUserRole = (req.session.user.rol || '').toLowerCase();
+    const [employeeRows] = await pool.query('SELECT id_empleado FROM empleados WHERE id_usuario = ? LIMIT 1', [currentUserId]);
+    const userEmployeeId = employeeRows.length ? employeeRows[0].id_empleado : null;
+    const userIsAssignedEmployee = userEmployeeId && userEmployeeId === order.id_empleado_responsable;
+    const userIsAdmin = ['admin', 'administrador'].includes(currentUserRole);
+
+    if (!userIsAssignedEmployee && !userIsAdmin) {
+      return res.status(403).json({ ok: false, error: 'No tienes permiso para actualizar esta orden' });
+    }
+
+    const currentState = order.servicio_estado || 'Pendiente';
+    const currentIndex = SERVICE_STATUS_WORKFLOW.indexOf(currentState);
+    const requestedIndex = SERVICE_STATUS_WORKFLOW.indexOf(status);
+    if (requestedIndex < currentIndex) {
+      return res.status(400).json({ ok: false, error: 'No se permite retroceder el estado del servicio' });
+    }
+
+    await pool.query('UPDATE ventashay SET servicio_estado = ?, fecha_actualizacion = NOW() WHERE id_venta = ?', [status, orderId]);
+    const fecha = new Date();
+
+    await pool.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES (?, ?, ?, ?)', [
+      order.id_usuario,
+      `El estado de tu servicio ha cambiado a ${status}.`,
+      fecha,
+      0
+    ]);
+
+    if (order.empleado_usuario_id) {
+      await pool.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES (?, ?, ?, ?)', [
+        order.empleado_usuario_id,
+        `Orden ${orderId} actualizada a estado ${status}.`,
+        fecha,
+        0
+      ]);
+    }
+
+    await pool.query('INSERT INTO mensajes (remitente, destinatario, mensaje, fecha_envio, leido) VALUES (?, ?, ?, ?, ?)', [
+      currentUserId,
+      order.id_usuario,
+      `El estado de tu servicio ha sido actualizado a ${status}.`,
+      fecha,
+      0
+    ]);
+
+    return res.json({ ok: true, id_venta: orderId, servicio_estado: status });
+  } catch (err) {
+    console.error('Error actualizando estado de orden de servicio:', err);
+    return res.status(500).json({ ok: false, error: 'Error al actualizar estado de la orden' });
+  }
+});
+
 // Consultas asignadas a empleado
 app.get('/api/empleados/:id/consultas', requireAuth, async (req, res) => {
   const empleadoId = Number(req.params.id);
@@ -1187,7 +1447,7 @@ async function resolveItemData(connection, item) {
   throw new Error('Tipo de item inválido: ' + item.type);
 }
 
-app.post('/api/venta', requireAuth, async (req, res) => {
+async function processCheckoutRequest(req, res) {
   const userId = req.session.user.id;
   const bodyItems = req.body && Array.isArray(req.body.items) ? req.body.items : null;
   const cart = ensureCartSession(req) || [];
@@ -1202,59 +1462,47 @@ app.post('/api/venta', requireAuth, async (req, res) => {
     const ventaGroup = `${userId}-${Date.now()}`;
     let totalVenta = 0;
 
-    const [ventaResult] = await connection.query(
-      'INSERT INTO ventas (venta_group, id_usuario, total, fecha_compra, estado) VALUES (?, ?, ?, NOW(), ?)',
-      [ventaGroup, userId, 0, 'completada']
-    );
-    const idVenta = ventaResult.insertId;
-
     for (const item of items) {
       const cantidad = Math.max(1, Number(item.cantidad) || 1);
-      const { precio, label } = await resolveItemData(connection, item);
-      const subtotal = Number(precio) * cantidad;
-      totalVenta += subtotal;
+      const insertResult = await insertVentashayItem(connection, ventaGroup, userId, req.session.user.nombre_usuario || 'Cliente', { type: item.type || item.category || item.categoria, id: item.id, cantidad });
+      totalVenta += insertResult.subtotal;
 
       await connection.query(
         'INSERT INTO venta_items (id_venta, tipo, referencia_id, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?, ?)',
-        [idVenta, item.type, Number(item.id), cantidad, precio, subtotal]
-      );
-
-      await connection.query(
-        'INSERT INTO ventashay (venta_group, id_usuario, id_producto, id_servicio_servidor, id_servicio_seguridad, cantidad, total, fecha_compra, estado) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)',
-        [ventaGroup, userId,
-          item.type === 'producto' ? Number(item.id) : null,
-          item.type === 'servidor' ? Number(item.id) : null,
-          item.type === 'seguridad' ? Number(item.id) : null,
-          cantidad, subtotal, 'completada']
+        [insertResult.orderId, item.type || item.category || item.categoria, Number(item.id) || null, cantidad, Number(insertResult.subtotal / cantidad) || 0, insertResult.subtotal]
       );
     }
-
-    await connection.query('UPDATE ventas SET total = ? WHERE id_venta = ?', [totalVenta, idVenta]);
-
     await connection.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES (?, ?, NOW(), ?)', [userId, 'Compra realizada correctamente', 0]);
+    await logAdminEvent(connection, 'Venta procesada', userId, null, idVenta, `Compra completa por ${totalVenta} registrada en grupo ${ventaGroup}`);
 
     await connection.commit();
-    req.session.cart = [];
+    if (req.session) req.session.cart = [];
     return res.json({ ok: true, ventaGroup, total: totalVenta });
   } catch (err) {
-    console.error('Error POST /api/venta', err);
+    console.error('Error procesando compra', err);
     if (connection) await connection.rollback();
     return res.status(500).json({ ok: false, error: err.message || 'Error al procesar compra' });
   } finally {
     if (connection) connection.release();
   }
-});
+}
+
+app.post('/api/venta', requireAuth, processCheckoutRequest);
+app.post('/api/checkout', requireAuth, processCheckoutRequest);
 
 app.get('/api/mis-compras', requireAuth, async (req, res) => {
   const userId = req.session.user.id;
   try {
     const [rows] = await pool.query(
-      `SELECT v.*, p.nombre AS producto_nombre, s.tipo AS servicio_servidor_tipo, ss.nombre AS servicio_seguridad_nombre, u.nombre_usuario AS comprador
+      `SELECT v.*, p.nombre AS producto_nombre, s.tipo AS servicio_servidor_tipo, ss.nombre AS servicio_seguridad_nombre, u.nombre_usuario AS comprador,
+              eu.nombre_usuario AS empleado_asignado, v.id_empleado_responsable, v.servicio_estado, v.fecha_asignacion, v.fecha_actualizacion
        FROM ventashay v
        LEFT JOIN products_vendidos p ON v.id_producto = p.id_producto
        LEFT JOIN servicios_servidores s ON v.id_servicio_servidor = s.id_servicio
        LEFT JOIN servicios_seguridad ss ON v.id_servicio_seguridad = ss.id_servicio
        LEFT JOIN cuenta_usuario u ON v.id_usuario = u.id_usuarios
+       LEFT JOIN empleados e ON v.id_empleado_responsable = e.id_empleado
+       LEFT JOIN cuenta_usuario eu ON e.id_usuario = eu.id_usuarios
        WHERE v.id_usuario = ?
        ORDER BY v.fecha_compra DESC`,
       [userId]
@@ -1281,12 +1529,15 @@ app.get('/api/ventas', requireAuth, async (req, res) => {
   const userId = req.session.user.id;
   try {
     const [rows] = await pool.query(
-      `SELECT v.*, p.nombre AS producto_nombre, s.tipo AS servicio_servidor_tipo, ss.nombre AS servicio_seguridad_nombre, u.nombre_usuario AS comprador
+      `SELECT v.*, p.nombre AS producto_nombre, s.tipo AS servicio_servidor_tipo, ss.nombre AS servicio_seguridad_nombre, u.nombre_usuario AS comprador,
+              eu.nombre_usuario AS empleado_asignado, v.id_empleado_responsable, v.servicio_estado, v.fecha_asignacion, v.fecha_actualizacion
        FROM ventashay v
        LEFT JOIN products_vendidos p ON v.id_producto = p.id_producto
        LEFT JOIN servicios_servidores s ON v.id_servicio_servidor = s.id_servicio
        LEFT JOIN servicios_seguridad ss ON v.id_servicio_seguridad = ss.id_servicio
        LEFT JOIN cuenta_usuario u ON v.id_usuario = u.id_usuarios
+       LEFT JOIN empleados e ON v.id_empleado_responsable = e.id_empleado
+       LEFT JOIN cuenta_usuario eu ON e.id_usuario = eu.id_usuarios
        WHERE v.id_usuario = ?
        ORDER BY v.fecha_compra DESC`,
       [userId]
@@ -1313,37 +1564,10 @@ app.post('/api/ventas', requireAuth, async (req, res) => {
     let totalVenta = 0;
 
     for (const it of items) {
-      const tipo = it.type;
-      const id = Number(it.id);
-      const cantidad = Number(it.cantidad) || 1;
-
-      if (tipo === 'producto') {
-        const [rows] = await connection.query('SELECT precio, nombre FROM products_vendidos WHERE id_producto = ?', [id]);
-        if (!rows.length) throw new Error('Producto no encontrado: ' + id);
-        const precio = Number(rows[0].precio || 0);
-        const subtotal = precio * cantidad;
-        totalVenta += subtotal;
-        await connection.query('INSERT INTO ventashay (venta_group, id_usuario, id_producto, cantidad, total, fecha_compra, estado) VALUES (?, ?, ?, ?, ?, NOW(), ?)', [ventaGroup, userId, id, cantidad, subtotal, 'completada']);
-      } else if (tipo === 'servidor') {
-        const [rows] = await connection.query('SELECT precio, tipo FROM servicios_servidores WHERE id_servicio = ?', [id]);
-        if (!rows.length) throw new Error('Servicio servidor no encontrado: ' + id);
-        const precio = Number(rows[0].precio || 0);
-        const subtotal = precio * cantidad;
-        totalVenta += subtotal;
-        await connection.query('INSERT INTO ventashay (venta_group, id_usuario, id_servicio_servidor, cantidad, total, fecha_compra, estado) VALUES (?, ?, ?, ?, ?, NOW(), ?)', [ventaGroup, userId, id, cantidad, subtotal, 'completada']);
-      } else if (tipo === 'seguridad') {
-        const [rows] = await connection.query('SELECT precio, nombre FROM servicios_seguridad WHERE id_servicio = ?', [id]);
-        if (!rows.length) throw new Error('Servicio seguridad no encontrado: ' + id);
-        const precio = Number(rows[0].precio || 0);
-        const subtotal = precio * cantidad;
-        totalVenta += subtotal;
-        await connection.query('INSERT INTO ventashay (venta_group, id_usuario, id_servicio_seguridad, cantidad, total, fecha_compra, estado) VALUES (?, ?, ?, ?, ?, NOW(), ?)', [ventaGroup, userId, id, cantidad, subtotal, 'completada']);
-      } else {
-        throw new Error('Tipo de item inválido: ' + tipo);
-      }
+      const insertResult = await insertVentashayItem(connection, ventaGroup, userId, req.session.user.nombre_usuario || 'Cliente', { type: it.type, id: it.id, cantidad: it.cantidad });
+      totalVenta += insertResult.subtotal;
     }
 
-    // Crear notificación
     await connection.query('INSERT INTO notificaciones (id_usuario, mensaje, fecha_notificacion, leida) VALUES (?, ?, NOW(), ?)', [userId, 'Compra realizada correctamente', 0]);
 
     await connection.commit();

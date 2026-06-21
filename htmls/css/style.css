@@ -1374,15 +1374,22 @@ background: #1E293B;
             display: flex;
             align-items: center;
             gap: 1rem;
+            flex: 1 1 auto;
+            min-width: 0;
+            justify-content: center;
         }
         .header-main .nav-list {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
             align-items: center;
+            justify-content: center;
             margin: 0;
             padding: 0;
             list-style: none;
+        }
+        .header-main .nav-list li {
+            display: inline-flex;
         }
         .header-main .nav-list li a {
             color: #fff;

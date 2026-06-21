@@ -50,7 +50,7 @@
         if(!sessionData.user){ window.location.href = '/login.html'; return; }
 
         const payload = { items: [item] };
-        const resp = await fetch('/api/checkout', { method:'POST', credentials:'include', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+        const resp = await fetch('/api/venta', { method:'POST', credentials:'include', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
         if(resp.ok){ mostrarToast('Compra registrada', 'exito'); clearCart(); }
         else { let e = {}; try { const raw = await resp.text().catch(()=>''); console.log('RESPUESTA CRUDA (carrito addTemporaryAndCheckout error):', raw); e = raw ? JSON.parse(raw) : {}; } catch(err){ e = {}; } mostrarToast('Error al comprar: '+(e.error||resp.statusText),'error'); }
     }
@@ -257,7 +257,7 @@
         }
 
         const payload = { items: cart };
-        const resp = await fetch('/api/checkout', { method:'POST', credentials:'include', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+        const resp = await fetch('/api/venta', { method:'POST', credentials:'include', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
         if(resp.ok){ mostrarToast('Compra registrada', 'exito'); clearCart(); }
         else { let e = {}; try { const raw = await resp.text().catch(()=>''); console.log('RESPUESTA CRUDA (carrito confirmarCompra error):', raw); e = raw ? JSON.parse(raw) : {}; } catch(err){ e = {}; } mostrarToast('Error: '+(e.error||resp.statusText),'error'); }
     }
